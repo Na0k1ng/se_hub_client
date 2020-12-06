@@ -5,8 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    test: "アクセスできるよ"
   },
   mutations: {
+    /*
+    setval : function(state, val) {
+      state.test = val
+    }
+    */
   },
   actions: {
   },
