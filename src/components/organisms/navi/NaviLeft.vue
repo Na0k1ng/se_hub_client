@@ -135,7 +135,7 @@
           <v-form ref="form" v-model="valid">
             <v-text-field
                     prepend-icon="mdi-account-circle"
-                    label="ユーザ名"
+                    label="メールアドレス"
                     :counter="50"
                     maxlength="50"
                     required
@@ -165,10 +165,41 @@
               ログイン
             </v-btn>
             <v-btn
-                    text
-                    @click="dialog = false"
+                    :disabled="!valid"
+                    class="info"
+                    @click="registerHash"
             >
-              キャンセル
+              新規登録
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog
+              v-model="dialog_hash"
+              max-width="550"
+      >
+        <v-card class="pa-10">
+          <v-card-title class="headline">
+            確認コード入力
+          </v-card-title>
+          <v-form ref="form">
+            <v-text-field
+                    prepend-icon="mdi-account-circle"
+                    label="確認コード"
+                    :counter="6"
+                    maxlength="6"
+                    required
+                    v-model="credentials.hash_cd"
+            />
+          </v-form>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                    :disabled="!valid"
+                    class="info"
+                    @click="registerUser"
+            >
+              確認
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -197,12 +228,16 @@
                         v => (v && v.length > 4) || "ユーザー名は5文字以上でなければなりません"
                     ]
                 },
-                user_name: "SEくん",
+                user_name: "",
                 login_state: false,
                 dialog: false,
                 showPassword: false,
-                test_token: "あああ",
-                user_id: "あああ",
+                test_token: "",
+                user_id: "",
+                // add register
+                dialog_hash: false,
+                hash_cd: '',
+                invite_email: '',
             }
         },
 
@@ -214,8 +249,6 @@
                 if (this.$refs.form.validate()) {
                     const qs = require('qs');
                     axios.post('http://localhost:8000/api/auth/', qs.stringify(this.credentials)).then(res => {
-                        //          this.$session.start();
-                        //          this.$session.set('token', res.data.token);
                         payload = res.data.token.split('.')[1];
                         this.user_id = JSON.parse(atob(payload)).user_id;
                         this.test_token = this.user_id;
@@ -227,11 +260,6 @@
                             alert("例外");
                             alert(e.message);
                         });
-                        //alert(tmp);
-                        //alert(payload);
-                        //alert('http://localhost:8000/api/user/'+this.user_id+'/');
-                        //alert("あらーと");
-                        //alert(res);
                     }).catch(e => {
                         this.test_token = e.data.detail[0];
                         tmp = JSON.stringify(e.status);
@@ -253,17 +281,72 @@
                     this.dialog = false;
                 }
             },
-            /*
-            getLoginUser() {
-                    alert('http://localhost:8000/api/user/'+this.test_token+'/');
-                     axios.get('http://localhost:8000/api/user/'+this.user_id.toString()+'/').then(res => {
-                         this.user_name=res.email;
-                     }).catch(e => {
-                        alert("例外");
-                        alert(e.message);
+            // ログイン画面(ダイアログ):「新規登録」ボタン押下時の処理
+            registerHash() {
+                if (this.$refs.form.validate()) {
+                    axios.post('http://localhost:8000/api/user/hash/', { 'email': this.credentials.email}).then(res => {
+                        // 確認コード入力画面(ダイアログ)を開く
+                        if(res.status.toString() === '200') {
+                            this.dialog_hash = true;
+                        }
+                    }).catch(e => {
+                        alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
+                        console.log(e.message);
                     });
+                } else {
+                    this.dialog = false;
+                }
+            },
+            // 確認コード入力画面(ダイアログ):「確認」ボタン押下時の処理
+            registerUser() {
+                const requestBody = {
+                    'email': this.credentials.email,
+                    'password': this.credentials.password,
+                    'hash_cd': this.credentials.hash_cd,
+                    'invite_email': this.invite_email,
+                }
+                if (this.$refs.form.validate()) {
+                    axios.post('http://localhost:8000/api/user/', requestBody).then(res => {
+                        // JWTログイン後にユーザー情報を取得する
+                        if(res.status.toString() === '200') {
+                            this.login();
+                        }
+                    }).catch(e => {
+                        alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
+                        console.log(e.message);
+                    });
+                    this.dialog = false;
+                    this.dialog_hash = false;
+                } else {
+                    this.dialog = false;
+                }
+            },
+            // 情報を発信する画面(ダイアログ):「発信」ボタン押下時の処理
+            /*
+            createDisclosure() {
+                const requestBody = {
+                    'email': this.credentials.email,
+                    'password': this.credentials.password,
+                    'hash_cd': this.credentials.hash_cd,
+                    'invite_email': this.invite_email,
+                }
+                if (this.$refs.form.validate()) {
+                    axios.post('http://localhost:8000/api/disclosure/', requestBody).then(res => {
+                        // JWTログイン後にユーザー情報を取得する
+                        if(res.status.toString() === '200') {
+                            this.login();
+                        }
+                    }).catch(e => {
+                        alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
+                        console.log(e.message);
+                    });
+                    this.dialog = false;
+                    this.dialog_hash = false;
+                } else {
+                    this.dialog = false;
+                }
             }
-             */
+            */
         },
     }
 </script>
