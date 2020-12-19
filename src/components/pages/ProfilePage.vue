@@ -9,8 +9,6 @@
         <MainTitle :mainTitleName="mainTitleName"/>
         <MainProfile/>
         <MainDivider/>
-        <MainDivider/>
-
         <MainContentList/>
       </v-container>
     </v-main>

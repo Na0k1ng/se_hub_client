@@ -11,21 +11,19 @@
     >
       <v-list
               class="pl-14"
-              rounded
+              flat
       >
         <v-list-item
-                v-if="login_state"
+                v-if="loginState"
+                to="/profile" active-class="font-weight-bold"
         >
           <v-list-item-icon>
-            <v-icon
-                    large
-                    color="grey darken-1"
-            >
+            <v-icon large color="grey darken-1">
               mdi-account
             </v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>{{user_name}}</v-list-item-title>
+            <v-list-item-title>{{userName}}</v-list-item-title>
             <v-list-item-subtitle>{{test_token}}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -35,10 +33,7 @@
                 @click.stop="dialog = true"
         >
           <v-list-item-icon>
-            <v-icon
-                    large
-                    color="grey darken-1"
-            >
+            <v-icon large color="grey darken-1">
               mdi-account
             </v-icon>
           </v-list-item-icon>
@@ -48,12 +43,9 @@
           </v-list-item-content>
         </v-list-item>
         <v-divider></v-divider>
-        <v-list-item link>
+        <v-list-item to="/" active-class="font-weight-bold">
           <v-list-item-icon>
-            <v-icon
-                    large
-                    color="grey darken-1"
-            >
+            <v-icon large color="grey darken-1">
               mdi-home
             </v-icon>
           </v-list-item-icon>
@@ -61,25 +53,29 @@
             <v-list-item-title>ホーム</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item to="/explore" active-class="font-weight-bold">
           <v-list-item-icon>
-            <v-icon
-                    large
-                    color="grey darken-1"
-            >
+            <v-icon large color="grey darken-1">
+              mdi-magnify
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>検索</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item to="/bpManagement" active-class="font-weight-bold">
+          <v-list-item-icon>
+            <v-icon large color="grey darken-1">
               mdi-bell-outline
             </v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>通知</v-list-item-title>
+            <v-list-item-title>BP管理</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item to="/messages" active-class="font-weight-bold">
           <v-list-item-icon>
-            <v-icon
-                    large
-                    color="grey darken-1"
-            >
+            <v-icon large color="grey darken-1">
               mdi-email-outline
             </v-icon>
           </v-list-item-icon>
@@ -87,12 +83,9 @@
             <v-list-item-title>メッセージ</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item to="/profile" active-class="font-weight-bold">
           <v-list-item-icon>
-            <v-icon
-                    large
-                    color="grey darken-1"
-            >
+            <v-icon large color="grey darken-1">
               mdi-account
             </v-icon>
           </v-list-item-icon>
@@ -100,12 +93,9 @@
             <v-list-item-title>プロフィール</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item @click.stop="dialog_settings = true">
           <v-list-item-icon>
-            <v-icon
-                    large
-                    color="grey darken-1"
-            >
+            <v-icon large color="grey darken-1">
               mdi-cog-outline
             </v-icon>
           </v-list-item-icon>
@@ -119,6 +109,7 @@
                   rounded
                   height="60"
                   width="250"
+                  @click.stop="dialog_trans_info = true"
           >
             <b>情報を発信する</b>
           </v-btn>
@@ -204,6 +195,26 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog
+              v-model="dialog_trans_info"
+              max-width="600"
+      >
+        <v-card class="pa-10">
+          <v-card-title class="headline">
+            情報発信
+          </v-card-title>
+        </v-card>
+      </v-dialog>
+      <v-dialog
+              v-model="dialog_settings"
+              max-width="600"
+      >
+        <v-card class="pa-10">
+          <v-card-title class="headline">
+            設定
+          </v-card-title>
+        </v-card>
+      </v-dialog>
     </v-sheet>
   </v-navigation-drawer>
 </template>
@@ -213,9 +224,17 @@
 
     export default {
         name: "NaviLeft",
-
+        components: {},
         data() {
             return {
+                // dialog flag
+                dialog: false,
+                dialog_hash: false,
+                dialog_trans_info: false,
+                dialog_settings: false,
+
+                // User Info
+
                 valid: true,
                 credentials: {},
                 rules: {
@@ -228,16 +247,15 @@
                         v => (v && v.length > 4) || "ユーザー名は5文字以上でなければなりません"
                     ]
                 },
-                user_name: "",
                 login_state: false,
-                dialog: false,
                 showPassword: false,
                 test_token: "",
                 user_id: "",
                 // add register
-                dialog_hash: false,
                 hash_cd: '',
                 invite_email: '',
+                axios_res: '',
+                axios_get_res: '',
             }
         },
 
@@ -248,26 +266,42 @@
                 let ret = '';
                 if (this.$refs.form.validate()) {
                     const qs = require('qs');
-                    axios.post('http://localhost:8000/api/auth/', qs.stringify(this.credentials)).then(res => {
-                        payload = res.data.token.split('.')[1];
-                        this.user_id = JSON.parse(atob(payload)).user_id;
-                        this.test_token = this.user_id;
-                        tmp = res.data.token;
-                        alert('http://localhost:8000/api/user/' + this.test_token + '/');
-                        axios.get('http://localhost:8000/api/user/' + this.user_id + '/').then(res => {
-                            this.user_name = res.data[0].email;
-                        }).catch(e => {
-                            alert("例外");
-                            alert(e.message);
+                    axios
+                        .post('http://localhost:8000/api/auth/', qs.stringify(this.credentials))
+                        .then(res => {
+                            payload = res.data.token.split('.')[1];
+                            this.user_id = JSON.parse(atob(payload)).user_id;
+                            this.test_token = this.user_id;
+                            tmp = res.data.token;
+                            alert('http://localhost:8000/api/user/' + this.test_token + '/');
+                            axios.get('http://localhost:8000/api/user/' + this.user_id + '/').then(res => {
+                                this.setUserName(res.data.email);
+                            }).catch(e => {
+                                alert("例外");
+                                alert(e.message);
+                            });
                         });
-                    }).catch(e => {
-                        this.test_token = e.data.detail[0];
-                        tmp = JSON.stringify(e.status);
-                        alert("例外");
-                        alert(e.message);
-
-                    });
-
+                    //     .then(res => (this.axios_res = res))
+                    //     .catch(e => {
+                    //         this.test_token = e.data.detail[0];
+                    //         tmp = JSON.stringify(e.status);
+                    //         alert("例外1");
+                    //         alert(e.message);
+                    //     });
+                    // payload = this.axios_res.data.token.split('.')[1];
+                    // this.test_token = JSON.parse(atob(payload)).user_id;
+                    //
+                    // alert(this.axios_res.data.email);
+                    // axios
+                    //     .get('http://localhost:8000/api/user/' + this.test_token + '/')
+                    //     .then(res => (this.axios_get_res = res))
+                    //     .catch(e => {
+                    //         alert("例外2");
+                    //         alert(e.message);
+                    //     });
+                    //
+                    // alert(this.axios_get_res.data.email);
+                    // this.setUserName(this.axios_get_res.data.email);
 
                     //this.test_token = atob(tmp);
                     ret = btoa(tmp);
@@ -275,7 +309,8 @@
                     console.log(tmp);
                     console.log(ret);
                     //alert(ret);
-                    this.login_state = !this.login_state;
+                    //this.login_state = !this.login_state;
+                    this.setLoginState();
                     this.dialog = false;
                 } else {
                     this.dialog = false;
@@ -284,9 +319,9 @@
             // ログイン画面(ダイアログ):「新規登録」ボタン押下時の処理
             registerHash() {
                 if (this.$refs.form.validate()) {
-                    axios.post('http://localhost:8000/api/user/hash/', { 'email': this.credentials.email}).then(res => {
+                    axios.post('http://localhost:8000/api/user/hash/', {'email': this.credentials.email}).then(res => {
                         // 確認コード入力画面(ダイアログ)を開く
-                        if(res.status.toString() === '200') {
+                        if (res.status.toString() === '200') {
                             this.dialog_hash = true;
                         }
                     }).catch(e => {
@@ -308,7 +343,7 @@
                 if (this.$refs.form.validate()) {
                     axios.post('http://localhost:8000/api/user/', requestBody).then(res => {
                         // JWTログイン後にユーザー情報を取得する
-                        if(res.status.toString() === '200') {
+                        if (res.status.toString() === '200') {
                             this.login();
                         }
                     }).catch(e => {
@@ -320,6 +355,12 @@
                 } else {
                     this.dialog = false;
                 }
+            },
+            setLoginState: function () {
+                this.$store.commit('setLoginState', true)
+            },
+            setUserName: function (user_name) {
+                this.$store.commit('setUserName', user_name)
             },
             // 情報を発信する画面(ダイアログ):「発信」ボタン押下時の処理
             /*
@@ -348,6 +389,14 @@
             }
             */
         },
+        computed: {
+            loginState: function () {
+                return this.$store.state.loginState
+            },
+            userName: function () {
+                return this.$store.state.userName
+            },
+        }
     }
 </script>
 

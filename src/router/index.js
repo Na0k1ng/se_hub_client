@@ -3,8 +3,10 @@ import VueRouter from 'vue-router'
 
 import Home from '../views/Home.vue'
 import Explore from '../views/Explore.vue'
+import BpManagement from '../views/BpManagement.vue'
 import Messages from '../views/Messages.vue'
 import Profile from '../views/Profile.vue'
+
 
 Vue.use(VueRouter)
 
@@ -18,6 +20,11 @@ const routes = [
     path: '/explore',
     name: 'Explore',
     component: Explore
+  },
+  {
+    path: '/bpManagement',
+    name: 'BpManagement',
+    component: BpManagement
   },
   {
     path: '/messages',
