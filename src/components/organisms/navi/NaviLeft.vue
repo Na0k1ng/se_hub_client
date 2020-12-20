@@ -24,7 +24,7 @@
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{userName}}</v-list-item-title>
-            <v-list-item-subtitle>{{test_token}}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{token}}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
         <v-list-item
@@ -272,6 +272,7 @@
                             payload = res.data.token.split('.')[1];
                             this.user_id = JSON.parse(atob(payload)).user_id;
                             this.test_token = this.user_id;
+                            this.setToken(this.test_token);
                             tmp = res.data.token;
                             alert('http://localhost:8000/api/user/' + this.test_token + '/');
                             axios.get('http://localhost:8000/api/user/' + this.user_id + '/').then(res => {
@@ -339,7 +340,7 @@
                     'password': this.credentials.password,
                     'hash_cd': this.credentials.hash_cd,
                     'invite_email': this.invite_email,
-                }
+                };
                 if (this.$refs.form.validate()) {
                     axios.post('http://localhost:8000/api/user/', requestBody).then(res => {
                         // JWTログイン後にユーザー情報を取得する
@@ -361,6 +362,9 @@
             },
             setUserName: function (user_name) {
                 this.$store.commit('setUserName', user_name)
+            },
+            setToken: function (token) {
+                this.$store.commit('setToken', token)
             },
             // 情報を発信する画面(ダイアログ):「発信」ボタン押下時の処理
             /*
@@ -395,6 +399,9 @@
             },
             userName: function () {
                 return this.$store.state.userName
+            },
+            token: function () {
+                return this.$store.state.token
             },
         }
     }

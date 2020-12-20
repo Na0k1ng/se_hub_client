@@ -8,7 +8,6 @@
       >
         <MainTitle :mainTitleName="mainTitleName"/>
         <MainBpMenuBar/>
-        <MainBpList/>
       </v-container>
     </v-main>
   </div>

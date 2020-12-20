@@ -8,7 +8,6 @@
     >
       <v-container>
         <v-card
-          :loading="loading"
           color="grey lighten-4"
         >
           <v-list>
