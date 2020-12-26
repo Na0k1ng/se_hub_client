@@ -1,10 +1,10 @@
 <template>
   <div class="maincontentlist">
     <v-row no-gutters class="ma-0 pa-0">
-      <v-list width="100%" class="ma-0 pa-0">
+      <v-list width="100%" class="ma-0 pa-0" v-if="choice == 'bp'">
         <v-list-item-group
-          v-for="n in contentList"
-          :key = "n"
+                v-for="n in contentList"
+                :key="n"
         >
           <v-list-item>
             <v-list-item-avatar>
@@ -25,27 +25,56 @@
 </template>
 
 <script>
-export default {
-  name: "MainBpList",
-  data () {
-    return {
-      contentList: [
-        {
-          icon: "",
-          name: "〇〇〇〇",
-        },
-        {
-          icon: "",
-          name: "〇〇〇〇",
-        },
-        {
-          icon: "",
-          name: "〇〇〇〇",
-        },
-      ]
+    export default {
+        name: "MainBpList",
+        data() {
+            return {
+                choice: "bp",
+                applyingBpList: [
+                    {
+                        icon: "",
+                        name: "〇〇〇〇",
+                    },
+                    {
+                        icon: "",
+                        name: "〇〇〇〇",
+                    },
+                    {
+                        icon: "",
+                        name: "〇〇〇〇",
+                    },
+                ],
+                applicantBpList: [
+                    {
+                        icon: "",
+                        name: "〇〇〇〇",
+                    },
+                    {
+                        icon: "",
+                        name: "〇〇〇〇",
+                    },
+                    {
+                        icon: "",
+                        name: "〇〇〇〇",
+                    },
+                ],
+                bpList: [
+                    {
+                        icon: "",
+                        name: "〇〇〇〇",
+                    },
+                    {
+                        icon: "",
+                        name: "〇〇〇〇",
+                    },
+                    {
+                        icon: "",
+                        name: "〇〇〇〇",
+                    },
+                ],
+            }
+        }
     }
-  }
-}
 </script>
 
 <style scoped>

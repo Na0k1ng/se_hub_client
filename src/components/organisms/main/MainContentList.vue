@@ -3,8 +3,8 @@
     <v-row no-gutters class="ma-0 pa-0">
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
-          v-for="n in contentList"
-          :key = "n"
+          v-for="content in contentList"
+          :key = "content"
         >
           <v-list-item>
             <v-list-item-avatar>
@@ -13,9 +13,9 @@
               </v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title>{{ n.title }}</v-list-item-title>
-              <v-list-item-subtitle>{{ n.subtitle }}</v-list-item-subtitle>
-              <v-list-item-subtitle>{{ n.text }}</v-list-item-subtitle>
+              <v-list-item-title>{{ content.title }}</v-list-item-title>
+              <v-list-item-subtitle>{{ content.subtitle }}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ content.text }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>

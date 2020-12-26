@@ -24,6 +24,7 @@
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>{{userName}}</v-list-item-title>
+            <v-list-item-subtitle>{{userId}}</v-list-item-subtitle>
             <v-list-item-subtitle>{{token}}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -272,7 +273,8 @@
                             payload = res.data.token.split('.')[1];
                             this.user_id = JSON.parse(atob(payload)).user_id;
                             this.test_token = this.user_id;
-                            this.setToken(this.test_token);
+                            this.setUserId(this.test_token);
+                            this.setToken(res.data.token);
                             tmp = res.data.token;
                             alert('http://localhost:8000/api/user/' + this.test_token + '/');
                             axios.get('http://localhost:8000/api/user/' + this.user_id + '/').then(res => {
@@ -363,6 +365,9 @@
             setUserName: function (user_name) {
                 this.$store.commit('setUserName', user_name)
             },
+            setUserId: function (userId) {
+                this.$store.commit('setUserId', userId)
+            },
             setToken: function (token) {
                 this.$store.commit('setToken', token)
             },
@@ -399,6 +404,9 @@
             },
             userName: function () {
                 return this.$store.state.userName
+            },
+            userId: function () {
+                return this.$store.state.userId
             },
             token: function () {
                 return this.$store.state.token

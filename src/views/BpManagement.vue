@@ -7,12 +7,12 @@
 </template>
 
 <script>
-import BpManagementPage from '@/components/pages/BpManagementPage.vue'
+    import BpManagementPage from '@/components/pages/BpManagementPage.vue'
 
-export default {
-  name: 'BpManagement',
-  components: {
-    BpManagementPage,
-  }
-}
+    export default {
+        name: 'BpManagement',
+        components: {
+            BpManagementPage,
+        },
+    }
 </script>

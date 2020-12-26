@@ -111,26 +111,13 @@
                 applyingBpList: [],
                 applicantBpList: [],
                 bpList: [],
-                test: "変わってないよ",
             }
         },
-        async beforeRouteEnter(to, from, next) {
-            console.log('test1')
-            await alert("ナビゲーションガードコンポーネント")
-            next()
-        },
-        beforeRouteUpdate(to, from, next) {
-            console.log('test2')
-            alert('test');
-            this.test = "変わったよ"
-            next()
+        mounted: function () {
+            console.log('mounted')
+            this.getBpList();
         },
         methods: {
-            window: onload = function () {
-                console.log('test3')
-                alert('test');
-                this.test = "変わったよ";
-            },
             getBpList() {
                 let bpList = [
                     {

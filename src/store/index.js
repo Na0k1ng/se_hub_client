@@ -7,6 +7,7 @@ export default new Vuex.Store({
     state: {
         loginState: false,
         userName: "",
+        userId:"",
         token: "",
     },
     mutations: {
@@ -16,10 +17,15 @@ export default new Vuex.Store({
         setUserName: function (state, val) {
             state.userName = val
         },
+        setUserId: function (state, val) {
+            state.userId = val
+        },
         setToken: function (state, val) {
             state.token = val
         },
     },
-    actions: {},
+    actions: {
+
+    },
     modules: {}
 })

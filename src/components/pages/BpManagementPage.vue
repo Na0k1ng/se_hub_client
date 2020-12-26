@@ -18,7 +18,6 @@
     import NaviRight from '@/components/organisms/navi/NaviRight.vue'
 
     import MainTitle from '@/components/organisms/main/MainTitle.vue'
-    import MainBpList from '@/components/organisms/main/MainBpList.vue'
     import MainBpMenuBar from '@/components/organisms/main/MainBpMenuBar.vue'
 
     export default {
@@ -27,7 +26,6 @@
             NaviLeft,
             NaviRight,
             MainTitle,
-            MainBpList,
             MainBpMenuBar,
 
         },
