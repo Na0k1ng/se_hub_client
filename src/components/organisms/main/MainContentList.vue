@@ -3,8 +3,8 @@
     <v-row no-gutters class="ma-0 pa-0">
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
-          v-for="content in contentList"
-          :key = "content"
+                v-for="content in contentsList"
+                :key="content"
         >
           <v-list-item>
             <v-list-item-avatar>
@@ -27,33 +27,59 @@
 </template>
 
 <script>
-export default {
-  name: "MainContentList",
-  data () {
-    return {
-      contentList: [
-        {
-          icon: "",
-          title: "タイトル1",
-          subtitle: "c1XXXXXXXXXXXXXX",
-          text: "ct1XXXXXXXXXXXXXX"
+    import axios from 'axios';
+
+    export default {
+        name: "MainContentList",
+        data() {
+            return {
+                contentsList: []
+            }
         },
-        {
-          icon: "",
-          title: "タイトル2",
-          subtitle: "c2XXXXXXXXXXXXX",
-          text: "ct2XXXXXXXXXXXXX"
+        mounted: function () {
+            console.log('mounted')
+            this.getContentsList();
         },
-        {
-          icon: "",
-          title: "タイトル3",
-          subtitle: "c3XXXXXXXXXXXXX",
-          text: "ct3XXXXXXXXXXXXX"
+        methods: {
+            getContentsList() {
+                let contentsList = [
+                    {
+                        icon: "",
+                        title: "タイトル1",
+                        subtitle: "c1XXXXXXXXXXXXXX",
+                        text: "ct1XXXXXXXXXXXXXX"
+                    },
+                    {
+                        icon: "",
+                        title: "タイトル2",
+                        subtitle: "c2XXXXXXXXXXXXX",
+                        text: "ct2XXXXXXXXXXXXX"
+                    },
+                    {
+                        icon: "",
+                        title: "タイトル3",
+                        subtitle: "c3XXXXXXXXXXXXX",
+                        text: "ct3XXXXXXXXXXXXX"
+                    }
+                ];
+
+                axios.post('http://localhost:8000/api/user/' + this.userName + '/').then(res => {
+                    if (res.status.toString() === '200') {
+                        alert("正常系です。");
+                    }
+                }).catch(e => {
+                    alert("異常系です。");
+                    console.log(e.message);
+                });
+                this.contentsList = contentsList;
+            }
         },
-      ]
+        computed: {
+            userName: function () {
+                return this.$store.state.userName
+            },
+        },
     }
-  }
-}
 </script>
 
 <style scoped>

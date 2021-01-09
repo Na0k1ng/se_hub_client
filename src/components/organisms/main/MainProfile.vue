@@ -62,6 +62,11 @@
         </v-row>
         <v-row>
           <v-col class="py-0" color="grey lighten-3">
+            <p class="ma-1 pa-2">DEBUG グループID: {{userInfo.group__id}}</p>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="py-0" color="grey lighten-3">
             <p class="ma-0 pa-2">{{userInfo.description}}</p>
           </v-col>
         </v-row>
@@ -212,29 +217,33 @@
                 editDialog: false,
                 isEnter: false,
                 files: [],
+                form: {},
                 userInfo: {
-                    icon: "https://wpteq.org/wp-content/uploads/2018/06/latest1.png",
+                    id: "",
+                    name: "",
+                    email: "",
+                    description: "",
+                    icon: [],
+                    group__id: "",
+                    group__name: "",
+                    group__description: "",
+                    group__url: "",
+                    group__img: "",
+
                     banner: "https://automaton-media.com/wp-content/uploads/2020/02/20200206-112749-header-696x392.jpg",
                     company: "",
                     url: "https://www.allgoal.co.jp/",
-                    name: "個人名XX",
-                    description: "XXXXXXXXXXXXXXXXXXXXXXXXXX",
                 },
                 credentials: {},
                 rules: {
-                    icon: [
-                    ],
-                    banne: [
-                    ],
-                    company: [
-                    ],
-                    url: [
-                    ],
-                    name: [
-                    ],
-                    description: [
-                    ],
+                    icon: [],
+                    banne: [],
+                    company: [],
+                    url: [],
+                    name: [],
+                    description: [],
                 },
+                debug: "",
             }
         },
         methods: {
@@ -252,55 +261,120 @@
                 console.log('ファイルが上にある')
                 this.isEnter = true;
             },
-            dropFile() {
-                console.log('ファイルがおかれた');
-                this.isEnter = false;
-                this.files = [...event.dataTransfer.files];
-                this.files.forEach(file => {
+            dropFile: function () {
+                // let file = evt.target.files;
+                // let reader = new window.FileReader();
+                // let self = this;
+                //
+                // console.log('ファイルがおかれた');
+                //
+                // //dataURL形式でファイルを読み込む
+                // reader.readAsDataURL(file[0]);
+                //
+                // //ファイルの読込が終了した時の処理
+                // reader.onload = function () {
+                //     self.form = reader.result;
+                // };
+
+                let files = [...event.dataTransfer.files];
+                let form = new FormData();
+                const userId = this.userId;
+
+                files.forEach(file => {
                     console.log(file);
-                })
+                    form.append('file', file, userId + '.jpg');
+                    console.log(form);
+                });
+
+                this.form = form;
+                console.log(form);
+                console.log(this.form);
+                for (let [key, value] of form.entries()) {
+                    console.log(key, value);
+                }
+
+                this.isEnter = false;
             },
             sendUserInfo() {
                 const requestBody = {
                     'name': this.userInfo.name,
                     'description': this.userInfo.description,
-                    'img': this.userInfo.icon,
                 };
+                //console.log(this.debug);
+                console.log(this.form);
 
                 const reqHeader = {
-                     headers: {
-                        Authorization: 'JWT' + ' ' + this.token
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                        'content-type': 'multipart/form-data'
                     },
                 };
 
-                axios.put('http://localhost:8000/api/user/' + this.userId + '/', requestBody, reqHeader).then(res => {
+                let form = this.form;
+                form.append('json_data', requestBody);
+
+                axios.put('http://localhost:8000/api/user/' + this.userId + '/', form, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
                         alert("大成功");
+                        this.getUserInfo();
                     }
                 }).catch(e => {
                     alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                     console.log(e.message);
                 });
 
-                this.editDialog = false
+                this.editDialog = false;
             },
-            // getUserInfo() {
-            //     const requestBody = {
-            //         'name': this.userInfo.name,
-            //         'description': this.userInfo.description,
-            //         'img': this.userInfo.icon,
-            //     }
-            //
-            //     axios.post('http://localhost:8000/api/user/' + this.userName + '/').then(res => {
-            //         if (res.status.toString() === '200') {
-            //             alert("正常系です。");
-            //         }
-            //     }).catch(e => {
-            //         alert("異常系です。");
-            //         console.log(e.message);
-            //     });
-            // }
+            getUserInfo() {
+                axios.get('http://localhost:8000/api/user/' + this.userId + '/').then(res => {
+                    this.userInfo.id = res.data.id;
+                    this.userInfo.name = res.data.name;
+                    this.userInfo.email = res.data.email;
+                    this.userInfo.description = res.data.description;
+                    this.userInfo.icon = res.data.img;
+                    this.userInfo.group__id = res.data.group__id;
+                    this.userInfo.group__name = res.data.group__name;
+                    this.userInfo.group__description = res.data.group__description;
+                    this.userInfo.group__url = res.data.group__url;
+                    this.userInfo.group__img = res.data.group__img;
+                }).catch(e => {
+                    alert("例外");
+                    alert(e.message);
+                });
+            },
+            setGroupInfo() {
+                const requestBody = {
+                    'name': this.userInfo.name,
+                    'description': this.userInfo.description,
+                    'img': this.userInfo.icon,
+
+                };
+
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token
+                    },
+                };
+
+                console.log(this.form);
+
+                axios.put('http://localhost:8000/api/user/' + this.userId + '/', requestBody, reqHeader).then(res => {
+                    // JWTログイン後にユーザー情報を取得する
+                    if (res.status.toString() === '200') {
+                        alert("大成功");
+                        this.getUserInfo();
+                    }
+                }).catch(e => {
+                    alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
+                    console.log(e.message);
+                });
+
+                this.editDialog = false;
+            },
+        },
+        mounted: function () {
+            this.getUserInfo();
         },
         computed: {
             loginState: function () {

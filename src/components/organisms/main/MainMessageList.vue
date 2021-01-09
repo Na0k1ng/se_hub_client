@@ -3,10 +3,10 @@
     <v-row no-gutters class="ma-0 pa-0">
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
-                v-for="n in contentList"
+                v-for="n in messageList"
                 :key="n"
         >
-          <v-list-item @click.stop="dialog = true">
+          <v-list-item @click="getChatList()">
             <v-list-item-avatar>
               <v-icon class="grey lighten-1">
                 mdi-account
@@ -64,8 +64,11 @@
           </v-icon>
           <v-text-field
                   label="メッセージを入力"
+                  :counter="300"
+                  :maxlength="300"
+                  v-model="message"
           ></v-text-field>
-          <v-icon large color="grey darken-1 ma-0 pa-0">
+          <v-icon large color="grey darken-1 ma-0 pa-0" @click="sendMessage()">
             mdi-send-circle-outline
           </v-icon>
         </v-row>
@@ -77,12 +80,26 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         name: "MainMessageList",
         data() {
             return {
                 dialog: false,
-                contentList: [
+                messageList: [],
+                chatList: [],
+                message: "",
+                form: []
+            }
+        },
+        mounted: function () {
+            console.log('mounted')
+            this.getMessageList();
+        },
+        methods: {
+            getMessageList() {
+                let messageList = [
                     {
                         icon: "",
                         title: "メッセージ1",
@@ -95,8 +112,20 @@
                         icon: "",
                         title: "メッセージ3",
                     },
-                ],
-                chatList: [
+                ];
+
+                axios.post('http://localhost:8000/api/user/' + this.userName + '/').then(res => {
+                    if (res.status.toString() === '200') {
+                        alert("正常系です。");
+                    }
+                }).catch(e => {
+                    alert("異常系です。");
+                    console.log(e.message);
+                });
+                this.messageList = messageList;
+            },
+            getChatList() {
+                let chatList = [
                     {
                         icon: "",
                         body: "Hi. I'm AllGoal .Inc",
@@ -118,9 +147,57 @@
                         mymsg: true,
                         aread: false,
                     },
-                ]
-            }
-        }
+                ];
+                axios.post('http://localhost:8000/api/user/' + this.userName + '/').then(res => {
+                    if (res.status.toString() === '200') {
+                        alert("正常系です。");
+                    }
+                }).catch(e => {
+                    alert("異常系です。");
+                    console.log(e.message);
+                });
+                this.chatList = chatList;
+                this.dialog = true;
+            },
+            sendMessage() {
+                const requestBody = {
+                    'message': this.message,
+                };
+
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                        'content-type': 'multipart/form-data'
+                    },
+                };
+
+                let form = this.form;
+                form.append('json_data', requestBody);
+
+                axios.put('http://localhost:8000/api/user/' + this.userId + '/', form, reqHeader).then(res => {
+                    // JWTログイン後にユーザー情報を取得する
+                    if (res.status.toString() === '200') {
+                        alert("大成功");
+                    }
+                }).catch(e => {
+                    alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
+                    console.log(e.message);
+                });
+
+                this.dialog = false;
+            },
+        },
+        computed: {
+            userName: function () {
+                return this.$store.state.userName
+            },
+            token: function () {
+                return this.$store.state.token
+            },
+            userId: function () {
+                return this.$store.state.userId
+            },
+        },
     }
 </script>
 
