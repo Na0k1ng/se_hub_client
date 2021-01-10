@@ -104,7 +104,7 @@
             <v-list-item-title>設定</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
+        <v-list-item class="pt-4">
           <v-btn
                   color="grey lighten-1"
                   rounded
@@ -113,6 +113,17 @@
                   @click.stop="dialog_trans_info = true"
           >
             <b>情報を発信する</b>
+          </v-btn>
+        </v-list-item>
+        <v-list-item class="pt-10 mt-10">
+          <v-btn
+                  color="grey lighten-1"
+                  rounded
+                  height="50"
+                  width="140"
+                  @click.stop="dialog_logout = true"
+          >
+            ログアウト
           </v-btn>
         </v-list-item>
       </v-list>
@@ -204,6 +215,34 @@
           <v-card-title class="headline">
             情報発信
           </v-card-title>
+          <v-row class="ma-0 pa-0">
+            <v-text-field
+                    label="タイトル"
+                    :counter="30"
+                    :maxlength="30"
+                    v-model="send_info.title"
+            ></v-text-field>
+          </v-row>
+          <v-row class="ma-0 pa-0">
+            <v-textarea
+                    outlined rows="20"
+                    name="input-7-4"
+                    v-model="send_info.body"
+                    :counter="300"
+                    :maxlength="300"
+                    required
+                    abel="Message"
+            ></v-textarea>
+          </v-row>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+                    class="info"
+                    @click="sendJobInfo()"
+            >
+              送信
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
       <v-dialog
@@ -214,6 +253,35 @@
           <v-card-title class="headline">
             設定
           </v-card-title>
+
+        </v-card>
+      </v-dialog>
+      <v-dialog
+
+              v-model="dialog_logout"
+              max-width="600"
+      >
+        <v-card class="pa-10">
+          <v-card-title class="headline">
+            ログアウト
+          </v-card-title>
+          <row class="pt-5">
+            ログアウトしますか?
+          </row>
+          <v-card-actions class="pt-4">
+            <v-btn
+                    class="info"
+                    @click="dialog_logout=false"
+            >
+              ログアウト
+            </v-btn>
+            <v-btn
+                    class="info"
+                    @click="dialog_logout=false"
+            >
+              キャンセル
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
     </v-sheet>
@@ -233,9 +301,13 @@
                 dialog_hash: false,
                 dialog_trans_info: false,
                 dialog_settings: false,
+                dialog_logout: false,
 
                 // User Info
-
+                send_info: {
+                    title: "",
+                    body: "",
+                },
                 valid: true,
                 credentials: {},
                 rules: {
@@ -252,6 +324,7 @@
                 showPassword: false,
                 test_token: "",
                 user_id: "",
+
                 // add register
                 hash_cd: '',
                 invite_email: '',
@@ -397,6 +470,35 @@
                 }
             }
             */
+            sendJobInfo: function () {
+                const requestBody = {
+                    'title': this.send_info.title,
+                    'body': this.send_info.body,
+                };
+
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                        'content-type': 'multipart/form-data'
+                    },
+                };
+
+                let form = new FormData();
+                form.append('json_data', requestBody);
+
+                axios.put('http://localhost:8000/api/user/' + this.userId + '/', form, reqHeader).then(res => {
+                    // JWTログイン後にユーザー情報を取得する
+                    if (res.status.toString() === '200') {
+                        alert("大成功");
+                        this.getUserInfo();
+                    }
+                }).catch(e => {
+                    alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
+                    console.log(e.message);
+                });
+
+                this.dialog_trans_info = false;
+            }
         },
         computed: {
             loginState: function () {

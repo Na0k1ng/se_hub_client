@@ -121,7 +121,7 @@
                   color="grey lighten-1"
                   rounded
                   class="ma-2 pa-0"
-                  @click="sendUserInfo"
+                  @click="sendProfileInfo"
           >
             保存
           </v-btn>
@@ -282,7 +282,7 @@
 
                 files.forEach(file => {
                     console.log(file);
-                    form.append('file', file, userId + '.jpg');
+                    form.append('user_img', file, userId + '.jpg');
                     console.log(form);
                 });
 
@@ -295,36 +295,54 @@
 
                 this.isEnter = false;
             },
+            sendProfileInfo() {
+                this.sendUserInfo();
+                this.sendUserImg();
+                this.editDialog = false;
+            },
             sendUserInfo() {
                 const requestBody = {
                     'name': this.userInfo.name,
                     'description': this.userInfo.description,
                 };
-                //console.log(this.debug);
-                console.log(this.form);
-
                 const reqHeader = {
                     headers: {
                         Authorization: 'JWT' + ' ' + this.token,
-                        'content-type': 'multipart/form-data'
+                    },
+                };
+
+                axios.put('http://localhost:8000/api/user/' + this.userId + '/', requestBody, reqHeader).then(res => {
+                    // JWTログイン後にユーザー情報を取得する
+                    if (res.status.toString() === '200') {
+                        alert("ユーザ情報送信大成功");
+                        this.getUserInfo();
+                    }
+                }).catch(e => {
+                    alert("ユーザ情報送信失敗\nエラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
+                    console.log(e.message);
+                });
+            },
+            sendUserImg() {
+                console.log(this.form);
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
                     },
                 };
 
                 let form = this.form;
-                form.append('json_data', requestBody);
 
-                axios.put('http://localhost:8000/api/user/' + this.userId + '/', form, reqHeader).then(res => {
+                axios.put('http://localhost:8000/api/user/img/' + this.userId + '/', form, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
-                        alert("大成功");
+                        alert("ユーザ画像送信大成功");
                         this.getUserInfo();
                     }
                 }).catch(e => {
-                    alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
+                    alert("ユーザ画像送信失敗\nエラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                     console.log(e.message);
                 });
 
-                this.editDialog = false;
             },
             getUserInfo() {
                 axios.get('http://localhost:8000/api/user/' + this.userId + '/').then(res => {
