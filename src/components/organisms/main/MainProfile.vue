@@ -121,68 +121,36 @@
                   color="grey lighten-1"
                   rounded
                   class="ma-2 pa-0"
-                  @click="sendProfileInfo"
+                  @click="editGroupDialog = true"
+          >
+            グループ編集
+          </v-btn>
+          <v-btn
+                  color="grey lighten-1"
+                  rounded
+                  class="ma-2 pa-0"
+                  @click="sendProfileInfo()"
           >
             保存
           </v-btn>
         </v-card-title>
         <v-divider></v-divider>
         <v-row class="ma-0 pa-0 mb-16">
-          <v-img
-                  :src="userInfo.banner"
-                  width="800"
-                  height="250"
-                  style="overflow: visible"
-                  v-if="isEnter===false"
-                  @dragenter="dragEnter"
-                  @dragleave="dragLeave"
-                  @dragover.prevent="dragOver"
-                  @drop.prevent="dropFile"
+          <v-avatar
+                  class="profile ma-0 pa-0"
+                  color="grey"
+                  size=130
+                  max-height="100%"
           >
-            <v-avatar
-                    class="profile ma-0 pa-0"
-                    color="grey"
-                    style="postion:absolute; left: 5%; top: 70%"
-                    size=130
-                    max-height="100%"
-                    v-if="isEnter===false"
+            <v-img
+                    :src="userInfo.icon"
                     @dragenter="dragEnter"
                     @dragleave="dragLeave"
                     @dragover.prevent="dragOver"
                     @drop.prevent="dropFile"
-            >
-              <v-img :src="userInfo.icon"></v-img>
-            </v-avatar>
-          </v-img>
-          <v-img
-                  :src="userInfo.banner"
-                  background-color="grey"
-                  width="800"
-                  height="250"
-                  style="overflow: visible"
-                  v-else
-                  @dragenter="dragEnter"
-                  @dragleave="dragLeave"
-                  @dragover.prevent="dragOver"
-                  @drop.prevent="dropFile"
-          >
-          </v-img>
-        </v-row>
-        <v-row class="ma-0 pa-0">
-          <v-text-field
-                  label="会社名"
-                  :counter="30"
-                  :maxlength="30"
-                  v-model="userInfo.company"
-          ></v-text-field>
-        </v-row>
-        <v-row class="ma-0 pa-0">
-          <v-text-field
-                  label="URL"
-                  :counter="30"
-                  :maxlength="30"
-                  v-model="userInfo.url"
-          ></v-text-field>
+
+            ></v-img>
+          </v-avatar>
         </v-row>
         <v-row class="ma-0 pa-0">
           <v-text-field
@@ -202,6 +170,72 @@
         </v-row>
       </v-card>
     </v-dialog>
+    <v-dialog
+            v-model="editGroupDialog"
+            max-width="600"
+    >
+      <v-card class="pa-10">
+        <v-card-title class="headline ma-0 pa-0">
+          <v-icon large color="grey darken-1 ma-0 pa-0" @click="editGroupDialog = false">
+            mdi-close-box-outline
+          </v-icon>
+          <p class="ma-0 pa-0 pl-2">グループプロフィール編集</p>
+          <v-spacer></v-spacer>
+          <v-btn
+                  color="grey lighten-1"
+                  rounded
+                  class="ma-2 pa-0"
+                  @click="sendGroupProfileInfo"
+          >
+            保存
+          </v-btn>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-row class="ma-0 pa-0 mb-16">
+          <v-img
+                  :src="userInfo.banner"
+                  width="800"
+                  height="250"
+                  style="overflow: visible"
+                  v-if="isEnter===false"
+                  @dragenter="dragEnter"
+                  @dragleave="dragLeave"
+                  @dragover.prevent="dragOver"
+                  @drop.prevent="dropBackFile"
+          >
+          </v-img>
+          <v-img
+                  :src="userInfo.banner"
+                  background-color="grey"
+                  width="800"
+                  height="250"
+                  style="overflow: visible"
+                  v-else
+                  @dragenter="dragEnter"
+                  @dragleave="dragLeave"
+                  @dragover.prevent="dragOver"
+                  @drop.prevent="dropBackFile"
+          >
+          </v-img>
+        </v-row>
+        <v-row class="ma-0 pa-0">
+          <v-text-field
+                  label="会社名"
+                  :counter="30"
+                  :maxlength="30"
+                  v-model="userInfo.company"
+          ></v-text-field>
+        </v-row>
+        <v-row class="ma-0 pa-0">
+          <v-text-field
+                  label="URL"
+                  :counter="30"
+                  :maxlength="30"
+                  v-model="userInfo.url"
+          ></v-text-field>
+        </v-row>
+      </v-card>
+    </v-dialog>
     <v-divider/>
   </div>
 </template>
@@ -215,9 +249,11 @@
             return {
                 dialog: false,
                 editDialog: false,
+                editGroupDialog: false,
                 isEnter: false,
                 files: [],
                 form: {},
+                backImgform:[],
                 userInfo: {
                     id: "",
                     name: "",
@@ -295,6 +331,41 @@
 
                 this.isEnter = false;
             },
+            dropBackFile: function () {
+                // let file = evt.target.files;
+                // let reader = new window.FileReader();
+                // let self = this;
+                //
+                // console.log('ファイルがおかれた');
+                //
+                // //dataURL形式でファイルを読み込む
+                // reader.readAsDataURL(file[0]);
+                //
+                // //ファイルの読込が終了した時の処理
+                // reader.onload = function () {
+                //     self.form = reader.result;
+                // };
+
+                let files = [...event.dataTransfer.files];
+                let form = new FormData();
+                const userId = this.userId;
+
+                files.forEach(file => {
+                    console.log(file);
+                    form.append('user_img', file, userId + '.jpg');
+                    console.log(form);
+                });
+
+                this.backImgform = form;
+                console.log(form);
+                console.log(this.backImgform);
+                for (let [key, value] of form.entries()) {
+                    console.log(key, value);
+                }
+
+                this.isEnter = false;
+            },
+
             sendProfileInfo() {
                 this.sendUserInfo();
                 this.sendUserImg();
@@ -359,6 +430,55 @@
                 }).catch(e => {
                     alert("例外");
                     alert(e.message);
+                });
+            },
+            sendGroupProfileInfo() {
+                this.sendGroupInfo();
+                this.sendGroupImg();
+                this.editGroupDialog = false;
+            },
+            sendGroupInfo() {
+                const requestBody = {
+                    'name': this.userInfo.group__name,
+                    'description': this.userInfo.group__description,
+                    'url': this.userInfo.group__url,
+                };
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                axios.put('http://localhost:8000/api/group/' + this.userInfo.group__id + '/', requestBody, reqHeader).then(res => {
+                    // JWTログイン後にユーザー情報を取得する
+                    if (res.status.toString() === '200') {
+                        alert("グループ情報送信大成功");
+                        this.getUserInfo();
+                    }
+                }).catch(e => {
+                    alert("グループ情報送信失敗\nエラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
+                    console.log(e.message);
+                });
+            },
+            sendGroupImg() {
+                console.log(this.backImgform);
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                let form = this.backImgform;
+
+                axios.put('http://localhost:8000/api/group/img/' + this.userInfo.group__id + '/', form, reqHeader).then(res => {
+                    // JWTログイン後にユーザー情報を取得する
+                    if (res.status.toString() === '200') {
+                        alert("グループ画像送信大成功");
+                        this.getUserInfo();
+                    }
+                }).catch(e => {
+                    alert("グループ画像送信失敗\nエラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
+                    console.log(e.message);
                 });
             },
             setGroupInfo() {
