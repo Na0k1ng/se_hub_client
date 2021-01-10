@@ -348,11 +348,11 @@
 
                 let files = [...event.dataTransfer.files];
                 let form = new FormData();
-                const userId = this.userId;
+                const group_id = this.userInfo.group__id;
 
                 files.forEach(file => {
                     console.log(file);
-                    form.append('user_img', file, userId + '.jpg');
+                    form.append('user_img', file, group_id + '.jpg');
                     console.log(form);
                 });
 
@@ -421,7 +421,7 @@
                     this.userInfo.name = res.data.name;
                     this.userInfo.email = res.data.email;
                     this.userInfo.description = res.data.description;
-                    this.userInfo.icon = res.data.img;
+                    this.userInfo.icon = require(res.data.img);
                     this.userInfo.group__id = res.data.group__id;
                     this.userInfo.group__name = res.data.group__name;
                     this.userInfo.group__description = res.data.group__description;
@@ -431,6 +431,8 @@
                     alert("例外");
                     alert(e.message);
                 });
+                console.log("アイコン画像");
+                console.log(this.userInfo.icon);
             },
             sendGroupProfileInfo() {
                 this.sendGroupInfo();
