@@ -62,9 +62,13 @@
                         text: "ct3XXXXXXXXXXXXX"
                     }
                 ];
-                let kind = '0';
-                let count = '1';
-                axios.get('http://localhost:8000/api/disclosure/list/' + this.userId + '/' + kind + '/' + count + '/').then(res => {
+                const requestBody = {
+                    'user_id': this.userId,
+                    'kind': '0',
+                    'count': '1',
+                };
+
+                axios.get('http://localhost:8000/api/disclosure/list/',requestBody ).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                     }
