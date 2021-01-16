@@ -7,7 +7,7 @@
               tile
       >
         <v-img
-                :src="userInfo.banner"
+                :src="userInfo.group__img"
                 width="800"
                 height="250"
                 style="overflow: visible"
@@ -33,6 +33,7 @@
         <v-row>
           <v-col class="ma-2 pa-2" color="grey lighten-3" cols="4">
             <p class="ma-1 pa-2">{{userInfo.name}}</p>
+            <p class="ma-1 pa-2">{{userInfo.icon}}</p>
           </v-col>
           <v-col class="ma-2 pa-2" color="grey lighten-3" cols="1">
             <v-avatar class="profile grey lighten-3" @click="dialog = true">
@@ -189,7 +190,7 @@
         <v-divider></v-divider>
         <v-row class="ma-0 pa-0 mb-16">
           <v-img
-                  :src="userInfo.banner"
+                  :src="userInfo.group__img"
                   width="800"
                   height="250"
                   style="overflow: visible"
@@ -201,7 +202,7 @@
           >
           </v-img>
           <v-img
-                  :src="userInfo.banner"
+                  :src="userInfo.group__img"
                   background-color="grey"
                   width="800"
                   height="250"
@@ -348,7 +349,7 @@
 
                 files.forEach(file => {
                     console.log(file);
-                    form.append('user_img', file, group_id + '.jpg');
+                    form.append('group_img', file, group_id + '.jpg');
                     console.log(form);
                 });
 
@@ -417,12 +418,12 @@
                     this.userInfo.name = res.data.name;
                     this.userInfo.email = res.data.email;
                     this.userInfo.description = res.data.description;
-                    this.userInfo.icon = res.data.img;
+                    this.userInfo.icon = 'http://127.0.0.1:8000/media/'+res.data.img;
                     this.userInfo.group__id = res.data.group__id;
                     this.userInfo.group__name = res.data.group__name;
                     this.userInfo.group__description = res.data.group__description;
                     this.userInfo.group__url = res.data.group__url;
-                    this.userInfo.group__img = res.data.group__img;
+                    this.userInfo.group__img = 'http://127.0.0.1:8000/media/'+res.data.group__img;
                 }).catch(e => {
                     alert("例外");
                     alert(e.message);
