@@ -68,7 +68,7 @@
                     'count': '1',
                 };
 
-                axios.post('http://localhost:8000/api/disclosure/list/',requestBody ).then(res => {
+                axios.post('http://localhost:8000/api/disclosure/lst/',requestBody ).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                     }
