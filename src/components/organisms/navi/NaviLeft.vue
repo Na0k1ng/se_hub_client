@@ -84,7 +84,7 @@
             <v-list-item-title>メッセージ</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item to="/profile" active-class="font-weight-bold">
+        <v-list-item :to="'/profile/'+ userId" active-class="font-weight-bold">
           <v-list-item-icon>
             <v-icon large color="grey darken-1">
               mdi-account

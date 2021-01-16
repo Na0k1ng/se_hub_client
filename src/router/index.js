@@ -37,7 +37,7 @@ const routes = [
         meta: {requiresAuth: true}
     },
     {
-        path: '/profile',
+        path: '/profile/:id',
         name: 'Profile',
         component: Profile,
         meta: {requiresAuth: true}
@@ -50,12 +50,12 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     //component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
     //}
-]
+];
 
 const router = new VueRouter({
     mode: 'history',
     routes
-})
+});
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth) && !Store.state.token) {
