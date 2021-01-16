@@ -115,7 +115,7 @@
             <b>情報を発信する</b>
           </v-btn>
         </v-list-item>
-        <v-list-item class="pt-10 mt-10">
+        <v-list-item class="pt-10 mt-10" v-if="loginState">
           <v-btn
                   color="grey lighten-1"
                   rounded
@@ -271,7 +271,7 @@
           <v-card-actions class="pt-4">
             <v-btn
                     class="info"
-                    @click="dialog_logout=false"
+                    @click="logout()"
             >
               ログアウト
             </v-btn>
@@ -386,7 +386,7 @@
                     console.log(ret);
                     //alert(ret);
                     //this.login_state = !this.login_state;
-                    this.setLoginState();
+                    this.setLoginState(true);
                     this.dialog = false;
                 } else {
                     this.dialog = false;
@@ -432,8 +432,17 @@
                     this.dialog = false;
                 }
             },
-            setLoginState: function () {
-                this.$store.commit('setLoginState', true)
+            logout() {
+                this.setUserName("");
+                this.setUserId("");
+                this.setToken("");
+                this.setLoginState(false);
+                this.dialog_logout = false;
+                this.$router.push('/');
+
+            },
+            setLoginState: function (state) {
+                this.$store.commit('setLoginState', state)
             },
             setUserName: function (user_name) {
                 this.$store.commit('setUserName', user_name)

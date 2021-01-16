@@ -22,12 +22,8 @@
             <v-img :src="userInfo.icon"></v-img>
           </v-avatar>
         </v-img>
-
       </v-sheet>
-
     </v-row>
-
-
     <v-row>
       <v-sheet
               class="ma-0 pa-0"
@@ -253,7 +249,7 @@
                 isEnter: false,
                 files: [],
                 form: {},
-                backImgform:[],
+                backImgform: [],
                 userInfo: {
                     id: "",
                     name: "",
@@ -421,7 +417,7 @@
                     this.userInfo.name = res.data.name;
                     this.userInfo.email = res.data.email;
                     this.userInfo.description = res.data.description;
-                    this.userInfo.icon = require(res.data.img);
+                    this.userInfo.icon = res.data.img;
                     this.userInfo.group__id = res.data.group__id;
                     this.userInfo.group__name = res.data.group__name;
                     this.userInfo.group__description = res.data.group__description;
