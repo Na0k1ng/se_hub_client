@@ -64,7 +64,7 @@
             <v-list-item-title>検索</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-show="login_state" to="/bpManagement" active-class="font-weight-bold">
+        <v-list-item to="/bpManagement" active-class="font-weight-bold">
           <v-list-item-icon>
             <v-icon large color="grey darken-1">
               mdi-bell-outline
@@ -74,7 +74,7 @@
             <v-list-item-title>BP管理</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-show="login_state" to="/messages" active-class="font-weight-bold">
+        <v-list-item to="/messages" active-class="font-weight-bold">
           <v-list-item-icon>
             <v-icon large color="grey darken-1">
               mdi-email-outline
@@ -84,7 +84,7 @@
             <v-list-item-title>メッセージ</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-show="login_state" to="/profile" active-class="font-weight-bold">
+        <v-list-item to="/profile" active-class="font-weight-bold">
           <v-list-item-icon>
             <v-icon large color="grey darken-1">
               mdi-account
@@ -104,7 +104,7 @@
             <v-list-item-title>設定</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-show="login_state" class="pt-4">
+        <v-list-item class="pt-4">
           <v-btn
                   color="grey lighten-1"
                   rounded
@@ -115,7 +115,7 @@
             <b>情報を発信する</b>
           </v-btn>
         </v-list-item>
-        <v-list-item v-show="login_state" class="pt-10 mt-10" v-if="loginState">
+        <v-list-item class="pt-10 mt-10" v-if="loginState">
           <v-btn
                   color="grey lighten-1"
                   rounded
