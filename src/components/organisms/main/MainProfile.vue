@@ -1,5 +1,5 @@
 <template>
-  <div class="mainprofile">
+  <div class="main-profile">
     <v-row no-gutters class="ma-0 pa-0 mb-10">
       <v-sheet
               class="ma-0 pa-0"

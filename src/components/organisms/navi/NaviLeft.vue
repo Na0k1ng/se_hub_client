@@ -84,7 +84,7 @@
             <v-list-item-title>メッセージ</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item :to="'/profile/'+ userId" active-class="font-weight-bold">
+        <v-list-item active-class="font-weight-bold" @click="toProfile()">
           <v-list-item-icon>
             <v-icon large color="grey darken-1">
               mdi-account
@@ -506,7 +506,10 @@
                 });
 
                 this.dialog_trans_info = false;
-            }
+            },
+            toProfile(){
+                this.$router.push('/profile');
+            },
         },
         computed: {
             loginState: function () {

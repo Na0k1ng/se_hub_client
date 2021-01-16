@@ -19,7 +19,7 @@
             <v-col class="pa-0 ma-0 text-center">
               <v-list-item @click="getApplyingBpList()">
                 <v-list-item-content>
-                  <v-list-item-title>BPリクエスト</v-list-item-title>
+                  <v-list-item-title>BP承認待ち</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -27,7 +27,7 @@
             <v-col class="pa-0 ma-0 text-center">
               <v-list-item @click="getApplicantBpList()">
                 <v-list-item-content>
-                  <v-list-item-title>BP承認待ち</v-list-item-title>
+                  <v-list-item-title>BPリクエスト</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -118,39 +118,6 @@
             this.getBpList();
         },
         methods: {
-            getBpList() {
-                let bpList = [
-                    {
-                        icon: "",
-                        name: "△△△△",
-                    },
-                    {
-                        icon: "",
-                        name: "△△△△",
-                    },
-                    {
-                        icon: "",
-                        name: "△△△△",
-                    },
-                ];
-
-                const reqHeader = {
-                    headers: {
-                        Authorization: 'JWT' + ' ' + this.token,
-                    },
-                };
-
-                axios.get('http://localhost:8000/api/bp/list/' + this.userId + '/', reqHeader).then(res => {
-                    if (res.status.toString() === '200') {
-                        alert("正常系です。");
-                    }
-                }).catch(e => {
-                    alert("異常系です。");
-                    console.log(e.message);
-                });
-                this.bpList = bpList;
-                this.choice = 'bp'
-            },
             getApplyingBpList() {
                 let applyingBpList = [
                     {
@@ -167,7 +134,18 @@
                     },
 
                 ];
-                axios.post('http://localhost:8000/api/user/' + this.userName + '/').then(res => {
+
+                const requestBody = {
+                    'bp_status': '1',
+                };
+
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody ,reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                     }
@@ -193,7 +171,18 @@
                         name: "××××",
                     },
                 ];
-                axios.post('http://localhost:8000/api/user/' + this.userName + '/').then(res => {
+
+                const requestBody = {
+                    'bp_status': '2',
+                };
+
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody ,reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                     }
@@ -203,6 +192,43 @@
                 });
                 this.applicantBpList = applicantBpList;
                 this.choice = 'applicantBp'
+            },
+            getBpList() {
+                let bpList = [
+                    {
+                        icon: "",
+                        name: "△△△△",
+                    },
+                    {
+                        icon: "",
+                        name: "△△△△",
+                    },
+                    {
+                        icon: "",
+                        name: "△△△△",
+                    },
+                ];
+
+                const requestBody = {
+                    'bp_status': '3',
+                };
+
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody ,reqHeader).then(res => {
+                    if (res.status.toString() === '200') {
+                        alert("正常系です。");
+                    }
+                }).catch(e => {
+                    alert("異常系です。");
+                    console.log(e.message);
+                });
+                this.bpList = bpList;
+                this.choice = 'bp'
             }
         },
         computed: {
