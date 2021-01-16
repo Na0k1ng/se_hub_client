@@ -27,7 +27,7 @@
             <v-col class="pa-0 ma-0 text-center">
               <v-list-item @click="getApplicantBpList()">
                 <v-list-item-content>
-                  <v-list-item-title>BPリクエスト</v-list-item-title>
+                  <v-list-item-title>BP承認待ち</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -134,7 +134,13 @@
                     },
                 ];
 
-                axios.post('http://localhost:8000/api/user/' + this.userName + '/').then(res => {
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                axios.get('http://localhost:8000/api/bp/list/' + this.userId + '/', reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                     }
@@ -200,9 +206,13 @@
             }
         },
         computed: {
-            userName: function () {
-                return this.$store.state.userName
+            userId: function () {
+                return this.$store.state.userId
             },
+            token: function () {
+                return this.$store.state.token
+            },
+
         },
     }
 </script>
