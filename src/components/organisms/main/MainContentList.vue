@@ -62,8 +62,9 @@
                         text: "ct3XXXXXXXXXXXXX"
                     }
                 ];
-
-                axios.post('http://localhost:8000/api/user/' + this.userName + '/').then(res => {
+                let kind = '0';
+                let count = '1';
+                axios.get('http://localhost:8000/api/disclosure/list/' + this.userId + '/' + kind + '/' + count + '/').then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                     }
@@ -75,9 +76,10 @@
             }
         },
         computed: {
-            userName: function () {
-                return this.$store.state.userName
+            userId: function () {
+                return this.$store.state.userId
             },
+
         },
     }
 </script>

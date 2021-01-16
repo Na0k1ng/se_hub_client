@@ -499,7 +499,6 @@
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
                         alert("大成功");
-                        this.getUserInfo();
                     }
                 }).catch(e => {
                     alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
