@@ -104,7 +104,7 @@
             <v-list-item-title>設定</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item class="pt-4">
+        <v-list-item v-show="login_state" class="pt-4">
           <v-btn
                   color="grey lighten-1"
                   rounded
@@ -115,7 +115,7 @@
             <b>情報を発信する</b>
           </v-btn>
         </v-list-item>
-        <v-list-item class="pt-10 mt-10" v-if="loginState">
+        <v-list-item v-show="login_state" class="pt-10 mt-10" v-if="loginState">
           <v-btn
                   color="grey lighten-1"
                   rounded
