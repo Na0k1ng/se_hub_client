@@ -482,20 +482,20 @@
             sendJobInfo: function () {
                 const requestBody = {
                     'title': this.send_info.title,
-                    'body': this.send_info.body,
+                    'description': this.send_info.body,
+                    'kind': '0',
+                    'limit': '0',
+                    'data': '',
+                    'user_id': this.userId,
                 };
 
                 const reqHeader = {
                     headers: {
                         Authorization: 'JWT' + ' ' + this.token,
-                        'content-type': 'multipart/form-data'
                     },
                 };
 
-                let form = new FormData();
-                form.append('json_data', requestBody);
-
-                axios.put('http://localhost:8000/api/user/' + this.userId + '/', form, reqHeader).then(res => {
+                axios.post('http://localhost:8000/api/disclosure/', requestBody, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
                         alert("大成功");
