@@ -3,8 +3,8 @@
     <v-row no-gutters class="ma-0 pa-0">
       <v-list width="100%" class="ma-0 pa-0" v-if="choice == 'bp'">
         <v-list-item-group
-                v-for="n in contentList"
-                :key="n"
+                v-for="(n,index) in contentList"
+                :key="index"
         >
           <v-list-item>
             <v-list-item-avatar>

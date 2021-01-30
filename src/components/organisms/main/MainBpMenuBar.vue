@@ -39,8 +39,8 @@
     <v-row no-gutters class="ma-0 pa-0" v-if="choice === 'bp'">
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
-                v-for="n in bpList"
-                :key="n"
+                v-for="(n,index) in bpList"
+                :key="index"
         >
           <v-list-item>
             <v-list-item-avatar>
@@ -71,8 +71,8 @@
     <v-row no-gutters class="ma-0 pa-0" v-else-if="choice === 'applyingBp'">
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
-                v-for="n in applyingBpList"
-                :key="n"
+                v-for="(n,index) in applyingBpList"
+                :key="index"
         >
           <v-list-item>
             <v-list-item-avatar>
@@ -103,8 +103,8 @@
     <v-row no-gutters class="ma-0 pa-0" v-else>
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
-                v-for="n in applicantBpList"
-                :key="n"
+                v-for="(n,index) in applicantBpList"
+                :key="index"
         >
           <v-list-item>
             <v-list-item-avatar>

@@ -3,11 +3,11 @@
     <v-row no-gutters class="ma-0 pa-0">
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
-                v-for="content in contentsList"
-                :key="content"
+                v-for="(content,index) in contentsList"
+                :key="index"
         >
           <v-list-item>
-            <v-list-item-avatar @click="toProfile()">
+            <v-list-item-avatar @click="toProfile(content)">
               <v-img :src="'http://127.0.0.1:8000/media/' + content.user__img"></v-img>
               <!--              <v-icon class="grey lighten-1">-->
               <!--                mdi-account-->
@@ -15,8 +15,8 @@
             </v-list-item-avatar>
             <v-list-item-content @click="displayContent(content)">
               <v-list-item-title>{{ content.user__name }}</v-list-item-title>
-              <v-list-item-text class="mt-2">[ {{ content.title }} ]</v-list-item-text>
-              <v-list-item-text>{{ content.description }}</v-list-item-text>
+              <p class="mt-2">[ {{ content.title }} ]</p>
+              <p>{{ content.description }}</p>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
@@ -30,22 +30,22 @@
     >
       <v-card class="pa-10">
         <v-card-title class="headline">
-          案件情報：{{ this.content.title }}
+          案件情報：{{ this.proposition.title }}
         </v-card-title>
         <v-row class="ma-0 pa-0">
           <v-avatar>
-            <v-img :src="'http://127.0.0.1:8000/media/' + this.content.user__img"></v-img>
+            <v-img :src="'http://127.0.0.1:8000/media/' + this.proposition.user__img"></v-img>
             <!--              <v-icon class="grey lighten-1">-->
             <!--                mdi-account-->
             <!--              </v-icon>-->
           </v-avatar>
-          <p>{{ this.content.user__name }}</p>
+          <p>{{ this.proposition.user__name }}</p>
         </v-row>
         <v-row class="ma-0 pa-0">
-          <p class="mt-2">タイトル： {{ this.content.title }} </p>
+          <p class="mt-2">タイトル： {{ this.proposition.title }} </p>
         </v-row>
         <v-row>
-          <p class="mt-2">{{ this.content.description }}</p>
+          <p class="mt-2">{{ this.proposition.description }}</p>
         </v-row>
         <v-card-actions>
           <v-btn
@@ -77,7 +77,7 @@
         data() {
             return {
                 contentsList: [],
-                content: {},
+                proposition: {},
                 dialog: false
             }
         },
@@ -124,7 +124,7 @@
                 //this.contentsList = contentsList;
             },
             displayContent(content) {
-                this.content = content;
+                this.proposition = content;
                 this.dialog = true;
             },
             deleteContent() {
@@ -133,7 +133,7 @@
                         Authorization: 'JWT' + ' ' + this.token,
                     },
                 };
-                axios.delete('http://localhost:8000/api/disclosure/' + this.content.id + '/', reqHeader).then(res => {
+                axios.delete('http://localhost:8000/api/disclosure/' + this.proposition.id + '/', reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
                         alert("大成功");
@@ -146,8 +146,11 @@
                 this.dialog = false;
 
             },
-            toProfile() {
-                this.setProfileUserId(this.content.id);
+            toProfile(content) {
+                this.proposition = content;
+                this.setProfileUserId(this.proposition.id);
+                console.log(this.proposition.id);
+                console.log(this.profileUserId);
                 this.$router.push('/profile');
             },
             setProfileUserId: function (profileUserId) {

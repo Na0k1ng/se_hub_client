@@ -3,8 +3,8 @@
     <v-row no-gutters class="ma-0 pa-0">
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
-                v-for="n in messageList"
-                :key="n"
+                v-for="(n,index) in messageList"
+                :key="index"
         >
           <v-list-item @click="getChatList()">
             <v-list-item-avatar>
@@ -34,8 +34,8 @@
         <v-divider></v-divider>
         <v-list width="50%" class="ma-0 pa-0 my-8">
           <v-list-item-group
-                  v-for="n in chatList"
-                  :key="n"
+                  v-for="(n,index) in chatList"
+                  :key="index"
           >
             <v-list-item v-if="n.mymsg" class="mb-4 rounded-pill grey">
               <v-list-item-content>

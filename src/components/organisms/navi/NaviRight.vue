@@ -20,8 +20,8 @@
             </v-list-item>
             <v-divider></v-divider>
             <v-list-item-group
-                    v-for="n in 5"
-                    :key = "n"
+                    v-for="(n,index) in 5"
+                    :key = "index"
             >
               <v-list-item>
                 <v-list-item-avatar>

@@ -5,8 +5,8 @@
       <v-chip
         link
         class="mx-1 px-2"
-        v-for="n in tagList"
-        :key = "n"
+        v-for="(n,index) in tagList"
+        :key = "index"
       >
         {{ n }}
       </v-chip>

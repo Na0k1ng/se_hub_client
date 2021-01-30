@@ -3,8 +3,8 @@
     <v-row no-gutters class="ma-0 pa-0">
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
-          v-for="n in recommendationList"
-          :key = "n"
+          v-for="(n,index) in recommendationList"
+          :key = "index"
         >
           <v-list-item>
             <v-list-item-avatar>
