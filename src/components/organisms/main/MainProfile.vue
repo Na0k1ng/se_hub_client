@@ -122,12 +122,21 @@
         <v-row class="ma-0 pa-0">
           <v-text-field
                   label="タイトルを入力"
+                  :counter="30"
+                  :maxlength="30"
+                  v-model="sendInfo.title"
           ></v-text-field>
         </v-row>
         <v-row class="ma-0 pa-0">
-          <v-text-field
+          <v-textarea
                   label="本文を入力"
-          ></v-text-field>
+                  outlined rows="20"
+                  name="input-7-4"
+                  :counter="300"
+                  :maxlength="300"
+                  required
+                  v-model="sendInfo.description"
+          ></v-textarea>
         </v-row>
         <v-divider></v-divider>
         <v-row class="ma-0 pa-0">
@@ -135,7 +144,7 @@
             mdi-paperclip
           </v-icon>
           <v-spacer></v-spacer>
-          <v-icon large color="grey darken-1 ma-0 pa-0">
+          <v-icon large color="grey darken-1 ma-0 pa-0" @click="sendMessage()">
             mdi-send-circle-outline
           </v-icon>
         </v-row>
@@ -304,6 +313,10 @@
                     banner: "https://automaton-media.com/wp-content/uploads/2020/02/20200206-112749-header-696x392.jpg",
                     company: "",
                     url: "https://www.allgoal.co.jp/",
+                },
+                sendInfo: {
+                    title: '',
+                    description: '',
                 },
                 credentials: {},
                 rules: {
@@ -580,6 +593,36 @@
                     console.log(e.message);
                 });
             },
+            sendMessage() {
+                const requestBody = {
+                    'title': this.sendInfo.title,
+                    'description': this.sendInfo.description,
+                    'message_id': '',
+                    'disclosure_id': '',
+                    'user_id': this.userId,
+                    'other_id': this.profileUserId,
+                };
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                axios.post('http://localhost:8000/api/message/', requestBody, reqHeader).then(res => {
+                    if (res.status.toString() === '200') {
+                        alert("正常系です。");
+                        this.getBpInfo()
+                    }
+                }).catch(e => {
+                    alert("異常系です。");
+                    console.log(e.message);
+                });
+
+                this.sendInfo.title = '';
+                this.sendInfo.description = '';
+                this.dialog = false
+            },
+
         },
         mounted: function () {
             this.getUserInfo();

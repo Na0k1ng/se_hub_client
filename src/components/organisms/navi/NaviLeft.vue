@@ -231,7 +231,7 @@
                     :counter="300"
                     :maxlength="300"
                     required
-                    abel="Message"
+                    label="Message"
             ></v-textarea>
           </v-row>
           <v-card-actions>
