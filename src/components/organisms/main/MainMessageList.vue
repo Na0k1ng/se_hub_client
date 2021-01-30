@@ -179,10 +179,11 @@
                     alert("異常系です。");
                     console.log(e.message);
                 });
+
                 this.chatList = chatList;
                 this.dialog = true;
             },
-            sendMessage() {
+            sendMessage(id) {
                 const requestBody = {
                     'message': this.message,
                 };
@@ -197,7 +198,7 @@
                 let form = this.form;
                 form.append('json_data', requestBody);
 
-                axios.put('http://localhost:8000/api/user/' + this.userId + '/', form, reqHeader).then(res => {
+                axios.put('http://localhost:8000/api/user/' + id + '/', form, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
                         alert("大成功");
