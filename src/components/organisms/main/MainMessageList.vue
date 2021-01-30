@@ -114,7 +114,19 @@
                     },
                 ];
 
-                axios.post('http://localhost:8000/api/user/' + this.userName + '/').then(res => {
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                let count = '1';
+                const requestBody = {
+                    'count' : count
+                }
+
+
+                axios.post('http://localhost:8000/api/message/list/' + this.userId + '/' ,requestBody ,reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                     }
@@ -122,6 +134,7 @@
                     alert("異常系です。");
                     console.log(e.message);
                 });
+
                 this.messageList = messageList;
             },
             getChatList() {
