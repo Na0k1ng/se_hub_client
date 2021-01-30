@@ -46,7 +46,7 @@
                    color="grey lighten-1"
                    rounded
                    v-if = "profileBp.bp_status === '0'"
-                   @click = "setBp"
+                   @click = "setBpInfo"
             >
               BP申請
             </v-btn>
@@ -54,21 +54,23 @@
                    color="grey lighten-1"
                    rounded
                    v-else-if = "profileBp.bp_status === '1'"
+                   @click = "deleteBpInfo"
+            >
+              BP解除
+            </v-btn>
+            <v-btn class="ma-1 pa-2"
+                   color="grey lighten-1"
+                   rounded
+                   v-else-if = "profileBp.bp_status === '2'"
+                   @click = "setBpInfo"
             >
               BP申請
             </v-btn>
             <v-btn class="ma-1 pa-2"
                    color="grey lighten-1"
                    rounded
-                   v-else-if = "profileBp.bp_status === '2'"
-                   disabled
-            >
-              BP申請済み
-            </v-btn>
-            <v-btn class="ma-1 pa-2"
-                   color="grey lighten-1"
-                   rounded
                    v-else-if = "profileBp.bp_status === '3'"
+                   @click = "deleteBpInfo"
             >
               BP解除
             </v-btn>
@@ -540,7 +542,7 @@
                     console.log(e.message);
                 });
             },
-            setBp() {
+            setBpInfo() {
                 const requestBody = {
                     'user_id': this.userId,
                     'other_id': this.profileUserId,
@@ -560,8 +562,24 @@
                     alert("異常系です。");
                     console.log(e.message);
                 });
-            }
+            },
+            deleteBpInfo() {
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
 
+                axios.delete('http://localhost:8000/api/bp/' + this.userId + '/' + this.profileUserId + '/', reqHeader).then(res => {
+                    if (res.status.toString() === '200') {
+                        alert("正常系です。");
+                        this.getBpInfo()
+                    }
+                }).catch(e => {
+                    alert("異常系です。");
+                    console.log(e.message);
+                });
+            },
         },
         mounted: function () {
             this.getUserInfo();

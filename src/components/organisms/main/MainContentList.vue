@@ -148,8 +148,8 @@
             },
             toProfile(content) {
                 this.proposition = content;
-                this.setProfileUserId(this.proposition.id);
-                console.log(this.proposition.id);
+                this.setProfileUserId(this.proposition.user__id);
+                console.log(this.proposition.user__id);
                 console.log(this.profileUserId);
                 this.$router.push('/profile');
             },
