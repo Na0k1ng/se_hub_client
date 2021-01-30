@@ -6,7 +6,7 @@
                 v-for="(n,index) in messageList"
                 :key="index"
         >
-          <v-list-item @click="getChatList()">
+          <v-list-item @click="getChatList(n.id)">
             <v-list-item-avatar>
               <v-icon class="grey lighten-1">
                 mdi-account
@@ -99,20 +99,20 @@
         },
         methods: {
             getMessageList() {
-                let messageList = [
-                    {
-                        icon: "",
-                        title: "メッセージ1",
-                    },
-                    {
-                        icon: "",
-                        title: "メッセージ2",
-                    },
-                    {
-                        icon: "",
-                        title: "メッセージ3",
-                    },
-                ];
+                // let messageList = [
+                //     {
+                //         icon: "",
+                //         title: "メッセージ1",
+                //     },
+                //     {
+                //         icon: "",
+                //         title: "メッセージ2",
+                //     },
+                //     {
+                //         icon: "",
+                //         title: "メッセージ3",
+                //     },
+                // ];
 
                 const reqHeader = {
                     headers: {
@@ -123,19 +123,19 @@
                 let count = '1';
                 const requestBody = {
                     'count' : count
-                }
-
+                };
 
                 axios.post('http://localhost:8000/api/message/list/' + this.userId + '/' ,requestBody ,reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
+                        this.messageList = res.data
                     }
                 }).catch(e => {
                     alert("異常系です。");
                     console.log(e.message);
                 });
 
-                this.messageList = messageList;
+                // this.messageList = messageList;
             },
             getChatList() {
                 let chatList = [
@@ -161,9 +161,19 @@
                         aread: false,
                     },
                 ];
-                axios.post('http://localhost:8000/api/user/' + this.userName + '/').then(res => {
+
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                let count = '1';
+
+                axios.get('http://localhost:8000/api/message/' + this.userId + '/' + count + '/' ,reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
+                        // this.messageList = res.data
                     }
                 }).catch(e => {
                     alert("異常系です。");
