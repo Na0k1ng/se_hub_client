@@ -6,14 +6,14 @@
                 v-for="content in contentsList"
                 :key="content"
         >
-          <v-list-item @click="displayContent(content)">
-            <v-list-item-avatar>
+          <v-list-item>
+            <v-list-item-avatar @click="toProfile()">
               <v-img :src="'http://127.0.0.1:8000/media/' + content.user__img"></v-img>
               <!--              <v-icon class="grey lighten-1">-->
               <!--                mdi-account-->
               <!--              </v-icon>-->
             </v-list-item-avatar>
-            <v-list-item-content>
+            <v-list-item-content @click="displayContent(content)">
               <v-list-item-title>{{ content.user__name }}</v-list-item-title>
               <v-list-item-text class="mt-2">[ {{ content.title }} ]</v-list-item-text>
               <v-list-item-text>{{ content.description }}</v-list-item-text>
@@ -133,7 +133,7 @@
                         Authorization: 'JWT' + ' ' + this.token,
                     },
                 };
-                axios.delete('http://localhost:8000/api/disclosure/'+ this.content.id +'/', reqHeader).then(res => {
+                axios.delete('http://localhost:8000/api/disclosure/' + this.content.id + '/', reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
                         alert("大成功");
@@ -145,7 +145,14 @@
 
                 this.dialog = false;
 
-            }
+            },
+            toProfile() {
+                this.setProfileUserId(this.content.id);
+                this.$router.push('/profile');
+            },
+            setProfileUserId: function (profileUserId) {
+                this.$store.commit('setProfileUserId', profileUserId)
+            },
         },
         computed: {
             userId: function () {
@@ -153,6 +160,9 @@
             },
             token: function () {
                 return this.$store.state.token
+            },
+            profileUserId: function () {
+                return this.$store.state.profileUserId
             },
 
         },

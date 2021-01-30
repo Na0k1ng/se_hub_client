@@ -7,8 +7,9 @@ export default new Vuex.Store({
     state: {
         loginState: false,
         userName: "",
-        userId:"",
+        userId: "",
         token: "",
+        profileUserId: "",
     },
     mutations: {
         setLoginState: function (state, val) {
@@ -23,9 +24,10 @@ export default new Vuex.Store({
         setToken: function (state, val) {
             state.token = val
         },
+        setProfileUserId: function (state, val) {
+            state.profileUserId = val
+        },
     },
-    actions: {
-
-    },
+    actions: {},
     modules: {}
 })

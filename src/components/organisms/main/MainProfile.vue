@@ -33,16 +33,24 @@
         <v-row>
           <v-col class="ma-2 pa-2" color="grey lighten-3" cols="4">
             <p class="ma-1 pa-2">{{userInfo.name}}</p>
-            <p class="ma-1 pa-2">{{userInfo.icon}}</p>
           </v-col>
-          <v-col class="ma-2 pa-2" color="grey lighten-3" cols="1">
+          <v-col class="ma-2 pa-2" color="grey lighten-3" cols="1" v-show="this.userId !== this.profileUserId">
             <v-avatar class="profile grey lighten-3" @click="dialog = true">
               <v-icon large color="grey darken-1 ma-0 pa-0">
                 mdi-email-outline
               </v-icon>
             </v-avatar>
           </v-col>
-          <v-col class="ma-2 pa-2" color="grey lighten-3" cols="3">
+          <v-col class="ma-2 pa-2" color="grey lighten-3" cols="1" v-show="this.userId !== this.profileUserId">
+            <v-btn class="ma-1 pa-2"
+                   color="grey lighten-1"
+                   rounded
+            >
+              BP申請
+            </v-btn>
+          </v-col>
+
+          <v-col class="ma-2 pa-2" color="grey lighten-3" cols="3" v-show="this.userId === this.profileUserId">
             <v-btn class="ma-1 pa-2"
                    color="grey lighten-1"
                    rounded
@@ -60,6 +68,11 @@
         <v-row>
           <v-col class="py-0" color="grey lighten-3">
             <p class="ma-1 pa-2">DEBUG グループID: {{userInfo.group__id}}</p>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="py-0" color="grey lighten-3">
+            <p class="ma-1 pa-2">DEBUG プロフィールユーザID: {{profileUserId}}</p>
           </v-col>
         </v-row>
         <v-row>
@@ -311,12 +324,14 @@
 
                 let files = [...event.dataTransfer.files];
                 let form = new FormData();
-                const userId = this.userId;
+                const userId = this.profileUserId;
+                let cfile = '';
 
                 files.forEach(file => {
                     console.log(file);
                     form.append('user_img', file, userId + '.jpg');
                     console.log(form);
+                    cfile = file;
                 });
 
                 this.form = form;
@@ -325,6 +340,8 @@
                 for (let [key, value] of form.entries()) {
                     console.log(key, value);
                 }
+
+                this.userInfo.icon = cfile;
 
                 this.isEnter = false;
             },
@@ -379,7 +396,7 @@
                     },
                 };
 
-                axios.put('http://localhost:8000/api/user/' + this.userId + '/', requestBody, reqHeader).then(res => {
+                axios.put('http://localhost:8000/api/user/' + this.profileUserId + '/', requestBody, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
                         alert("ユーザ情報送信大成功");
@@ -400,7 +417,7 @@
 
                 let form = this.form;
 
-                axios.put('http://localhost:8000/api/user/img/' + this.userId + '/', form, reqHeader).then(res => {
+                axios.put('http://localhost:8000/api/user/img/' + this.profileUserId + '/', form, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
                         alert("ユーザ画像送信大成功");
@@ -413,7 +430,7 @@
 
             },
             getUserInfo() {
-                axios.get('http://localhost:8000/api/user/' + this.userId + '/').then(res => {
+                axios.get('http://localhost:8000/api/user/' + this.profileUserId + '/').then(res => {
                     this.userInfo.id = res.data.id;
                     this.userInfo.name = res.data.name;
                     this.userInfo.email = res.data.email;
@@ -479,37 +496,7 @@
                     alert("グループ画像送信失敗\nエラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                     console.log(e.message);
                 });
-            },
-            setGroupInfo() {
-                const requestBody = {
-                    'name': this.userInfo.name,
-                    'description': this.userInfo.description,
-                    'img': this.userInfo.icon,
-
-                };
-
-                const reqHeader = {
-                    headers: {
-                        Authorization: 'JWT' + ' ' + this.token
-                    },
-                };
-
-                console.log(this.form);
-
-                axios.put('http://localhost:8000/api/user/' + this.userId + '/', requestBody, reqHeader).then(res => {
-                    // JWTログイン後にユーザー情報を取得する
-                    if (res.status.toString() === '200') {
-                        alert("大成功");
-                        this.getUserInfo();
-                    }
-                }).catch(e => {
-                    alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
-                    console.log(e.message);
-                });
-
-                this.editDialog = false;
-            },
-        },
+            },        },
         mounted: function () {
             this.getUserInfo();
         },
@@ -522,6 +509,9 @@
             },
             userId: function () {
                 return this.$store.state.userId
+            },
+            profileUserId: function () {
+                return this.$store.state.profileUserId
             },
         }
     }

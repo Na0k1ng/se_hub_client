@@ -51,6 +51,18 @@
             <v-list-item-content>
               <v-list-item-title>{{ n.name }}</v-list-item-title>
             </v-list-item-content>
+            <v-spacer></v-spacer>
+            <v-list-item-content>
+              <v-btn
+                      color="grey lighten-1"
+                      rounded
+                      height="40"
+                      width="100"
+                      max-width="100"
+              >
+                BP解除
+              </v-btn>
+            </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
         </v-list-item-group>
@@ -70,6 +82,18 @@
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title>{{ n.name }}</v-list-item-title>
+            </v-list-item-content>
+            <v-spacer></v-spacer>
+            <v-list-item-content>
+              <v-btn
+                      color="grey lighten-1"
+                      rounded
+                      height="40"
+                      width="100"
+                      max-width="100"
+              >
+                BP登録
+              </v-btn>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
@@ -91,6 +115,19 @@
             <v-list-item-content>
               <v-list-item-title>{{ n.name }}</v-list-item-title>
             </v-list-item-content>
+            <v-spacer></v-spacer>
+            <v-list-item-content>
+              <v-btn
+                      color="grey lighten-1"
+                      rounded
+                      height="40"
+                      width="100"
+                      max-width="100"
+              >
+                BP申請解除
+              </v-btn>
+            </v-list-item-content>
+
           </v-list-item>
           <v-divider></v-divider>
         </v-list-item-group>
@@ -145,7 +182,7 @@
                     },
                 };
 
-                axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody ,reqHeader).then(res => {
+                axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                     }
@@ -182,7 +219,7 @@
                     },
                 };
 
-                axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody ,reqHeader).then(res => {
+                axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                     }
@@ -219,7 +256,7 @@
                     },
                 };
 
-                axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody ,reqHeader).then(res => {
+                axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                     }

@@ -16,13 +16,13 @@ const routes = [
     {
         path: '/',
         name: 'Home',
-        component: Home
+        component: Home,
+        meta: {requiresAuth: true}
     },
     {
         path: '/explore',
         name: 'Explore',
-        component: Explore,
-        meta: {requiresAuth: true}
+        component: Explore
     },
     {
         path: '/bpManagement',
@@ -60,7 +60,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth) && !Store.state.token) {
         alert("ログイン、もしくは新規登録をしてください")
-        next({path: '/'})
+        next({path: '/explore'})
     }else{
      next()
     }
