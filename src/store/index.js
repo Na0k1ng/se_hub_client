@@ -10,6 +10,7 @@ export default new Vuex.Store({
         userId: "",
         token: "",
         profileUserId: "",
+        profileBp: "",
     },
     mutations: {
         setLoginState: function (state, val) {
@@ -26,6 +27,9 @@ export default new Vuex.Store({
         },
         setProfileUserId: function (state, val) {
             state.profileUserId = val
+        },
+        setProfileBp: function (state, val) {
+            state.profileBp = val
         },
     },
     actions: {},

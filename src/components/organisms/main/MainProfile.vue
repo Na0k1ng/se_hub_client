@@ -45,11 +45,34 @@
             <v-btn class="ma-1 pa-2"
                    color="grey lighten-1"
                    rounded
+                   v-if = "profileBp.bp_status === '0'"
+                   @click = "setBp"
             >
               BP申請
             </v-btn>
+            <v-btn class="ma-1 pa-2"
+                   color="grey lighten-1"
+                   rounded
+                   v-else-if = "profileBp.bp_status === '1'"
+            >
+              BP申請
+            </v-btn>
+            <v-btn class="ma-1 pa-2"
+                   color="grey lighten-1"
+                   rounded
+                   v-else-if = "profileBp.bp_status === '2'"
+                   disabled
+            >
+              BP申請済み
+            </v-btn>
+            <v-btn class="ma-1 pa-2"
+                   color="grey lighten-1"
+                   rounded
+                   v-else-if = "profileBp.bp_status === '3'"
+            >
+              BP解除
+            </v-btn>
           </v-col>
-
           <v-col class="ma-2 pa-2" color="grey lighten-3" cols="3" v-show="this.userId === this.profileUserId">
             <v-btn class="ma-1 pa-2"
                    color="grey lighten-1"
@@ -296,6 +319,9 @@
             setLoginState: function () {
                 this.$store.commit('setLoginState', true)
             },
+            setProfileBp: function (val) {
+                this.$store.commit('setProfileBp', val)
+            },
             dragEnter() {
                 console.log('ファイルが入った');
             },
@@ -507,6 +533,28 @@
                 axios.get('http://localhost:8000/api/bp/' + this.userId + '/' + this.profileUserId + '/', reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
+                        this.setProfileBp(res.data);
+                    }
+                }).catch(e => {
+                    alert("異常系です。");
+                    console.log(e.message);
+                });
+            },
+            setBp() {
+                const requestBody = {
+                    'user_id': this.userId,
+                    'other_id': this.profileUserId,
+                };
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                axios.post('http://localhost:8000/api/bp/', requestBody, reqHeader).then(res => {
+                    if (res.status.toString() === '200') {
+                        alert("正常系です。");
+                        this.getBpInfo()
                     }
                 }).catch(e => {
                     alert("異常系です。");
@@ -531,6 +579,9 @@
             },
             profileUserId: function () {
                 return this.$store.state.profileUserId
+            },
+            profileBp: function () {
+                return this.$store.state.profileBp
             },
         }
     }
