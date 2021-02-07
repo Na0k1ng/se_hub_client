@@ -642,32 +642,23 @@
                 //     'other_id': this.profileUserId,
                 // };
 
-                // let form = new FormData();
-                // const group_id = this.userInfo.group__id;
-                //
-                // files.forEach(file => {
-                //     console.log(file);
-                //     form.append('group_img', file, group_id + '.jpg');
-                //     console.log(form);
-                // });
-                //
-                // this.backImgform = form;
-                // console.log(form);
-                // console.log(this.backImgform);
-                // for (let [key, value] of form.entries()) {
-                //     console.log(key, value);
-                // }
+                let form = new FormData();
+                let file = this.sendInfo.file;
+                console.log(file);
+                form.append('file', file);
+                console.log(file);
 
-                const reauestBody ={
-                    'file' : this.sendInfo.file
-                };
+
+                // const requestBody ={
+                //     'file' : this.sendInfo.file
+                // };
                 const reqHeader = {
                     headers: {
                         Authorization: 'JWT' + ' ' + this.token,
                     },
                 };
 
-                axios.put('http://localhost:8000/api/message/file/' + message_id + '/', reauestBody , reqHeader).then(res => {
+                axios.put('http://localhost:8000/api/message/file/' + message_id + '/', form , reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                     }
