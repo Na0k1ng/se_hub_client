@@ -45,32 +45,32 @@
             <v-btn class="ma-1 pa-2"
                    color="grey lighten-1"
                    rounded
-                   v-if = "profileBp.bp_status === '0'"
-                   @click = "setBpInfo"
+                   v-if="profileBp.bp_status === '0'"
+                   @click="setBpInfo"
             >
               BP申請
             </v-btn>
             <v-btn class="ma-1 pa-2"
                    color="grey lighten-1"
                    rounded
-                   v-else-if = "profileBp.bp_status === '1'"
-                   @click = "deleteBpInfo"
+                   v-else-if="profileBp.bp_status === '1'"
+                   @click="deleteBpInfo"
             >
               BP解除
             </v-btn>
             <v-btn class="ma-1 pa-2"
                    color="grey lighten-1"
                    rounded
-                   v-else-if = "profileBp.bp_status === '2'"
-                   @click = "setBpInfo"
+                   v-else-if="profileBp.bp_status === '2'"
+                   @click="setBpInfo"
             >
               BP申請
             </v-btn>
             <v-btn class="ma-1 pa-2"
                    color="grey lighten-1"
                    rounded
-                   v-else-if = "profileBp.bp_status === '3'"
-                   @click = "deleteBpInfo"
+                   v-else-if="profileBp.bp_status === '3'"
+                   @click="deleteBpInfo"
             >
               BP解除
             </v-btn>
@@ -140,9 +140,14 @@
         </v-row>
         <v-divider></v-divider>
         <v-row class="ma-0 pa-0">
-          <v-icon large color="grey darken-1 ma-0 pa-0 rounded-circle">
-            mdi-paperclip
-          </v-icon>
+          <v-file-input
+                  truncate-length="0"
+                  hide-input
+                  v-model="sendInfo.file"
+          ></v-file-input>
+<!--          <v-icon large color="grey darken-1 ma-0 pa-0 rounded-circle">-->
+<!--            mdi-paperclip-->
+<!--          </v-icon>-->
           <v-spacer></v-spacer>
           <v-icon large color="grey darken-1 ma-0 pa-0" @click="sendMessage()">
             mdi-send-circle-outline
@@ -317,6 +322,7 @@
                 sendInfo: {
                     title: '',
                     description: '',
+                    file: ''
                 },
                 credentials: {},
                 rules: {
@@ -476,12 +482,12 @@
                     this.userInfo.name = res.data.name;
                     this.userInfo.email = res.data.email;
                     this.userInfo.description = res.data.description;
-                    this.userInfo.icon = 'http://127.0.0.1:8000/media/'+res.data.img;
+                    this.userInfo.icon = 'http://127.0.0.1:8000/media/' + res.data.img;
                     this.userInfo.group__id = res.data.group__id;
                     this.userInfo.group__name = res.data.group__name;
                     this.userInfo.group__description = res.data.group__description;
                     this.userInfo.group__url = res.data.group__url;
-                    this.userInfo.group__img = 'http://127.0.0.1:8000/media/'+res.data.group__img;
+                    this.userInfo.group__img = 'http://127.0.0.1:8000/media/' + res.data.group__img;
                 }).catch(e => {
                     alert("例外");
                     alert(e.message);
@@ -611,7 +617,11 @@
                 axios.post('http://localhost:8000/api/message/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
-                        this.getBpInfo()
+                        console.log(this.sendInfo.file);
+                        if (this.sendInfo.file){
+                          console.log('sendFile');
+                          this.sendFile(res.data.message_id)
+                        }
                     }
                 }).catch(e => {
                     alert("異常系です。");
@@ -621,6 +631,30 @@
                 this.sendInfo.title = '';
                 this.sendInfo.description = '';
                 this.dialog = false
+            },
+            sendFile(message_id) {
+                // const requestBody = {
+                //     'title': this.sendInfo.title,
+                //     'description': this.sendInfo.description,
+                //     'message_id': '',
+                //     'disclosure_id': '',
+                //     'user_id': this.userId,
+                //     'other_id': this.profileUserId,
+                // };
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                axios.put('http://localhost:8000/api/message/file/' + message_id + '/', this.sendInfo.file, reqHeader).then(res => {
+                    if (res.status.toString() === '200') {
+                        alert("正常系です。");
+                    }
+                }).catch(e => {
+                    alert("異常系です。");
+                    console.log(e.message);
+                });
             },
 
         },
