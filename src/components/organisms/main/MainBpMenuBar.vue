@@ -49,7 +49,7 @@
               </v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title>{{ n.name }}</v-list-item-title>
+              <v-list-item-title>{{ n.user__name }}</v-list-item-title>
             </v-list-item-content>
             <v-spacer></v-spacer>
             <v-list-item-content>
@@ -81,7 +81,7 @@
               </v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title>{{ n.name }}</v-list-item-title>
+              <v-list-item-title>{{ n.user__name }}</v-list-item-title>
             </v-list-item-content>
             <v-spacer></v-spacer>
             <v-list-item-content>
@@ -113,7 +113,7 @@
               </v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title>{{ n.name }}</v-list-item-title>
+              <v-list-item-title>{{ n.user__name }}</v-list-item-title>
             </v-list-item-content>
             <v-spacer></v-spacer>
             <v-list-item-content>
@@ -156,21 +156,21 @@
         },
         methods: {
             getApplyingBpList() {
-                let applyingBpList = [
-                    {
-                        icon: "",
-                        name: "〇〇〇〇",
-                    },
-                    {
-                        icon: "",
-                        name: "〇〇〇〇",
-                    },
-                    {
-                        icon: "",
-                        name: "〇〇〇〇",
-                    },
-
-                ];
+                // let applyingBpList = [
+                //     {
+                //         icon: "",
+                //         name: "〇〇〇〇",
+                //     },
+                //     {
+                //         icon: "",
+                //         name: "〇〇〇〇",
+                //     },
+                //     {
+                //         icon: "",
+                //         name: "〇〇〇〇",
+                //     },
+                //
+                // ];
 
                 const requestBody = {
                     'bp_status': '1',
@@ -185,29 +185,31 @@
                 axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
+                        console.log(res.data);
+                        this.applyingBpList = res.data;
                     }
                 }).catch(e => {
                     alert("異常系です。");
                     console.log(e.message);
                 });
-                this.applyingBpList = applyingBpList;
+                // this.applyingBpList = applyingBpList;
                 this.choice = 'applyingBp'
             },
             getApplicantBpList() {
-                let applicantBpList = [
-                    {
-                        icon: "",
-                        name: "××××",
-                    },
-                    {
-                        icon: "",
-                        name: "××××",
-                    },
-                    {
-                        icon: "",
-                        name: "××××",
-                    },
-                ];
+                // let applicantBpList = [
+                //     {
+                //         icon: "",
+                //         name: "××××",
+                //     },
+                //     {
+                //         icon: "",
+                //         name: "××××",
+                //     },
+                //     {
+                //         icon: "",
+                //         name: "××××",
+                //     },
+                // ];
 
                 const requestBody = {
                     'bp_status': '2',
@@ -222,29 +224,31 @@
                 axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
+                        console.log(res.data);
+                        this.applicantBpList = res.data;
                     }
                 }).catch(e => {
                     alert("異常系です。");
                     console.log(e.message);
                 });
-                this.applicantBpList = applicantBpList;
+                // this.applicantBpList = applicantBpList;
                 this.choice = 'applicantBp'
             },
             getBpList() {
-                let bpList = [
-                    {
-                        icon: "",
-                        name: "△△△△",
-                    },
-                    {
-                        icon: "",
-                        name: "△△△△",
-                    },
-                    {
-                        icon: "",
-                        name: "△△△△",
-                    },
-                ];
+                // let bpList = [
+                //     {
+                //         icon: "",
+                //         name: "△△△△",
+                //     },
+                //     {
+                //         icon: "",
+                //         name: "△△△△",
+                //     },
+                //     {
+                //         icon: "",
+                //         name: "△△△△",
+                //     },
+                // ];
 
                 const requestBody = {
                     'bp_status': '3',
@@ -259,12 +263,14 @@
                 axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
+                        console.log(res.data);
+                        this.bpList = res.data;
                     }
                 }).catch(e => {
                     alert("異常系です。");
                     console.log(e.message);
                 });
-                this.bpList = bpList;
+                // this.bpList = bpList;
                 this.choice = 'bp'
             }
         },

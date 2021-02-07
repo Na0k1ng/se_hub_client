@@ -137,7 +137,7 @@
 
                 // this.messageList = messageList;
             },
-            getChatList() {
+            getChatList(id) {
                 let chatList = [
                     {
                         icon: "",
@@ -170,7 +170,7 @@
 
                 let count = '1';
 
-                axios.get('http://localhost:8000/api/message/' + this.userId + '/' + count + '/' ,reqHeader).then(res => {
+                axios.get('http://localhost:8000/api/message/' + id + '/' + count + '/' ,reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         alert("正常系です。");
                         // this.messageList = res.data
