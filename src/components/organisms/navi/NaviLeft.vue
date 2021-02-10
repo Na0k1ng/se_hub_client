@@ -25,15 +25,15 @@
           </v-list-item>
         </v-list-item-group>
         <v-divider></v-divider>
-        <v-list-item v-if="loginState" to="/" active-class="font-weight-bold">
+        <v-list-item v-if="loginState" to="/" @click="toHome" :active-class="naviFont">
           <v-list-item-icon>
-            <v-icon large :color="iconColor">mdi-home</v-icon>
+            <v-icon large :color="naviItmColor.home">mdi-home</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>ホーム</v-list-item-title>
+            <v-list-item-title>ホーム {{ activeNaviItm }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item to="/explore" active-class="font-weight-bold">
+        <v-list-item to="/explore" :active-class="naviFont">
           <v-list-item-icon>
             <v-icon large :color="iconColor">mdi-magnify</v-icon>
           </v-list-item-icon>
@@ -41,7 +41,7 @@
             <v-list-item-title>検索</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="loginState" to="/bpManagement" active-class="font-weight-bold">
+        <v-list-item v-if="loginState" to="/bpManagement" :active-class="naviFont">
           <v-list-item-icon>
             <v-icon large :color="iconColor">mdi-bell-outline</v-icon>
           </v-list-item-icon>
@@ -49,7 +49,7 @@
             <v-list-item-title>BP管理</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="loginState" to="/messages" active-class="font-weight-bold">
+        <v-list-item v-if="loginState" to="/messages" :active-class="naviFont">
           <v-list-item-icon>
             <v-icon large :color="iconColor">mdi-email-outline</v-icon>
           </v-list-item-icon>
@@ -57,7 +57,7 @@
             <v-list-item-title>メッセージ</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="loginState" @click="toProfile()" active-class="font-weight-bold">
+        <v-list-item v-if="loginState" @click="toProfile()" to="/profile" :active-class="naviFont">
           <v-list-item-icon>
             <v-icon large :color="iconColor">mdi-account</v-icon>
           </v-list-item-icon>
@@ -65,7 +65,7 @@
             <v-list-item-title>プロフィール</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item @click.stop="dialog_settings = true">
+        <v-list-item @click.stop="selectedSettingsDialog = true">
           <v-list-item-icon>
             <v-icon large :color="iconColor">mdi-cog-outline</v-icon>
           </v-list-item-icon>
@@ -215,7 +215,7 @@
         </v-card>
       </v-dialog>
       <v-dialog
-              v-model="dialog_settings"
+              v-model="selectedSettingsDialog"
               max-width="600"
       >
         <v-card class="pa-10">
@@ -267,13 +267,26 @@
             return {
                 // style
                 baseColor: 'grey lighten-3',
-                iconColor: "grey darken-1",
+                iconColor: 'grey darken-1',
+                selectedIconColor: 'green accent-4',
+                naviFont: 'font-weight-bold green--text text--accent-4',
+                naviItmColor: {
+                    home: 'grey darken-1',
+                    explore: 'grey darken-1',
+                    bpManagement: 'grey darken-1',
+                    messages: 'grey darken-1',
+                    profile: 'grey darken-1'
+                },
+                // green accent-4
+
+
+                activeNaviItm: 'test',
 
                 // dialog flag
                 dialog: false,
                 dialog_hash: false,
                 dialog_trans_info: false,
-                dialog_settings: false,
+                selectedSettingsDialog: false,
                 dialog_logout: false,
 
                 // User Info
@@ -550,8 +563,13 @@
             },
             toProfile() {
                 this.setProfileUserId(this.userId);
-                this.$router.push('/profile');
+                // this.$router.push('/profile');
             },
+            toHome() {
+                this.naviItmColor.home = this.selectedIconColor;
+                this.activeNaviItm = 'home';
+                // this.$router.push('/');
+            }
         },
         computed: {
             loginState: function () {
