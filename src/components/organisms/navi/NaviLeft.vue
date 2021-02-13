@@ -58,7 +58,7 @@
               <v-list-item-title>メッセージ</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item v-if="loginState" @click="toProfile()" to="/profile" :active-class="naviFont">
+          <v-list-item v-if="loginState" @click="toProfile()" to="" :active-class="naviFont">
             <v-list-item-icon>
               <v-icon large :color="iconColor">mdi-account</v-icon>
             </v-list-item-icon>
@@ -562,7 +562,7 @@
             },
             toProfile() {
                 this.setProfileUserId(this.userId);
-                // this.$router.push('/profile');
+                this.$router.push('/profile');
             },
             toHome() {
                 this.naviItmColor.home = this.selectedIconColor;
