@@ -21,39 +21,39 @@
           <v-spacer/>
           <v-col v-show="this.userId === this.profileUserId" cols="4" style="margin-top: 100px">
             <v-btn
-                    color="green accent-4"
+                    color="grey"
                     class="white--text ml-10"
                     height=45
                     rounded
+                    depressed="true"
                     @click="editDialog = true"
             >
               <b>プロフィールを編集</b>
             </v-btn>
           </v-col>
-          <v-col v-show="this.userId !== this.profileUserId" cols="1" style="margin-top: 100px">
+          <v-col v-show="this.userId !== this.profileUserId" cols="2" style="margin-top: 100px; text-align: center">
             <v-btn
                     @click="dialog = true"
-                    color="green accent-4"
-                    class="text--green text-accent-4 ml-3"
+                    color="grey lighten-3"
                     height=45
-                    width="45"
-                    outlined
-                    fab
+                    width=60
+                    style="border-width: 2px ; border-color: #757575"
             >
-              <v-icon color="green accent-4">
+              <v-icon color="grey darken-1">
                 mdi-email-outline
               </v-icon>
             </v-btn>
           </v-col>
-          <v-col v-show="this.userId !== this.profileUserId" cols="2" style="margin-top: 100px">
+          <v-col v-show="this.userId !== this.profileUserId" cols="2" style="margin-top: 100px; text-align: center">
             <v-btn
                     v-if="(profileBp.bp_status === '0') || (profileBp.bp_status === '2')"
                     color="green accent-4"
-                    class="text--green text-accent-4 ml-3"
+                    class="text--green text-accent-4"
                     height=45
                     outlined
                     rounded
                     @click="setBpInfo"
+                    style="border-width: 2px"
             >
               <b>BP申請</b>
             </v-btn>

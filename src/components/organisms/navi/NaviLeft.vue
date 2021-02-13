@@ -76,8 +76,8 @@
           </v-list-item>
           <v-list-item v-if="loginState" class="pt-4">
             <v-btn
-                    color="grey lighten-1"
-                    rounded
+                    :color=buttonColor
+                    class="white--text"
                     height="60"
                     width="250"
                     @click.stop="dialog_trans_info = true"
@@ -87,13 +87,13 @@
           </v-list-item>
           <v-list-item v-if="loginState" class="pt-10 mt-10">
             <v-btn
-                    color="grey lighten-1"
-                    rounded
+                    color=red
+                    class="white--text"
                     height="50"
                     width="140"
                     @click.stop="dialog_logout = true"
             >
-              ログアウト
+              <b>ログアウト</b>
             </v-btn>
           </v-list-item>
         </v-list-itm-group>
@@ -271,6 +271,7 @@
                 baseColor: 'grey lighten-3',
                 iconColor: 'grey darken-1',
                 selectedIconColor: 'green accent-4',
+                buttonColor: 'green accent-4',
                 naviFont: 'font-weight-bold green--text text--accent-4',
                 naviItmColor: {
                     home: 'grey darken-1',
