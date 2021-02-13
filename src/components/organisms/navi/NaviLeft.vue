@@ -115,6 +115,7 @@
                     required
                     :rules="rules.email"
                     v-model="credentials.email"
+                    @keyup.enter="login"
             />
             <v-text-field
                     prepend-icon="mdi-lock"
@@ -127,6 +128,7 @@
                     v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     v-bind:type="showPassword ? 'text' : 'password'"
                     @click:append="showPassword = !showPassword"
+                    @keyup.enter="login"
             />
           </v-form>
           <v-card-actions>
@@ -337,6 +339,8 @@
                     await this.authenticate();
                     this.getUserInfo();
                     this.setLoginState(true);
+                    this.credentials.email='';
+                    this.credentials.password='';
                     this.dialog = false;
                 }
             },
@@ -487,6 +491,7 @@
                 this.setUserId("");
                 this.setToken("");
                 this.setLoginState(false);
+                this.setProfileUserId("");
                 this.dialog_logout = false;
                 this.$router.push('/');
 
