@@ -192,6 +192,7 @@
           <v-row class="ma-0 pa-0">
             <v-text-field
                 label="タイトル"
+                color="green accent-4"
                 :counter="30"
                 :maxlength="30"
                 v-model="send_info.title"
@@ -199,19 +200,20 @@
           </v-row>
           <v-row class="ma-0 pa-0">
             <v-textarea
-                outlined rows="20"
+                label="内容"
                 name="input-7-4"
                 v-model="send_info.body"
+                color="green accent-4"
                 :counter="300"
                 :maxlength="300"
                 required
-                label="Message"
             ></v-textarea>
           </v-row>
-          <v-card-actions>
+          <v-card-actions class="pt-8">
             <v-spacer></v-spacer>
             <v-btn
-                class="info"
+                class="white--text px-8"
+                color="green accent-4"
                 @click="sendJobInfo()"
             >
               送信

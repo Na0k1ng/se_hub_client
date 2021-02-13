@@ -49,22 +49,37 @@
                 color="green accent-4"
                 class="text--green text-accent-4"
                 height=45
+                width=120
                 outlined
                 rounded
                 @click="setBpInfo"
                 style="border-width: 2px"
             >
-              <b>BP申請</b>
+              <b>BP申請する</b>
             </v-btn>
             <v-btn
-                v-if="(profileBp.bp_status === '1') || (profileBp.bp_status === '3')"
+                v-if="(profileBp.bp_status === '1')"
                 color="green accent-4"
-                class="white--text ml-3"
+                class="white--text"
                 height=45
+                width=120
                 rounded
                 @click="deleteBpInfo"
             >
-              <b>BP解除</b>
+              <b>BP申請済み</b>
+            </v-btn>
+            <v-btn
+                v-if="(profileBp.bp_status === '3')"
+
+                color="green accent-4"
+                class="white--text"
+                height=45
+                width=120
+                rounded
+                @click="deleteBpInfo"
+            >
+              <v-icon style="position: absolute; left: 0; font-size: 20px;" color="white">mdi-handshake-outline</v-icon>
+              <b>BP</b>
             </v-btn>
           </v-col>
         </v-row>
@@ -96,6 +111,7 @@
         <v-row class="ma-0 pa-0">
           <v-text-field
               label="タイトルを入力"
+              color="green accent-4"
               :counter="30"
               :maxlength="30"
               v-model="sendInfo.title"
@@ -104,10 +120,10 @@
         <v-row class="ma-0 pa-0">
           <v-textarea
               label="本文を入力"
-              outlined rows="20"
               name="input-7-4"
               :counter="300"
               :maxlength="300"
+              color="green accent-4"
               required
               v-model="sendInfo.description"
           ></v-textarea>
@@ -123,9 +139,14 @@
           <!--            mdi-paperclip-->
           <!--          </v-icon>-->
           <v-spacer></v-spacer>
-          <v-icon large color="grey darken-1 ma-0 pa-0" @click="sendMessage()">
-            mdi-send-circle-outline
-          </v-icon>
+          <v-btn
+              @click="sendMessage()"
+              width=120
+              color="green accent-4"
+              class="white--text mt-4"
+          >
+            送信
+          </v-btn>
         </v-row>
       </v-card>
     </v-dialog>
