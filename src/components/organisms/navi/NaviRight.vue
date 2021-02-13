@@ -98,7 +98,7 @@
               sm="3"
 
             >
-              <a>運営会社情報</a>
+              <a href="https://allgoal.co.jp" style="text-decoration: none;">運営会社情報</a>
             </v-col>
             <v-col
               cols="12"
