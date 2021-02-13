@@ -70,7 +70,7 @@
         </v-row>
         <v-row no-gutters>
           <v-col>
-            <h3>{{ userInfo.name }}@{{ userInfo.group__name }}</h3>
+            <h3>{{ userInfo.name }}<span v-if="userInfo.group__name">@{{ userInfo.group__name }}</span></h3>
             <a :href="userInfo.group__url" target="_blank"> {{ userInfo.group__url }}</a>
           </v-col>
         </v-row>
