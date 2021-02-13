@@ -7,8 +7,6 @@
               class="ma-0 pa-0"
       >
         <MainTitle :mainTitleName="mainTitleName"/>
-        <MainRecommendation/>
-        <MainDivider/>
         <MainContentList/>
       </v-container>
     </v-main>
@@ -20,8 +18,6 @@
     import NaviRight from '@/components/organisms/navi/NaviRight.vue'
 
     import MainTitle from '@/components/organisms/main/MainTitle.vue'
-    import MainRecommendation from '@/components/organisms/main/MainRecommendation.vue'
-    import MainDivider from '@/components/organisms/main/MainDivider.vue'
     import MainContentList from '@/components/organisms/main/MainContentList.vue'
 
     export default {
@@ -30,8 +26,6 @@
             NaviLeft,
             NaviRight,
             MainTitle,
-            MainRecommendation,
-            MainDivider,
             MainContentList
         },
         data() {
