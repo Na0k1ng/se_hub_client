@@ -6,7 +6,7 @@
       <v-container
         class="ma-0 pa-0"
       >
-        <MainExplore :tagList = "tagList"/>
+        <MainExplore/>
         <MainContentList/>
       </v-container>
     </v-main>
@@ -30,14 +30,6 @@ export default {
   },
   data () {
     return {
-      mainTitleName: "検索",
-      tagList: [
-        "案件情報",
-        "人材情報",
-        "会社情報",
-        "技術情報",
-        "その他"
-      ]
     }
   }
 }
