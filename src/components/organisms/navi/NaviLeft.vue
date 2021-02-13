@@ -89,19 +89,20 @@
       </v-list>
       <v-dialog
           v-model="dialog"
-          max-width="600"
+          max-width="512"
       >
         <v-card class="pa-10">
-          <v-card-title class="headline">
-            ログイン
+          <v-card-title class="headline" style="text-align: center; color: #00C853; font-family: 'Franklin Gothic Medium' !important; display: inherit;">
+            SE-Hub
           </v-card-title>
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" class="pl-6 pr-8 pt-4 pb-6">
             <v-text-field
                 prepend-icon="mdi-account-circle"
                 label="メールアドレス"
                 :counter="50"
                 maxlength="50"
                 required
+                color="green accent-4"
                 :rules="rules.email"
                 v-model="credentials.email"
                 @keyup.enter="login"
@@ -112,6 +113,7 @@
                 :counter="20"
                 maxlength="20"
                 required
+                color="green accent-4"
                 :rules="rules.password"
                 v-model="credentials.password"
                 v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -120,52 +122,62 @@
                 @keyup.enter="login"
             />
           </v-form>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                :disabled="!valid"
-                class="info"
-                @click="login"
-            >
-              ログイン
-            </v-btn>
-            <v-btn
-                :disabled="!valid"
-                class="info"
-                @click="registerHash"
-            >
-              新規登録
-            </v-btn>
+          <v-card-actions class="px-8">
+            <v-col>
+              <v-btn
+                  :disabled="!valid"
+                  color="green accent-4"
+                  class="white--text"
+                  width="160"
+                  @click="login"
+              >
+                ログイン
+              </v-btn>
+            </v-col>
+            <v-col style="text-align: right;" >
+              <v-btn
+                  :disabled="!valid"
+                  color="grey"
+                  class="white--text"
+                  width="120"
+                  @click="registerHash"
+              >
+                新規登録
+              </v-btn>
+            </v-col>
           </v-card-actions>
         </v-card>
       </v-dialog>
       <v-dialog
           v-model="dialog_hash"
-          max-width="550"
+          max-width="400"
       >
         <v-card class="pa-10">
-          <v-card-title class="headline">
+          <v-card-title class="headline" style="text-align: center; display: inherit;">
             確認コード入力
           </v-card-title>
-          <v-form ref="form">
+          <v-form ref="form" class="px-10 py-6">
             <v-text-field
-                prepend-icon="mdi-account-circle"
                 label="確認コード"
                 :counter="6"
                 maxlength="6"
+                color="green accent-4"
                 required
                 v-model="credentials.hash_cd"
             />
           </v-form>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                :disabled="!valid"
-                class="info"
-                @click="registerUser"
-            >
-              確認
-            </v-btn>
+            <v-col style="text-align: center;">
+              <v-btn
+                  :disabled="!valid"
+                  class="white--text"
+                  width="80%"
+                  color="green accent-4"
+                  @click="registerUser"
+              >
+                確認
+              </v-btn>
+            </v-col>
           </v-card-actions>
         </v-card>
       </v-dialog>
