@@ -7,7 +7,6 @@
         class="ma-0 pa-0"
       >
         <MainTitle :mainTitleName="mainTitleName"/>
-        <MainExplore :tagList="tagList"/>
         <MainMessageList/>
       </v-container>
     </v-main>
@@ -19,7 +18,6 @@ import NaviLeft from '@/components/organisms/navi/NaviLeft.vue'
 import NaviRight from '@/components/organisms/navi/NaviRight.vue'
 
 import MainTitle from '@/components/organisms/main/MainTitle.vue'
-import MainExplore from '@/components/organisms/main/MainExplore.vue'
 import MainMessageList from '@/components/organisms/main/MainMessageList.vue'
 
 export default {
@@ -28,16 +26,11 @@ export default {
     NaviLeft,
     NaviRight,
     MainTitle,
-    MainExplore,
     MainMessageList
   },
   data () {
     return {
       mainTitleName: "メッセージ",
-      tagList: [
-        "BPのみ",
-        "未読のみ",
-      ]
     }
   }
 }

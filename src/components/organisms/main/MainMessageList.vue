@@ -6,7 +6,7 @@
                 v-for="(n,index) in messageList"
                 :key="index"
         >
-          <v-list-item @click="getChatList(n.id)">
+          <v-list-item @click="getChatList(n)">
             <v-list-item-avatar>
               <v-icon class="grey lighten-1">
                 mdi-account
@@ -29,7 +29,8 @@
           <v-icon large color="grey darken-1 ma-0 pa-0" @click="dialog = false">
             mdi-arrow-left
           </v-icon>
-          <p class="ma-0 pa-0 pl-2">メッセージ相手</p>
+          <p v-if="selectedMessage.from_user__id != userId" class="ma-0 pa-0 pl-2">{{ selectedMessage.title }}  ({{ selectedMessage.from_user__name }})</p>
+          <p v-else class="ma-0 pa-0 pl-2">{{ selectedMessage.title }}  ({{ selectedMessage.to_user__name }})</p>
         </v-card-title>
         <v-divider></v-divider>
         <v-list width="50%" class="ma-0 pa-0 my-8">
@@ -39,8 +40,8 @@
           >
             <v-list-item v-if="n.mymsg" class="mb-4 rounded-pill grey">
               <v-list-item-content>
-                <v-list-item-title>{{ n.body }}</v-list-item-title>
-                <v-list-item-subtitle>{{ n.timestamp }}</v-list-item-subtitle>
+                <v-list-item-title>{{ n.description }}</v-list-item-title>
+                <v-list-item-subtitle>{{ parseTime(n.insert_datetime) }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
             <v-list-item v-else class="mb-4 rounded-pill">
@@ -50,9 +51,9 @@
                 </v-icon>
               </v-list-item-avatar>
               <v-list-item-content>
-                <v-list-item-title>{{ n.body }}</v-list-item-title>
-                <v-list-item-subtitle>{{ n.timestamp }}</v-list-item-subtitle>
-                <v-list-item-subtitle v-if="n.aread">既読</v-list-item-subtitle>
+                <v-list-item-title>{{ n.description }}</v-list-item-title>
+                <v-list-item-subtitle>{{ parseTime(n.insert_datetime) }}</v-list-item-subtitle>
+                <v-list-item-subtitle v-if="n.is_read">既読</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
@@ -90,7 +91,8 @@
                 messageList: [],
                 chatList: [],
                 message: "",
-                form: []
+                form: [],
+                selectedMessage: ""
             }
         },
         mounted: function () {
@@ -135,30 +137,30 @@
 
                 // this.messageList = messageList;
             },
-            getChatList(id) {
-                let chatList = [
-                    {
-                        icon: "",
-                        body: "Hi. I'm AllGoal .Inc",
-                        timestamp: "午後8:30",
-                        mymsg: true,
-                        aread: false,
-                    },
-                    {
-                        icon: "",
-                        body: "Hi. I'm XXX .Inc",
-                        timestamp: "午後9:00",
-                        mymsg: false,
-                        aread: true,
-                    },
-                    {
-                        icon: "",
-                        body: "XXXXXXXX",
-                        timestamp: "午後9:30",
-                        mymsg: true,
-                        aread: false,
-                    },
-                ];
+            getChatList(message) {
+                // let chatList = [
+                //     {
+                //         icon: "",
+                //         body: "Hi. I'm AllGoal .Inc",
+                //         timestamp: "午後8:30",
+                //         mymsg: true,
+                //         aread: false,
+                //     },
+                //     {
+                //         icon: "",
+                //         body: "Hi. I'm XXX .Inc",
+                //         timestamp: "午後9:00",
+                //         mymsg: false,
+                //         aread: true,
+                //     },
+                //     {
+                //         icon: "",
+                //         body: "XXXXXXXX",
+                //         timestamp: "午後9:30",
+                //         mymsg: true,
+                //         aread: false,
+                //     },
+                // ];
 
                 const reqHeader = {
                     headers: {
@@ -168,15 +170,15 @@
 
                 let count = '1';
 
-                axios.get('http://localhost:8000/api/message/' + id + '/' + count + '/' ,reqHeader).then(res => {
+                axios.get('http://localhost:8000/api/message/' + message.id + '/' + count + '/' ,reqHeader).then(res => {
                     if (res.status.toString() === '200') {
-                        // this.messageList = res.data
+                        this.chatList = res.data
                     }
                 }).catch(e => {
                     console.log(e.message);
                 });
 
-                this.chatList = chatList;
+                this.selectedMessage= message;
                 this.dialog = true;
             },
             sendMessage(id) {
@@ -203,6 +205,21 @@
 
                 this.dialog = false;
             },
+            parseTime(insert_datetime) {
+               // let tmp=  insert_datetime.split("T")
+               // let date = tmp[0]
+               // let tmp_t = tmp[1].split(":")
+               // let time = tmp_t[0] + ":" + tmp_t[1]
+               // return date + " " + time
+                let ts = Date.parse(insert_datetime);
+                const dt = new Date(ts);
+                const year = dt.getFullYear();
+                const month = dt.getMonth() + 1;
+                const days = dt.getDate();
+                const hours = dt.getHours();
+                const minutes = dt.getMinutes();
+                return year + "/" + month + "/" + days + " " + hours + ":" + minutes
+            }
         },
         computed: {
             userName: function () {
