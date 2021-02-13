@@ -184,12 +184,10 @@
 
                 axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
-                        alert("正常系です。");
                         console.log(res.data);
                         this.applyingBpList = res.data;
                     }
                 }).catch(e => {
-                    alert("異常系です。");
                     console.log(e.message);
                 });
                 // this.applyingBpList = applyingBpList;
@@ -223,12 +221,10 @@
 
                 axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
-                        alert("正常系です。");
                         console.log(res.data);
                         this.applicantBpList = res.data;
                     }
                 }).catch(e => {
-                    alert("異常系です。");
                     console.log(e.message);
                 });
                 // this.applicantBpList = applicantBpList;
@@ -262,12 +258,10 @@
 
                 axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
-                        alert("正常系です。");
                         console.log(res.data);
                         this.bpList = res.data;
                     }
                 }).catch(e => {
-                    alert("異常系です。");
                     console.log(e.message);
                 });
                 // this.bpList = bpList;

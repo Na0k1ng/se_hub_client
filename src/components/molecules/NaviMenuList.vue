@@ -157,18 +157,15 @@
                         this.user_id = JSON.parse(atob(payload)).user_id;
                         this.test_token = this.user_id;
                         tmp = res.data.token;
-                        alert('http://localhost:8000/api/user/' + this.test_token + '/');
                         axios.get('http://localhost:8000/api/user/' + this.user_id + '/').then(res => {
                             this.user_name = res.data.email;
                         }).catch(e => {
-                            alert("例外");
-                            alert(e.message);
+                            console.log(e.message);
                         });
                     }).catch(e => {
                         this.test_token = e.data.detail[0];
                         tmp = JSON.stringify(e.status);
-                        alert("例外");
-                        alert(e.message);
+                        console.log(e.message);
 
                     });
 
@@ -194,7 +191,6 @@
                             this.dialog_hash = true;
                         }
                     }).catch(e => {
-                        alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                         console.log(e.message);
                     });
                 } else {
@@ -216,7 +212,6 @@
                             this.login();
                         }
                     }).catch(e => {
-                        alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                         console.log(e.message);
                     });
                     this.dialog = false;

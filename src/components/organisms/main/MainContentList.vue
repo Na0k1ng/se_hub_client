@@ -118,7 +118,6 @@
                         this.contentsList = res.data;
                     }
                 }).catch(e => {
-                    alert("異常系です。");
                     console.log(e.message);
                 });
                 //this.contentsList = contentsList;
@@ -136,10 +135,9 @@
                 axios.delete('http://localhost:8000/api/disclosure/' + this.proposition.id + '/', reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
-                        alert("大成功");
+                        console.log(res)
                     }
                 }).catch(e => {
-                    alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                     console.log(e.message);
                 });
 

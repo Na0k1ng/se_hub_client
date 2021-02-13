@@ -1,111 +1,86 @@
 <template>
-  <div class="main-profile">
-    <v-row no-gutters class="ma-0 pa-0 mb-10">
-      <v-sheet
-              class="ma-0 pa-0"
-              max-width="100%"
-              tile
-      >
-        <v-img
-                :src="userInfo.group__img"
-                width="800"
-                height="250"
-                style="overflow: visible"
-        >
-          <v-avatar
-                  class="profile ma-0 pa-0"
-                  color="grey"
-                  style="postion:absolute; left: 5%; top: 70%"
-                  size=130
-                  max-height="100%"
-          >
-            <v-img :src="userInfo.icon"></v-img>
-          </v-avatar>
-        </v-img>
-      </v-sheet>
+  <div>
+    <v-row no-gutters>
+      <v-col>
+        <v-img v-if="userInfo.group__img === null" src="@/assets/riv0066-051.jpg" height="250"></v-img>
+        <v-img v-else :src="userInfo.group__img" height="250"></v-img>
+      </v-col>
     </v-row>
-    <v-row>
-      <v-sheet
-              class="ma-0 pa-0"
-              max-width="100%"
-              tile
-      >
-        <v-row>
-          <v-col class="ma-2 pa-2" color="grey lighten-3" cols="4">
-            <p class="ma-1 pa-2">{{userInfo.name}}</p>
-          </v-col>
-          <v-col class="ma-2 pa-2" color="grey lighten-3" cols="1" v-show="this.userId !== this.profileUserId">
-            <v-avatar class="profile grey lighten-3" @click="dialog = true">
-              <v-icon large color="grey darken-1 ma-0 pa-0">
-                mdi-email-outline
+    <v-row no-gutters>
+      <v-col class="ma-5">
+        <v-row no-gutters style="margin-top: -100px">
+          <v-col>
+            <v-avatar size=160 color="white"></v-avatar>
+            <v-avatar size=150 color="white" style="margin-left: -155px">
+              <v-icon v-if="userInfo.icon === null" color="grey darken-1">
+                mdi-account
               </v-icon>
+              <v-img v-else :src="userInfo.icon"></v-img>
             </v-avatar>
           </v-col>
-          <v-col class="ma-2 pa-2" color="grey lighten-3" cols="1" v-show="this.userId !== this.profileUserId">
-            <v-btn class="ma-1 pa-2"
-                   color="grey lighten-1"
-                   rounded
-                   v-if="profileBp.bp_status === '0'"
-                   @click="setBpInfo"
+          <v-spacer/>
+          <v-col v-show="this.userId === this.profileUserId" cols="4" style="margin-top: 100px">
+            <v-btn
+                    color="green accent-4"
+                    class="white--text ml-10"
+                    height=45
+                    rounded
+                    @click="editDialog = true"
             >
-              BP申請
-            </v-btn>
-            <v-btn class="ma-1 pa-2"
-                   color="grey lighten-1"
-                   rounded
-                   v-else-if="profileBp.bp_status === '1'"
-                   @click="deleteBpInfo"
-            >
-              BP解除
-            </v-btn>
-            <v-btn class="ma-1 pa-2"
-                   color="grey lighten-1"
-                   rounded
-                   v-else-if="profileBp.bp_status === '2'"
-                   @click="setBpInfo"
-            >
-              BP申請
-            </v-btn>
-            <v-btn class="ma-1 pa-2"
-                   color="grey lighten-1"
-                   rounded
-                   v-else-if="profileBp.bp_status === '3'"
-                   @click="deleteBpInfo"
-            >
-              BP解除
+              <b>プロフィールを編集</b>
             </v-btn>
           </v-col>
-          <v-col class="ma-2 pa-2" color="grey lighten-3" cols="3" v-show="this.userId === this.profileUserId">
-            <v-btn class="ma-1 pa-2"
-                   color="grey lighten-1"
-                   rounded
-                   @click="editDialog = true"
+          <v-col v-show="this.userId !== this.profileUserId" cols="1" style="margin-top: 100px">
+            <v-btn
+                    @click="dialog = true"
+                    color="green accent-4"
+                    class="text--green text-accent-4 ml-3"
+                    height=45
+                    width="45"
+                    outlined
+                    fab
             >
-              プロフィールを編集
+              <v-icon color="green accent-4">
+                mdi-email-outline
+              </v-icon>
+            </v-btn>
+          </v-col>
+          <v-col v-show="this.userId !== this.profileUserId" cols="2" style="margin-top: 100px">
+            <v-btn
+                    v-if="(profileBp.bp_status === '0') || (profileBp.bp_status === '2')"
+                    color="green accent-4"
+                    class="text--green text-accent-4 ml-3"
+                    height=45
+                    outlined
+                    rounded
+                    @click="setBpInfo"
+            >
+              <b>BP申請</b>
+            </v-btn>
+            <v-btn
+                    v-if="(profileBp.bp_status === '1') || (profileBp.bp_status === '3')"
+                    color="green accent-4"
+                    class="white--text ml-3"
+                    height=45
+                    rounded
+                    @click="deleteBpInfo"
+            >
+              <b>BP解除</b>
             </v-btn>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col class="py-0" color="grey lighten-3">
-            <p class="ma-1 pa-2">URL: {{userInfo.url}}</p>
+        <v-row no-gutters>
+          <v-col>
+            <h3>{{ userInfo.name }} [{{ userInfo.group__name }}]</h3>
+            <a :href="userInfo.group__url" target="_blank"> {{ userInfo.group__url }}</a>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col class="py-0" color="grey lighten-3">
-            <p class="ma-1 pa-2">DEBUG グループID: {{userInfo.group__id}}</p>
+        <v-row no-gutters class="mt-6">
+          <v-col>
+            <p>{{ userInfo.description }}</p>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col class="py-0" color="grey lighten-3">
-            <p class="ma-1 pa-2">DEBUG プロフィールユーザID: {{profileUserId}}</p>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="py-0" color="grey lighten-3">
-            <p class="ma-0 pa-2">{{userInfo.description}}</p>
-          </v-col>
-        </v-row>
-      </v-sheet>
+      </v-col>
     </v-row>
     <v-dialog
             v-model="dialog"
@@ -145,9 +120,9 @@
                   hide-input
                   v-model="sendInfo.file"
           ></v-file-input>
-<!--          <v-icon large color="grey darken-1 ma-0 pa-0 rounded-circle">-->
-<!--            mdi-paperclip-->
-<!--          </v-icon>-->
+          <!--          <v-icon large color="grey darken-1 ma-0 pa-0 rounded-circle">-->
+          <!--            mdi-paperclip-->
+          <!--          </v-icon>-->
           <v-spacer></v-spacer>
           <v-icon large color="grey darken-1 ma-0 pa-0" @click="sendMessage()">
             mdi-send-circle-outline
@@ -212,8 +187,8 @@
         <v-row class="ma-0 pa-0">
           <v-text-field
                   label="自己紹介"
-                  :counter="30"
-                  :maxlength="30"
+                  :counter="200"
+                  :maxlength="200"
                   v-model="userInfo.description"
           ></v-text-field>
         </v-row>
@@ -272,7 +247,7 @@
                   label="会社名"
                   :counter="30"
                   :maxlength="30"
-                  v-model="userInfo.company"
+                  v-model="userInfo.group__name"
           ></v-text-field>
         </v-row>
         <v-row class="ma-0 pa-0">
@@ -280,7 +255,7 @@
                   label="URL"
                   :counter="30"
                   :maxlength="30"
-                  v-model="userInfo.url"
+                  v-model="userInfo.group__url"
           ></v-text-field>
         </v-row>
       </v-card>
@@ -317,7 +292,7 @@
 
                     banner: "https://automaton-media.com/wp-content/uploads/2020/02/20200206-112749-header-696x392.jpg",
                     company: "",
-                    url: "https://www.allgoal.co.jp/",
+                    url: "",
                 },
                 sendInfo: {
                     title: '',
@@ -335,6 +310,10 @@
                 },
                 debug: "",
             }
+        },
+        mounted: function () {
+            this.getUserInfo();
+            this.getBpInfo();
         },
         methods: {
             setLoginState: function () {
@@ -446,11 +425,9 @@
                 axios.put('http://localhost:8000/api/user/' + this.profileUserId + '/', requestBody, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
-                        alert("ユーザ情報送信大成功");
                         this.getUserInfo();
                     }
                 }).catch(e => {
-                    alert("ユーザ情報送信失敗\nエラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                     console.log(e.message);
                 });
             },
@@ -467,11 +444,9 @@
                 axios.put('http://localhost:8000/api/user/img/' + this.profileUserId + '/', form, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
-                        alert("ユーザ画像送信大成功");
                         this.getUserInfo();
                     }
                 }).catch(e => {
-                    alert("ユーザ画像送信失敗\nエラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                     console.log(e.message);
                 });
 
@@ -482,15 +457,22 @@
                     this.userInfo.name = res.data.name;
                     this.userInfo.email = res.data.email;
                     this.userInfo.description = res.data.description;
-                    this.userInfo.icon = 'http://127.0.0.1:8000/media/' + res.data.img;
+                    if(res.data.img !== null){
+                      this.userInfo.icon = 'http://127.0.0.1:8000/media/' + res.data.img;
+                    } else {
+                      this.userInfo.icon = null
+                    }
                     this.userInfo.group__id = res.data.group__id;
                     this.userInfo.group__name = res.data.group__name;
                     this.userInfo.group__description = res.data.group__description;
                     this.userInfo.group__url = res.data.group__url;
-                    this.userInfo.group__img = 'http://127.0.0.1:8000/media/' + res.data.group__img;
+                    if(res.data.group__img !== null){
+                      this.userInfo.group__img = 'http://127.0.0.1:8000/media/' + res.data.group__img;
+                    } else {
+                      this.userInfo.group__img = null
+                    }
                 }).catch(e => {
-                    alert("例外");
-                    alert(e.message);
+                    console.log(e.message);
                 });
                 console.log("アイコン画像");
                 console.log(this.userInfo.icon);
@@ -515,16 +497,17 @@
                 axios.put('http://localhost:8000/api/group/' + this.userInfo.group__id + '/', requestBody, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
-                        alert("グループ情報送信大成功");
                         this.getUserInfo();
                     }
                 }).catch(e => {
-                    alert("グループ情報送信失敗\nエラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                     console.log(e.message);
                 });
             },
             sendGroupImg() {
                 console.log(this.backImgform);
+                if (this.backImgform === "") {
+                    return
+                }
                 const reqHeader = {
                     headers: {
                         Authorization: 'JWT' + ' ' + this.token,
@@ -536,11 +519,9 @@
                 axios.put('http://localhost:8000/api/group/img/' + this.userInfo.group__id + '/', form, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
-                        alert("グループ画像送信大成功");
                         this.getUserInfo();
                     }
                 }).catch(e => {
-                    alert("グループ画像送信失敗\nエラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                     console.log(e.message);
                 });
             },
@@ -553,11 +534,9 @@
 
                 axios.get('http://localhost:8000/api/bp/' + this.userId + '/' + this.profileUserId + '/', reqHeader).then(res => {
                     if (res.status.toString() === '200') {
-                        alert("正常系です。");
                         this.setProfileBp(res.data);
                     }
                 }).catch(e => {
-                    alert("異常系です。");
                     console.log(e.message);
                 });
             },
@@ -574,11 +553,9 @@
 
                 axios.post('http://localhost:8000/api/bp/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
-                        alert("正常系です。");
                         this.getBpInfo()
                     }
                 }).catch(e => {
-                    alert("異常系です。");
                     console.log(e.message);
                 });
             },
@@ -591,11 +568,9 @@
 
                 axios.delete('http://localhost:8000/api/bp/' + this.userId + '/' + this.profileUserId + '/', reqHeader).then(res => {
                     if (res.status.toString() === '200') {
-                        alert("正常系です。");
                         this.getBpInfo()
                     }
                 }).catch(e => {
-                    alert("異常系です。");
                     console.log(e.message);
                 });
             },
@@ -616,15 +591,13 @@
 
                 axios.post('http://localhost:8000/api/message/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
-                        alert("正常系です。");
                         console.log(this.sendInfo.file);
-                        if (this.sendInfo.file){
-                          console.log('sendFile');
-                          this.sendFile(res.data.message_id)
+                        if (this.sendInfo.file) {
+                            console.log('sendFile');
+                            this.sendFile(res.data.message_id)
                         }
                     }
                 }).catch(e => {
-                    alert("異常系です。");
                     console.log(e.message);
                 });
 
@@ -658,20 +631,13 @@
                     },
                 };
 
-                axios.put('http://localhost:8000/api/message/file/' + message_id + '/', form , reqHeader).then(res => {
-                    if (res.status.toString() === '200') {
-                        alert("正常系です。");
-                    }
+                axios.put('http://localhost:8000/api/message/file/' + message_id + '/', form, reqHeader).then(res => {
+                    console.log(res)
                 }).catch(e => {
-                    alert("異常系です。");
                     console.log(e.message);
                 });
             },
 
-        },
-        mounted: function () {
-            this.getUserInfo();
-            this.getBpInfo();
         },
         computed: {
             loginState: function () {

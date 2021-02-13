@@ -25,76 +25,78 @@
           </v-list-item>
         </v-list-item-group>
         <v-divider></v-divider>
-        <v-list-item v-if="loginState" to="/" @click="toHome" :active-class="naviFont">
-          <v-list-item-icon>
-            <v-icon large :color="naviItmColor.home">mdi-home</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>ホーム {{ activeNaviItm }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item to="/explore" :active-class="naviFont">
-          <v-list-item-icon>
-            <v-icon large :color="iconColor">mdi-magnify</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>検索</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="loginState" to="/bpManagement" :active-class="naviFont">
-          <v-list-item-icon>
-            <v-icon large :color="iconColor">mdi-bell-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>BP管理</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="loginState" to="/messages" :active-class="naviFont">
-          <v-list-item-icon>
-            <v-icon large :color="iconColor">mdi-email-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>メッセージ</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="loginState" @click="toProfile()" to="/profile" :active-class="naviFont">
-          <v-list-item-icon>
-            <v-icon large :color="iconColor">mdi-account</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>プロフィール</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item @click.stop="selectedSettingsDialog = true">
-          <v-list-item-icon>
-            <v-icon large :color="iconColor">mdi-cog-outline</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>設定</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item v-if="loginState" class="pt-4">
-          <v-btn
-                  color="grey lighten-1"
-                  rounded
-                  height="60"
-                  width="250"
-                  @click.stop="dialog_trans_info = true"
-          >
-            <b>情報を発信する</b>
-          </v-btn>
-        </v-list-item>
-        <v-list-item v-if="loginState" class="pt-10 mt-10">
-          <v-btn
-                  color="grey lighten-1"
-                  rounded
-                  height="50"
-                  width="140"
-                  @click.stop="dialog_logout = true"
-          >
-            ログアウト
-          </v-btn>
-        </v-list-item>
+        <v-list-itm-group :color="naviItmColor.home">
+          <v-list-item v-if="loginState" to="/" @click="toHome" :active-class="naviFont">
+            <v-list-item-icon>
+              <v-icon large :color="naviItmColor.home">mdi-home</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>ホーム {{ activeNaviItm }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/explore" :active-class="naviFont">
+            <v-list-item-icon>
+              <v-icon large :color="iconColor">mdi-magnify</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>検索</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item v-if="loginState" to="/bpManagement" :active-class="naviFont">
+            <v-list-item-icon>
+              <v-icon large :color="iconColor">mdi-bell-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>BP管理</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item v-if="loginState" to="/messages" :active-class="naviFont">
+            <v-list-item-icon>
+              <v-icon large :color="iconColor">mdi-email-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>メッセージ</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item v-if="loginState" @click="toProfile()" to="/profile" :active-class="naviFont">
+            <v-list-item-icon>
+              <v-icon large :color="iconColor">mdi-account</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>プロフィール</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item @click.stop="selectedSettingsDialog = true">
+            <v-list-item-icon>
+              <v-icon large :color="iconColor">mdi-cog-outline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>設定</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item v-if="loginState" class="pt-4">
+            <v-btn
+                    color="grey lighten-1"
+                    rounded
+                    height="60"
+                    width="250"
+                    @click.stop="dialog_trans_info = true"
+            >
+              <b>情報を発信する</b>
+            </v-btn>
+          </v-list-item>
+          <v-list-item v-if="loginState" class="pt-10 mt-10">
+            <v-btn
+                    color="grey lighten-1"
+                    rounded
+                    height="50"
+                    width="140"
+                    @click.stop="dialog_logout = true"
+            >
+              ログアウト
+            </v-btn>
+          </v-list-item>
+        </v-list-itm-group>
       </v-list>
       <v-dialog
               v-model="dialog"
@@ -450,7 +452,6 @@
                             this.dialog_hash = true;
                         }
                     }).catch(e => {
-                        alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                         console.log(e.message);
                     });
                 } else {
@@ -472,7 +473,6 @@
                             this.login();
                         }
                     }).catch(e => {
-                        alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                         console.log(e.message);
                     });
                     this.dialog = false;
@@ -550,10 +550,9 @@
                 axios.post('http://localhost:8000/api/disclosure/', requestBody, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
                     if (res.status.toString() === '200') {
-                        alert("大成功");
+                        console.log(res)
                     }
                 }).catch(e => {
-                    alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                     console.log(e.message);
                 });
 

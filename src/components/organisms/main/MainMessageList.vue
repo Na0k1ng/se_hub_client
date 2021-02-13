@@ -127,11 +127,9 @@
 
                 axios.post('http://localhost:8000/api/message/list/' + this.userId + '/' ,requestBody ,reqHeader).then(res => {
                     if (res.status.toString() === '200') {
-                        alert("正常系です。");
                         this.messageList = res.data
                     }
                 }).catch(e => {
-                    alert("異常系です。");
                     console.log(e.message);
                 });
 
@@ -172,11 +170,9 @@
 
                 axios.get('http://localhost:8000/api/message/' + id + '/' + count + '/' ,reqHeader).then(res => {
                     if (res.status.toString() === '200') {
-                        alert("正常系です。");
                         // this.messageList = res.data
                     }
                 }).catch(e => {
-                    alert("異常系です。");
                     console.log(e.message);
                 });
 
@@ -200,11 +196,8 @@
 
                 axios.put('http://localhost:8000/api/user/' + id + '/', form, reqHeader).then(res => {
                     // JWTログイン後にユーザー情報を取得する
-                    if (res.status.toString() === '200') {
-                        alert("大成功");
-                    }
+                    console.log(res)
                 }).catch(e => {
-                    alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
                     console.log(e.message);
                 });
 
