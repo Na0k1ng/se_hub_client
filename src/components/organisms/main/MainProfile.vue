@@ -76,7 +76,7 @@
                 height=45
                 width=120
                 rounded
-                @click="deleteBpInfo"
+                @click="deleteBpDialog=true"
             >
               <v-icon style="position: absolute; left: 0; font-size: 20px;" color="white">mdi-handshake-outline</v-icon>
               <b>BP</b>
@@ -96,6 +96,39 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-dialog
+        v-model="deleteBpDialog"
+        max-width="400"
+    >
+      <v-card>
+        <v-card-text class="px-6 pt-10 pb-6" style="font-weight: bold; text-align: center;">
+          ＢＰ関係を解消しますか？
+        </v-card-text>
+        <v-card-actions style="text-align: center;">
+          <v-col>
+            <v-btn
+                color="red"
+                class="white--text"
+                @click="deleteBpInfo(); deleteBpDialog=false"
+            >
+              <v-icon
+                  style="font-size: 18px;"
+                  class="pr-1"
+              >mdi-hand-right</v-icon>解消する
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+                color="grey"
+                class="white--text"
+                @click="deleteBpDialog=false"
+            >
+              キャンセル
+            </v-btn>
+          </v-col>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-dialog
         v-model="dialog"
         max-width="600"
@@ -299,6 +332,7 @@ export default {
       dialog: false,
       editDialog: false,
       editGroupDialog: false,
+      deleteBpDialog: false,
       isEnter: false,
       files: [],
       form: {},

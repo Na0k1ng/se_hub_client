@@ -54,13 +54,15 @@
             <v-spacer></v-spacer>
             <v-list-item-content>
               <v-btn
-                  color="grey lighten-1"
+                  style="position: absolute; right: 32px;"
+                  color="red"
+                  class="white--text"
                   rounded
                   height="40"
-                  width="100"
-                  max-width="100"
+                  width="180"
+                  max-width="180"
               >
-                BP解除
+                BP関係を解消する
               </v-btn>
             </v-list-item-content>
           </v-list-item>
@@ -86,13 +88,15 @@
             <v-spacer></v-spacer>
             <v-list-item-content>
               <v-btn
-                  color="grey lighten-1"
+                  style="position: absolute; right: 32px;"
+                  color="red"
+                  class="white--text"
                   rounded
                   height="40"
-                  width="100"
-                  max-width="100"
+                  width="180"
+                  max-width="180"
               >
-                BP登録
+                BP申請を取り消す
               </v-btn>
             </v-list-item-content>
           </v-list-item>
@@ -118,13 +122,15 @@
             <v-spacer></v-spacer>
             <v-list-item-content>
               <v-btn
-                  color="grey lighten-1"
+                  style="position: absolute; right: 32px;"
+                  color="green accent-4"
+                  class="white--text"
                   rounded
                   height="40"
-                  width="100"
-                  max-width="100"
+                  width="180"
+                  max-width="180"
               >
-                BP申請解除
+                BP申請を承諾する
               </v-btn>
             </v-list-item-content>
 
