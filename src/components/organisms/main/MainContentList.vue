@@ -3,8 +3,8 @@
     <v-row no-gutters class="ma-0 pa-0">
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
-                v-for="(content,index) in contentsList"
-                :key="index"
+            v-for="(content,index) in contentsList"
+            :key="index"
         >
           <v-list-item>
             <v-list-item-avatar @click="toProfile(content)">
@@ -25,8 +25,8 @@
     </v-row>
     <v-divider/>
     <v-dialog
-            v-model="dialog"
-            max-width="600"
+        v-model="dialog"
+        max-width="600"
     >
       <v-card class="pa-10">
         <v-card-title class="headline">
@@ -49,16 +49,17 @@
         </v-row>
         <v-card-actions>
           <v-btn
-                  class="red"
-                  @click="deleteContent()"
+              color="red"
+              class="white--text"
+              @click="deleteContent()"
           >
             削除
           </v-btn>
 
           <v-spacer></v-spacer>
           <v-btn
-                  class="info"
-                  @click="dialog=false"
+              class="info"
+              @click="dialog=false"
           >
             閉じる
           </v-btn>
@@ -70,110 +71,110 @@
 </template>
 
 <script>
-    import axios from 'axios';
+import axios from 'axios';
 
-    export default {
-        name: "MainContentList",
-        data() {
-            return {
-                contentsList_: [],
-                proposition: {},
-                dialog: false
-            }
-        },
-        mounted: function () {
-            console.log('mounted')
-            this.getContentsList();
-        },
-        methods: {
-            getContentsList() {
-                // let contentsList = [
-                //     {
-                //         icon: "",
-                //         title: "タイトル1",
-                //         subtitle: "c1XXXXXXXXXXXXXX",
-                //         text: "ct1XXXXXXXXXXXXXX"
-                //     },
-                //     {
-                //         icon: "",
-                //         title: "タイトル2",
-                //         subtitle: "c2XXXXXXXXXXXXX",
-                //         text: "ct2XXXXXXXXXXXXX"
-                //     },
-                //     {
-                //         icon: "",
-                //         title: "タイトル3",
-                //         subtitle: "c3XXXXXXXXXXXXX",
-                //         text: "ct3XXXXXXXXXXXXX"
-                //     }
-                // ];
-                const requestBody = {
-                    'user_id': this.userId,
-                    'kind': '0',
-                    'count': '1',
-                };
-
-                axios.post('http://localhost:8000/api/disclosure/list/', requestBody).then(res => {
-                    if (res.status.toString() === '200') {
-                        this.setContentsList(res.data);
-                    }
-                }).catch(e => {
-                    console.log(e.message);
-                });
-                //this.contentsList = contentsList;
-            },
-            displayContent(content) {
-                this.proposition = content;
-                this.dialog = true;
-            },
-            deleteContent() {
-                const reqHeader = {
-                    headers: {
-                        Authorization: 'JWT' + ' ' + this.token,
-                    },
-                };
-                axios.delete('http://localhost:8000/api/disclosure/' + this.proposition.id + '/', reqHeader).then(res => {
-                    // JWTログイン後にユーザー情報を取得する
-                    if (res.status.toString() === '200') {
-                        console.log(res)
-                    }
-                }).catch(e => {
-                    console.log(e.message);
-                });
-
-                this.dialog = false;
-
-            },
-            toProfile(content) {
-                this.proposition = content;
-                this.setProfileUserId(this.proposition.user__id);
-                console.log(this.proposition.user__id);
-                console.log(this.profileUserId);
-                this.$router.push('/profile');
-            },
-            setProfileUserId: function (profileUserId) {
-                this.$store.commit('setProfileUserId', profileUserId)
-            },
-            setContentsList: function (contentsList) {
-                this.$store.commit('setContentsList', contentsList)
-            }
-        },
-        computed: {
-            userId: function () {
-                return this.$store.state.userId
-            },
-            token: function () {
-                return this.$store.state.token
-            },
-            profileUserId: function () {
-                return this.$store.state.profileUserId
-            },
-            contentsList: function () {
-                return this.$store.state.contentsList
-            },
-
-        },
+export default {
+  name: "MainContentList",
+  data() {
+    return {
+      contentsList_: [],
+      proposition: {},
+      dialog: false
     }
+  },
+  mounted: function () {
+    console.log('mounted')
+    this.getContentsList();
+  },
+  methods: {
+    getContentsList() {
+      // let contentsList = [
+      //     {
+      //         icon: "",
+      //         title: "タイトル1",
+      //         subtitle: "c1XXXXXXXXXXXXXX",
+      //         text: "ct1XXXXXXXXXXXXXX"
+      //     },
+      //     {
+      //         icon: "",
+      //         title: "タイトル2",
+      //         subtitle: "c2XXXXXXXXXXXXX",
+      //         text: "ct2XXXXXXXXXXXXX"
+      //     },
+      //     {
+      //         icon: "",
+      //         title: "タイトル3",
+      //         subtitle: "c3XXXXXXXXXXXXX",
+      //         text: "ct3XXXXXXXXXXXXX"
+      //     }
+      // ];
+      const requestBody = {
+        'user_id': this.userId,
+        'kind': '0',
+        'count': '1',
+      };
+
+      axios.post('http://localhost:8000/api/disclosure/list/', requestBody).then(res => {
+        if (res.status.toString() === '200') {
+          this.setContentsList(res.data);
+        }
+      }).catch(e => {
+        console.log(e.message);
+      });
+      //this.contentsList = contentsList;
+    },
+    displayContent(content) {
+      this.proposition = content;
+      this.dialog = true;
+    },
+    deleteContent() {
+      const reqHeader = {
+        headers: {
+          Authorization: 'JWT' + ' ' + this.token,
+        },
+      };
+      axios.delete('http://localhost:8000/api/disclosure/' + this.proposition.id + '/', reqHeader).then(res => {
+        // JWTログイン後にユーザー情報を取得する
+        if (res.status.toString() === '200') {
+          console.log(res)
+        }
+      }).catch(e => {
+        console.log(e.message);
+      });
+
+      this.dialog = false;
+
+    },
+    toProfile(content) {
+      this.proposition = content;
+      this.setProfileUserId(this.proposition.user__id);
+      console.log(this.proposition.user__id);
+      console.log(this.profileUserId);
+      this.$router.push('/profile');
+    },
+    setProfileUserId: function (profileUserId) {
+      this.$store.commit('setProfileUserId', profileUserId)
+    },
+    setContentsList: function (contentsList) {
+      this.$store.commit('setContentsList', contentsList)
+    }
+  },
+  computed: {
+    userId: function () {
+      return this.$store.state.userId
+    },
+    token: function () {
+      return this.$store.state.token
+    },
+    profileUserId: function () {
+      return this.$store.state.profileUserId
+    },
+    contentsList: function () {
+      return this.$store.state.contentsList
+    },
+
+  },
+}
 </script>
 
 <style scoped>

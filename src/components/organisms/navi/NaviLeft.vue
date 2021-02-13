@@ -212,13 +212,13 @@
           max-width="600"
       >
         <v-card class="pa-10">
-          <v-card-title class="headline">
+          <v-card-title class="headline pb-10">
             設定
           </v-card-title>
           <v-card-subtitle>通知設定</v-card-subtitle>
           <v-card-subtitle>アカウント</v-card-subtitle>
           <v-card-actions>
-            <v-col style="text-align: center;">
+            <v-col class="pa-0" style="text-align: center;">
               <v-btn
                   color=red
                   class="white--text"
