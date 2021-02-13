@@ -11,6 +11,7 @@ export default new Vuex.Store({
         token: "",
         profileUserId: "",
         profileBp: "",
+        contentsList:""
     },
     mutations: {
         setLoginState: function (state, val) {
@@ -30,6 +31,9 @@ export default new Vuex.Store({
         },
         setProfileBp: function (state, val) {
             state.profileBp = val
+        },
+        setContentsList: function (state, val) {
+            state.contentsList = val
         },
     },
     actions: {},

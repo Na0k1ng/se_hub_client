@@ -76,7 +76,7 @@
         name: "MainContentList",
         data() {
             return {
-                contentsList: [],
+                contentsList_: [],
                 proposition: {},
                 dialog: false
             }
@@ -115,7 +115,7 @@
 
                 axios.post('http://localhost:8000/api/disclosure/list/', requestBody).then(res => {
                     if (res.status.toString() === '200') {
-                        this.contentsList = res.data;
+                        this.setContentsList(res.data);
                     }
                 }).catch(e => {
                     console.log(e.message);
@@ -154,6 +154,9 @@
             setProfileUserId: function (profileUserId) {
                 this.$store.commit('setProfileUserId', profileUserId)
             },
+            setContentsList: function (contentsList) {
+                this.$store.commit('setContentsList', contentsList)
+            }
         },
         computed: {
             userId: function () {
@@ -164,6 +167,9 @@
             },
             profileUserId: function () {
                 return this.$store.state.profileUserId
+            },
+            contentsList: function () {
+                return this.$store.state.contentsList
             },
 
         },
