@@ -5,7 +5,7 @@
         <v-text-field
                 label="キーワード検索"
                 prepend-inner-icon="mdi-magnify"
-                v-model="selectString"
+                v-model="searchString"
                 @keyup.enter="getContentsList"
         ></v-text-field>
       </v-col>
@@ -45,7 +45,7 @@
                     {title: "技術情報", id: 4},
                     {title: "その他", id: 5}
                 ],
-                selectString: "",
+                searchString: "",
                 selectedTag: "0"
             }
         },
@@ -54,12 +54,12 @@
                 this.selectedTag = tag;
             },
             getContentsList() {
-                console.log(this.selectString);
+                console.log(this.searchString);
                 const requestBody = {
                     'user_id': this.userId,
                     'kind': this.selectedTag,
                     'count': '1',
-                    'select_string': this.selectString
+                    'search_string': this.searchString
                 };
 
                 axios.post('http://localhost:8000/api/disclosure/list/', requestBody).then(res => {
