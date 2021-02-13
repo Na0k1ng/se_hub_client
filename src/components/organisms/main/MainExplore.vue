@@ -15,21 +15,22 @@
         <p class="ma-1">タグ：</p>
       </v-col>
       <v-col cols=10>
-        <v-chip
-                link
-                class="mx-1 px-2"
-                v-for="(tag,index) in tagList"
-                :key="index"
-                @click="getSelectedTag(tag)"
-        >
-          {{ tag.title }}
-        </v-chip>
+        <v-chip-group active-class="grey">
+          <v-chip
+                  class="mx-1 px-2"
+                  v-for="(tag,index) in tagList"
+                  :key="index"
+                  @click="getSelectedTag(tag.id)"
+          >
+            {{ tag.title }}
+          </v-chip>
+        </v-chip-group>
       </v-col>
     </v-row>
     <v-divider/>
   </div>
 </template>
-
+<!--                  @click="getSelectedTag(tag.id)"-->
 <script>
     import axios from 'axios';
 
@@ -39,11 +40,11 @@
         data() {
             return {
                 tagList: [
-                    {title: "案件情報", id: 1},
-                    {title: "人材情報", id: 2},
-                    {title: "会社情報", id: 3},
-                    {title: "技術情報", id: 4},
-                    {title: "その他", id: 5}
+                    {title: "案件情報", id: "1"},
+                    {title: "人材情報", id: "2"},
+                    {title: "会社情報", id: "3"},
+                    {title: "技術情報", id: "4"},
+                    {title: "その他", id: "5"}
                 ],
                 searchString: "",
                 selectedTag: "0"
@@ -51,7 +52,12 @@
         },
         methods: {
             getSelectedTag(tag) {
-                this.selectedTag = tag;
+                if (this.selectedTag !== tag) {
+                    this.selectedTag = tag;
+                } else {
+                    this.selectedTag = "0"
+                }
+                console.log(this.selectedTag)
             },
             getContentsList() {
                 console.log(this.searchString);
