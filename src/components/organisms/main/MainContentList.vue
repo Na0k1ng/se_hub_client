@@ -31,7 +31,7 @@
     >
       <v-card class="pa-10">
         <v-card-title class="headline">
-          案件情報：{{ this.proposition.title }}
+          {{ this.proposition.title }}
         </v-card-title>
         <v-row class="ma-0 pa-0">
           <v-avatar>
@@ -42,28 +42,30 @@
           </v-avatar>
           <p>{{ this.proposition.user__name }}</p>
         </v-row>
-        <v-row class="ma-0 pa-0">
-          <p class="mt-2">タイトル： {{ this.proposition.title }} </p>
-        </v-row>
         <v-row>
-          <p class="mt-2">{{ this.proposition.description }}</p>
+          <p class="mt-2" style="white-space: pre-line; word-wrap: break-word;">
+            {{ this.proposition.description }}
+          </p>
         </v-row>
         <v-card-actions>
-          <v-btn
-              color="red"
-              class="white--text"
-              @click="deleteContent()"
-          >
-            削除
-          </v-btn>
-
-          <v-spacer></v-spacer>
-          <v-btn
-              class="info"
-              @click="dialog=false"
-          >
-            閉じる
-          </v-btn>
+          <v-col style="text-align: center;">
+            <v-btn
+                v-if="(this.proposition.user__id === this.userId)"
+                color="red"
+                class="white--text"
+                @click="deleteContent()"
+            >
+              この投稿を削除する
+            </v-btn>
+            <v-btn
+                v-if="(this.proposition.user__id !== this.userId)"
+                color="green accent-4"
+                class="white--text"
+                @click="dialog"
+            >
+              この投稿にメッセージを送信する
+            </v-btn>
+          </v-col>
         </v-card-actions>
       </v-card>
     </v-dialog>
