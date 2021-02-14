@@ -588,7 +588,11 @@ export default {
     },
     toProfile() {
       this.setProfileUserId(this.userId);
-      this.$router.push('/profile');
+      if(this.$router.currentRoute.path == "/profile") {
+          this.$router.go({path: this.$router.currentRoute.path, force: true});
+      } else {
+        this.$router.push('/profile');
+      }
     },
     toHome() {
       this.naviItmColor.home = this.selectedIconColor;
