@@ -4,6 +4,7 @@
       <v-col>
         <v-text-field
                 label="キーワード検索"
+                color="green accent-4"
                 prepend-inner-icon="mdi-magnify"
                 v-model="searchString"
                 @keyup.enter="getContentsList"
