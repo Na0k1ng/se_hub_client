@@ -91,7 +91,9 @@
         </v-row>
         <v-row no-gutters class="mt-6">
           <v-col>
-            <p>{{ userInfo.description }}</p>
+            <p style="white-space: pre-line; word-wrap: break-word;">
+              {{ userInfo.description }}
+            </p>
           </v-col>
         </v-row>
       </v-col>
