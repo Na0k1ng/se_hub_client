@@ -43,6 +43,7 @@
               <v-list-item-content>
                 <v-list-item-title>{{ n.description }}</v-list-item-title>
                 <v-list-item-subtitle>{{ parseTime(n.insert_datetime) }}</v-list-item-subtitle>
+                <a v-if="n.file" :href="parseFile(n.file)">添付ファイルをダウンロード</a>
               </v-list-item-content>
             </v-list-item>
             <v-list-item v-else class="mb-4 rounded-pill">
@@ -58,6 +59,7 @@
                 <v-list-item-title>{{ n.description }}</v-list-item-title>
                 <v-list-item-subtitle>{{ parseTime(n.insert_datetime) }}</v-list-item-subtitle>
                 <v-list-item-subtitle v-if="n.is_read">既読</v-list-item-subtitle>
+                <a v-if="n.file" :href="parseFile(n.file)">添付ファイルをダウンロード</a>
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
@@ -224,7 +226,14 @@
 
                 this.file = "";
             },
-
+            parseFile(file) {
+                console.log(file)
+                let ret = null;
+                if (file) {
+                    ret = 'http://127.0.0.1:8000/media/' + file
+                }
+                return ret
+            }
         },
         computed: {
             userName: function () {
