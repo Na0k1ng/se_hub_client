@@ -64,21 +64,33 @@
         </v-list>
         <v-divider></v-divider>
         <v-row class="ma-0 pa-0">
-          <v-icon large color="grey darken-1 ma-0 pa-0 rounded-circle">
-            mdi-paperclip
-          </v-icon>
-          <v-textarea
-                  label="メッセージを入力"
-                  name="input-7-4"
-                  :counter="300"
-                  :maxlength="300"
+          <v-col cols="12" class="pb-0">
+            <v-textarea
+                    label="メッセージを入力"
+                    name="input-7-4"
+                    :counter="300"
+                    :maxlength="300"
+                    color="green accent-4"
+                    required
+                    v-model="chatMessage"
+            ></v-textarea>
+          </v-col>
+        </v-row>
+        <v-row class="ma-0 pa-0">
+          <v-file-input
+                  truncate-length="0"
+                  hide-input
+                  v-model="file"
+          ></v-file-input>
+          <v-spacer/>
+          <v-btn
+                  @click="sendMessage()"
+                  width=120
                   color="green accent-4"
-                  required
-                  v-model="chatMessage"
-          ></v-textarea>
-          <v-icon large color="grey darken-1 ma-0 pa-0" @click="sendMessage()">
-            mdi-send-circle-outline
-          </v-icon>
+                  class="white--text mt-4"
+          >
+            送信
+          </v-btn>
         </v-row>
       </v-card>
     </v-dialog>
@@ -100,7 +112,8 @@
                 message: "",
                 form: [],
                 selectedMessage: "",
-                chatMessage: ""
+                chatMessage: "",
+                file: ""
             }
         },
         mounted: function () {
@@ -169,11 +182,10 @@
 
                 axios.post('http://localhost:8000/api/message/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
-                        // console.log(this.sendInfo.file);
-                        // if (this.sendInfo.file) {
-                        //     console.log('sendFile');
-                        //     this.sendFile(res.data.message_id)
-                        // }
+                        console.log(this.file);
+                        if (this.file) {
+                            this.sendFile(res.data.message_id)
+                        }
                     }
                 }).catch(e => {
                     console.log(e.message);
@@ -190,7 +202,29 @@
                 const hours = dt.getHours();
                 const minutes = dt.getMinutes();
                 return year + "/" + month + "/" + days + " " + hours + ":" + minutes
-            }
+            },
+            sendFile(message_id) {
+                let form = new FormData();
+                let file = this.file;
+
+                form.append('file', file);
+                console.log(file);
+
+                const reqHeader = {
+                    headers: {
+                        Authorization: 'JWT' + ' ' + this.token,
+                    },
+                };
+
+                axios.put('http://localhost:8000/api/message/file/' + message_id + '/', form, reqHeader).then(res => {
+                    console.log(res)
+                }).catch(e => {
+                    console.log(e.message);
+                });
+
+                this.file = "";
+            },
+
         },
         computed: {
             userName: function () {
