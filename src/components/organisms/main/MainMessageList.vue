@@ -29,8 +29,9 @@
           <v-icon large color="grey darken-1 ma-0 pa-0" @click="dialog = false">
             mdi-arrow-left
           </v-icon>
-          <p v-if="selectedMessage.from_user__id != userId" class="ma-0 pa-0 pl-2">{{ selectedMessage.title }}  ({{ selectedMessage.from_user__name }})</p>
-          <p v-else class="ma-0 pa-0 pl-2">{{ selectedMessage.title }}  ({{ selectedMessage.to_user__name }})</p>
+          <p v-if="selectedMessage.from_user__id != userId" class="ma-0 pa-0 pl-2">{{ selectedMessage.title }} ({{
+            selectedMessage.from_user__name }})</p>
+          <p v-else class="ma-0 pa-0 pl-2">{{ selectedMessage.title }} ({{ selectedMessage.to_user__name }})</p>
         </v-card-title>
         <v-divider></v-divider>
         <v-list width="50%" class="ma-0 pa-0 my-8">
@@ -38,7 +39,7 @@
                   v-for="(n,index) in chatList"
                   :key="index"
           >
-            <v-list-item v-if="n.mymsg" class="mb-4 rounded-pill grey">
+            <v-list-item v-if="n.from_user__id == userId" class="mb-4 rounded-pill grey">
               <v-list-item-content>
                 <v-list-item-title>{{ n.description }}</v-list-item-title>
                 <v-list-item-subtitle>{{ parseTime(n.insert_datetime) }}</v-list-item-subtitle>
@@ -46,9 +47,12 @@
             </v-list-item>
             <v-list-item v-else class="mb-4 rounded-pill">
               <v-list-item-avatar>
-                <v-icon class="grey lighten-1">
+                <v-icon v-if="n.from_user__img === null" class="grey lighten-1">
                   mdi-account
                 </v-icon>
+                <v-avatar>
+                  <v-img :src="'http://127.0.0.1:8000/media/' + n.from_user__img"></v-img>
+                </v-avatar>
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title>{{ n.description }}</v-list-item-title>
@@ -63,12 +67,15 @@
           <v-icon large color="grey darken-1 ma-0 pa-0 rounded-circle">
             mdi-paperclip
           </v-icon>
-          <v-text-field
+          <v-textarea
                   label="メッセージを入力"
+                  name="input-7-4"
                   :counter="300"
                   :maxlength="300"
-                  v-model="message"
-          ></v-text-field>
+                  color="green accent-4"
+                  required
+                  v-model="chatMessage"
+          ></v-textarea>
           <v-icon large color="grey darken-1 ma-0 pa-0" @click="sendMessage()">
             mdi-send-circle-outline
           </v-icon>
@@ -92,7 +99,8 @@
                 chatList: [],
                 message: "",
                 form: [],
-                selectedMessage: ""
+                selectedMessage: "",
+                chatMessage: ""
             }
         },
         mounted: function () {
@@ -101,21 +109,6 @@
         },
         methods: {
             getMessageList() {
-                // let messageList = [
-                //     {
-                //         icon: "",
-                //         title: "メッセージ1",
-                //     },
-                //     {
-                //         icon: "",
-                //         title: "メッセージ2",
-                //     },
-                //     {
-                //         icon: "",
-                //         title: "メッセージ3",
-                //     },
-                // ];
-
                 const reqHeader = {
                     headers: {
                         Authorization: 'JWT' + ' ' + this.token,
@@ -124,10 +117,10 @@
 
                 let count = '1';
                 const requestBody = {
-                    'count' : count
+                    'count': count
                 };
 
-                axios.post('http://localhost:8000/api/message/list/' + this.userId + '/' ,requestBody ,reqHeader).then(res => {
+                axios.post('http://localhost:8000/api/message/list/' + this.userId + '/', requestBody, reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         this.messageList = res.data
                     }
@@ -138,29 +131,7 @@
                 // this.messageList = messageList;
             },
             getChatList(message) {
-                // let chatList = [
-                //     {
-                //         icon: "",
-                //         body: "Hi. I'm AllGoal .Inc",
-                //         timestamp: "午後8:30",
-                //         mymsg: true,
-                //         aread: false,
-                //     },
-                //     {
-                //         icon: "",
-                //         body: "Hi. I'm XXX .Inc",
-                //         timestamp: "午後9:00",
-                //         mymsg: false,
-                //         aread: true,
-                //     },
-                //     {
-                //         icon: "",
-                //         body: "XXXXXXXX",
-                //         timestamp: "午後9:30",
-                //         mymsg: true,
-                //         aread: false,
-                //     },
-                // ];
+                this.message = message;
 
                 const reqHeader = {
                     headers: {
@@ -170,7 +141,7 @@
 
                 let count = '1';
 
-                axios.get('http://localhost:8000/api/message/' + message.id + '/' + count + '/' ,reqHeader).then(res => {
+                axios.get('http://localhost:8000/api/message/' + message.id + '/' + count + '/', reqHeader).then(res => {
                     if (res.status.toString() === '200') {
                         this.chatList = res.data
                     }
@@ -178,39 +149,39 @@
                     console.log(e.message);
                 });
 
-                this.selectedMessage= message;
+                this.selectedMessage = message;
                 this.dialog = true;
             },
-            sendMessage(id) {
+            sendMessage() {
                 const requestBody = {
-                    'message': this.message,
+                    'title': "",
+                    'description': this.chatMessage,
+                    'message_id': this.selectedMessage.id,
+                    'disclosure_id': '',
+                    'user_id': this.userId,
+                    'other_id': this.selectedMessage.to_user__id,
                 };
-
                 const reqHeader = {
                     headers: {
                         Authorization: 'JWT' + ' ' + this.token,
-                        'content-type': 'multipart/form-data'
                     },
                 };
 
-                let form = this.form;
-                form.append('json_data', requestBody);
-
-                axios.put('http://localhost:8000/api/user/' + id + '/', form, reqHeader).then(res => {
-                    // JWTログイン後にユーザー情報を取得する
-                    console.log(res)
+                axios.post('http://localhost:8000/api/message/', requestBody, reqHeader).then(res => {
+                    if (res.status.toString() === '200') {
+                        // console.log(this.sendInfo.file);
+                        // if (this.sendInfo.file) {
+                        //     console.log('sendFile');
+                        //     this.sendFile(res.data.message_id)
+                        // }
+                    }
                 }).catch(e => {
                     console.log(e.message);
                 });
-
-                this.dialog = false;
+                this.chatMessage = "";
+                this.getChatList(this.message)
             },
             parseTime(insert_datetime) {
-               // let tmp=  insert_datetime.split("T")
-               // let date = tmp[0]
-               // let tmp_t = tmp[1].split(":")
-               // let time = tmp_t[0] + ":" + tmp_t[1]
-               // return date + " " + time
                 let ts = Date.parse(insert_datetime);
                 const dt = new Date(ts);
                 const year = dt.getFullYear();
