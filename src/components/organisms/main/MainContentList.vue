@@ -153,10 +153,12 @@ export default {
       this.setProfileUserId(this.proposition.user__id);
       console.log(this.proposition.user__id);
       console.log(this.profileUserId);
-      if(this.$router.currentRoute.path == "/profile") {
+      if(this.$router.currentRoute.path === "/profile") {
           this.$router.go({path: this.$router.currentRoute.path, force: true});
       } else {
-        this.$router.push('/profile');
+        this.$router.push('/profile').catch(err => {
+          console.log(err)
+        });
       }
     },
     setProfileUserId: function (profileUserId) {

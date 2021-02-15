@@ -2,7 +2,7 @@
   <div>
     <v-row no-gutters>
       <v-col>
-        <v-img v-if="userInfo.group__img === null" src="@/assets/riv0066-051.jpg" height="250"></v-img>
+        <v-img v-if="userInfo.group__img === ''" src="@/assets/riv0066-051.jpg" height="250"></v-img>
         <v-img v-else :src="userInfo.group__img" height="250"></v-img>
       </v-col>
     </v-row>
@@ -12,7 +12,7 @@
           <v-col>
             <v-avatar size=160 color="white"></v-avatar>
             <v-avatar size=150 color="white" style="margin-left: -155px">
-              <v-icon v-if="userInfo.icon === null" color="grey darken-1">
+              <v-icon v-if="userInfo.icon === ''" color="grey darken-1">
                 mdi-account
               </v-icon>
               <v-img v-else :src="userInfo.icon"></v-img>
@@ -24,7 +24,7 @@
                 color="grey"
                 class="white--text ml-10"
                 height=40
-                depressed="true"
+                depressed
                 @click="editDialog = true"
             >
               <b>プロフィールを編集</b>
@@ -344,7 +344,7 @@ export default {
         name: "",
         email: "",
         description: "",
-        icon: [],
+        icon: "",
         group__id: "",
         group__name: "",
         group__description: "",
@@ -521,7 +521,7 @@ export default {
         if (res.data.img !== null) {
           this.userInfo.icon = 'http://127.0.0.1:8000/media/' + res.data.img;
         } else {
-          this.userInfo.icon = null
+          this.userInfo.icon = ""
         }
         this.userInfo.group__id = res.data.group__id;
         this.userInfo.group__name = res.data.group__name;
@@ -530,7 +530,7 @@ export default {
         if (res.data.group__img !== null) {
           this.userInfo.group__img = 'http://127.0.0.1:8000/media/' + res.data.group__img;
         } else {
-          this.userInfo.group__img = null
+          this.userInfo.group__img = ""
         }
       }).catch(e => {
         console.log(e.message);
