@@ -412,13 +412,13 @@ export default {
       let files = [...event.dataTransfer.files];
       let form = new FormData();
       const userId = this.profileUserId;
-      let cfile = '';
+      let fileData = '';
 
       files.forEach(file => {
         console.log(file);
         form.append('user_img', file, userId + '.jpg');
         console.log(form);
-        cfile = file;
+        fileData = file;
       });
 
       this.form = form;
@@ -428,8 +428,7 @@ export default {
         console.log(key, value);
       }
 
-      this.userInfo.icon = cfile;
-
+      this.userInfo.icon = URL.createObjectURL(fileData)
       this.isEnter = false;
     },
     dropBackFile: function () {
@@ -450,11 +449,13 @@ export default {
       let files = [...event.dataTransfer.files];
       let form = new FormData();
       const group_id = this.userInfo.group__id;
+      let fileData = '';
 
       files.forEach(file => {
         console.log(file);
         form.append('group_img', file, group_id + '.jpg');
         console.log(form);
+        fileData = file;
       });
 
       this.backImgform = form;
@@ -463,6 +464,8 @@ export default {
       for (let [key, value] of form.entries()) {
         console.log(key, value);
       }
+
+      this.userInfo.group__img = URL.createObjectURL(fileData)
 
       this.isEnter = false;
     },

@@ -25,7 +25,7 @@
           </v-list-item>
         </v-list-item-group>
         <v-divider></v-divider>
-        <v-list-item-group  :class="naviFont">
+        <v-list-item-group :class="naviFont">
           <v-list-item v-if="loginState" to="/" :ripple="false" active-class="font-weight-bold">
             <v-list-item-icon>
               <v-icon large>mdi-home</v-icon>
@@ -42,7 +42,7 @@
               <v-list-item-title>検索</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item v-if="loginState" to="/bpManagement" :ripple="false"  active-class="font-weight-bold">
+          <v-list-item v-if="loginState" to="/bpManagement" :ripple="false" active-class="font-weight-bold">
             <v-list-item-icon>
               <v-icon large>mdi-bell-outline</v-icon>
             </v-list-item-icon>
@@ -50,7 +50,7 @@
               <v-list-item-title>BP管理</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item v-if="loginState" to="/messages" :ripple="false"  active-class="font-weight-bold">
+          <v-list-item v-if="loginState" to="/messages" :ripple="false" active-class="font-weight-bold">
             <v-list-item-icon>
               <v-icon large>mdi-email-outline</v-icon>
             </v-list-item-icon>
@@ -58,7 +58,8 @@
               <v-list-item-title>メッセージ</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item v-if="loginState" to="/profile" @click="toProfile()" :ripple="false" active-class="font-weight-bold">
+          <v-list-item v-if="loginState" to="/profile" @click="toProfile()" :ripple="false"
+                       active-class="font-weight-bold">
             <v-list-item-icon>
               <v-icon large>mdi-account</v-icon>
             </v-list-item-icon>
