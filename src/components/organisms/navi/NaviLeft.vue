@@ -162,16 +162,15 @@
           <v-card-title class="headline" style="text-align: center; display: inherit;">
             確認コード入力
           </v-card-title>
-          <v-form ref="form" class="px-10 py-6">
-            <v-text-field
+          <v-form ref="form" class="px-10 py-6" style="text-align: center;">
+            <vue-fake-input
                 label="確認コード"
-                :counter="6"
-                maxlength="6"
+                :length="6"
+                :font-size="16"
                 color="green accent-4"
                 required
                 v-model="credentials.hash_cd"
-                @keyup.enter="registerHash"
-                @keypress="can_login=false; can_confirm=true;"
+                @keypress="can_login=false;"
             />
           </v-form>
           <v-card-actions>
@@ -285,18 +284,6 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog
-
-          v-model="flashDialog"
-          max-width="420"
-      >
-        <v-card class="px-10 py-6">
-          <v-card-text class="px-6 pt-10 pb-6" style="font-weight: bold; text-align: center;">
-            <span v-if="this.flashMessage1">{{ this.flashMessage1 }}</span><br/>
-            <span v-if="this.flashMessage2">{{ this.flashMessage2 }}</span>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
     </v-sheet>
   </v-navigation-drawer>
 </template>
@@ -312,7 +299,6 @@ export default {
       // style
       baseColor: 'grey lighten-3',
       iconColor: 'grey darken-1',
-      selectedIconColor: 'green accent-4',
       buttonColor: 'green accent-4',
       naviFont: 'green--text text--accent-4',
       defaultColor: 'gray--text text--darken-1',
@@ -338,11 +324,6 @@ export default {
       dialog_trans_info: false,
       selectedSettingsDialog: false,
       dialog_logout: false,
-      flashDialog: false,
-
-      // flashDialog のメッセージ
-      flashMessage1: '',
-      flashMessage2: '',
 
       // User Info
       userInfo: {
@@ -395,10 +376,6 @@ export default {
         this.credentials.email = '';
         this.credentials.password = '';
         this.dialog = false;
-        this.showFlashDialog(
-            'ログインしました。',
-            'ようこそ、' + this.userName + 'さん'
-        );
       }
     },
     // Email,Passwordによる認証処理
@@ -522,9 +499,6 @@ export default {
     },
     // 確認コード入力画面(ダイアログ):「確認」ボタン押下時の処理
     registerUser() {
-      if (!this.can_confirm) {
-        return;
-      }
       const requestBody = {
         'email': this.credentials.email,
         'password': this.credentials.password,
@@ -557,9 +531,6 @@ export default {
       this.$router.push('/').catch(err => {
         console.log(err)
       });
-      this.showFlashDialog(
-            'ログアウトしました。'
-        );
     },
     setLoginState: function (state) {
       this.$store.commit('setLoginState', state)
@@ -642,14 +613,6 @@ export default {
         });
       }
       this.selectedProfile = true;
-    },
-    showFlashDialog: function (message1, message2 = '') {
-      this.flashMessage1 = message1;
-      this.flashMessage2 = message2;
-      this.flashDialog = true;
-      setTimeout(() => {
-        this.flashDialog = false;
-      }, 3000)
     },
   },
   computed: {

@@ -53,12 +53,12 @@
                 v-if="(this.proposition.user__id === this.userId)"
                 color="red"
                 class="white--text"
-                @click="deleteContent()"
+                @click="deleteConfirmDialog=true"
             >
               この投稿を削除する
             </v-btn>
             <v-btn
-                v-if="(this.proposition.user__id !== this.userId)"
+                v-if="(this.loginState & this.proposition.user__id !== this.userId)"
                 color="green accent-4"
                 class="white--text"
                 @click="dialog"
@@ -67,9 +67,46 @@
             </v-btn>
           </v-col>
         </v-card-actions>
+        <v-card-text
+          v-if="(!this.loginState)"
+          style="text-align: center;"
+        >
+          この投稿にメッセージを送るには、<br>
+          ログインする必要があります。
+        </v-card-text>
       </v-card>
     </v-dialog>
+    <v-dialog
 
+        v-model="deleteConfirmDialog"
+        max-width="420"
+    >
+      <v-card class="px-10 py-6">
+        <v-card-text class="px-6 pt-10 pb-6" style="font-weight: bold; text-align: center;">
+          本当に削除しますか？
+        </v-card-text>
+        <v-card-actions style="text-align: center;">
+          <v-col>
+            <v-btn
+                color="red"
+                class="white--text"
+                @click="deleteContent(); deleteConfirmDialog=false;"
+            >
+              削除する
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+                color="grey"
+                class="white--text"
+                @click="deleteConfirmDialog=false"
+            >
+              キャンセル
+            </v-btn>
+          </v-col>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -82,7 +119,8 @@ export default {
     return {
       contentsList_: [],
       proposition: {},
-      dialog: false
+      dialog: false,
+      deleteConfirmDialog: false,
     }
   },
   mounted: function () {
@@ -153,8 +191,8 @@ export default {
       this.setProfileUserId(this.proposition.user__id);
       console.log(this.proposition.user__id);
       console.log(this.profileUserId);
-      if(this.$router.currentRoute.path === "/profile") {
-          this.$router.go({path: this.$router.currentRoute.path, force: true});
+      if (this.$router.currentRoute.path === "/profile") {
+        this.$router.go({path: this.$router.currentRoute.path, force: true});
       } else {
         this.$router.push('/profile').catch(err => {
           console.log(err)
