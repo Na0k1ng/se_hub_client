@@ -5,8 +5,7 @@
         <v-list-item-group v-if="loginState">
           <v-list-item @click="toProfile()">
             <v-list-item-avatar>
-              <v-img v-if="img !== ''" :src="img"></v-img>
-              <v-icon v-else large :color="iconColor">mdi-account</v-icon>
+              <v-img v-if="loginState" :src="'http://127.0.0.1:8000/media/' + this.userInfo.img"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title>{{ userName }}</v-list-item-title>
@@ -14,7 +13,7 @@
           </v-list-item>
         </v-list-item-group>
         <v-list-item-group v-else>
-          <v-list-item @click.stop="dialog = true">
+          <v-list-item @click.stop="loginDialog=true">
             <v-list-item-avatar>
               <v-icon large :color="iconColor">mdi-account</v-icon>
             </v-list-item-avatar>
@@ -69,7 +68,7 @@
           </v-list-item>
         </v-list-item-group>
         <v-list-item-group v-if="loginState">
-          <v-list-item @click.stop="selectedSettingsDialog=true" :ripple="false">
+          <v-list-item @click.stop="settingsDialog=true" :ripple="false">
             <v-list-item-icon>
               <v-icon large :color="iconColor">mdi-cog-outline</v-icon>
             </v-list-item-icon>
@@ -83,7 +82,7 @@
                 class="white--text"
                 height="60"
                 width="250"
-                @click.stop="dialog_trans_info = true"
+                @click.stop="writeDisclosureDialog = true"
             >
               <b>情報を発信する</b>
             </v-btn>
@@ -91,7 +90,7 @@
         </v-list-item-group>
       </v-list>
       <v-dialog
-          v-model="dialog"
+          v-model="loginDialog"
           max-width="512"
       >
         <v-card class="pa-10">
@@ -155,7 +154,7 @@
         </v-card>
       </v-dialog>
       <v-dialog
-          v-model="dialog_hash"
+          v-model="hashDialog"
           max-width="400"
       >
         <v-card class="pa-10">
@@ -189,7 +188,7 @@
         </v-card>
       </v-dialog>
       <v-dialog
-          v-model="dialog_trans_info"
+          v-model="writeDisclosureDialog"
           max-width="600"
       >
         <v-card class="pa-10">
@@ -229,7 +228,7 @@
         </v-card>
       </v-dialog>
       <v-dialog
-          v-model="selectedSettingsDialog"
+          v-model="settingsDialog"
           max-width="600"
       >
         <v-card class="pa-10">
@@ -245,7 +244,7 @@
                   class="white--text"
                   height="40"
                   width="140"
-                  @click.stop="dialog_logout = true"
+                  @click.stop="logoutDialog = true"
               >
                 <b>ログアウト</b>
               </v-btn>
@@ -255,7 +254,7 @@
       </v-dialog>
       <v-dialog
 
-          v-model="dialog_logout"
+          v-model="logoutDialog"
           max-width="420"
       >
         <v-card class="px-10 py-6">
@@ -276,7 +275,7 @@
               <v-btn
                   color="grey"
                   class="white--text"
-                  @click="dialog_logout=false"
+                  @click="logoutDialog=false"
               >
                 キャンセル
               </v-btn>
@@ -318,12 +317,12 @@ export default {
       can_login: false,
       can_confirm: false,
 
-      // dialog flag
-      dialog: false,
-      dialog_hash: false,
-      dialog_trans_info: false,
-      selectedSettingsDialog: false,
-      dialog_logout: false,
+      // ダイアログ表示用のフラグ
+      loginDialog: false,
+      hashDialog: false,
+      writeDisclosureDialog: false,
+      settingsDialog: false,
+      logoutDialog: false,
 
       // User Info
       userInfo: {
@@ -375,7 +374,7 @@ export default {
         this.setLoginState(true);
         this.credentials.email = '';
         this.credentials.password = '';
-        this.dialog = false;
+        this.loginDialog = false;
       }
     },
     // Email,Passwordによる認証処理
@@ -407,94 +406,19 @@ export default {
         console.log(e.message);
       });
     },
-
-    //     if (this.$refs.form.validate()) {
-    //         const requestBody = {
-    //             email: this.credentials.email,
-    //             password: this.credentials.password
-    //         };
-    //         axios.post('http://localhost:8000/api/auth/', requestBody).then(res => {
-    //             payload = res.data.token.split('.')[1];
-    //             userId = JSON.parse(atob(payload)).user_id;
-    //             token = res.data.token;
-    //         }).catch(e => {
-    //             alert("例外");
-    //             alert(e.message);
-    //         });
-    //     }
-    //
-    //     let tmp = '';
-    //     let payload = '';
-    //     let ret = '';
-    //     if (this.$refs.form.validate()) {
-    //         const qs = require('qs');
-    //         console.log(this.credentials);
-    //         console.log(qs.stringify(this.credentials))
-    //         axios
-    //             .post('http://localhost:8000/api/auth/', qs.stringify(this.credentials))
-    //             .then(res => {
-    //                 payload = res.data.token.split('.')[1];
-    //                 this.user_id = JSON.parse(atob(payload)).user_id;
-    //                 this.test_token = this.user_id;
-    //                 this.setUserId(this.test_token);
-    //                 this.setToken(res.data.token);
-    //                 tmp = res.data.token;
-    //                 alert('http://localhost:8000/api/user/' + this.test_token + '/');
-    //                 axios.get('http://localhost:8000/api/user/' + this.user_id + '/').then(res => {
-    //                     this.setUserName(res.data.email);
-    //                 }).catch(e => {
-    //                     alert("例外");
-    //                     alert(e.message);
-    //                 });
-    //             });
-    //         //     .then(res => (this.axios_res = res))
-    //         //     .catch(e => {
-    //         //         this.test_token = e.data.detail[0];
-    //         //         tmp = JSON.stringify(e.status);
-    //         //         alert("例外1");
-    //         //         alert(e.message);
-    //         //     });
-    //         // payload = this.axios_res.data.token.split('.')[1];
-    //         // this.test_token = JSON.parse(atob(payload)).user_id;
-    //         //
-    //         // alert(this.axios_res.data.email);
-    //         // axios
-    //         //     .get('http://localhost:8000/api/user/' + this.test_token + '/')
-    //         //     .then(res => (this.axios_get_res = res))
-    //         //     .catch(e => {
-    //         //         alert("例外2");
-    //         //         alert(e.message);
-    //         //     });
-    //         //
-    //         // alert(this.axios_get_res.data.email);
-    //         // this.setUserName(this.axios_get_res.data.email);
-    //
-    //         //this.test_token = atob(tmp);
-    //         ret = btoa(tmp);
-    //         //alert(user_id);
-    //         console.log(tmp);
-    //         console.log(ret);
-    //         //alert(ret);
-    //         //this.login_state = !this.login_state;
-    //         this.setLoginState(true);
-    //         this.dialog = false;
-    //     } else {
-    //         this.dialog = false;
-    //     }
-    // },
     // ログイン画面(ダイアログ):「新規登録」ボタン押下時の処理
     registerHash() {
       if (this.$refs.form.validate()) {
         axios.post('http://localhost:8000/api/user/hash/', {'email': this.credentials.email}).then(res => {
           // 確認コード入力画面(ダイアログ)を開く
           if (res.status.toString() === '200') {
-            this.dialog_hash = true;
+            this.hashDialog = true;
           }
         }).catch(e => {
           console.log(e.message);
         });
       } else {
-        this.dialog = false;
+        this.loginDialog = false;
       }
     },
     // 確認コード入力画面(ダイアログ):「確認」ボタン押下時の処理
@@ -514,10 +438,10 @@ export default {
         }).catch(e => {
           console.log(e.message);
         });
-        this.dialog = false;
-        this.dialog_hash = false;
+        this.loginDialog = false;
+        this.hashDialog = false;
       } else {
-        this.dialog = false;
+        this.loginDialog = false;
       }
     },
     logout() {
@@ -526,8 +450,8 @@ export default {
       this.setToken("");
       this.setLoginState(false);
       this.setProfileUserId("");
-      this.selectedSettingsDialog = false;
-      this.dialog_logout = false;
+      this.settingsDialog = false;
+      this.logoutDialog = false;
       this.$router.push('/').catch(err => {
         console.log(err)
       });
@@ -547,32 +471,6 @@ export default {
     setProfileUserId: function (profileUserId) {
       this.$store.commit('setProfileUserId', profileUserId)
     },
-    // 情報を発信する画面(ダイアログ):「発信」ボタン押下時の処理
-    /*
-    createDisclosure() {
-        const requestBody = {
-            'email': this.credentials.email,
-            'password': this.credentials.password,
-            'hash_cd': this.credentials.hash_cd,
-            'invite_email': this.invite_email,
-        }
-        if (this.$refs.form.validate()) {
-            axios.post('http://localhost:8000/api/disclosure/', requestBody).then(res => {
-                // JWTログイン後にユーザー情報を取得する
-                if(res.status.toString() === '200') {
-                    this.login();
-                }
-            }).catch(e => {
-                alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
-                console.log(e.message);
-            });
-            this.dialog = false;
-            this.dialog_hash = false;
-        } else {
-            this.dialog = false;
-        }
-    }
-    */
     sendJobInfo: function () {
       const requestBody = {
         'title': this.send_info.title,
@@ -600,7 +498,7 @@ export default {
 
       this.send_info.title = '';
       this.send_info.body = '';
-      this.dialog_trans_info = false;
+      this.writeDisclosureDialog = false;
     },
     toProfile() {
       this.setProfileUserId(this.userId);
