@@ -68,8 +68,8 @@
           </v-col>
         </v-card-actions>
         <v-card-text
-          v-if="(!this.loginState)"
-          style="text-align: center;"
+            v-if="(!this.loginState)"
+            style="text-align: center;"
         >
           この投稿にメッセージを送るには、<br>
           ログインする必要があります。
@@ -207,6 +207,9 @@ export default {
     }
   },
   computed: {
+    loginState: function () {
+      return this.$store.state.loginState;
+    },
     userId: function () {
       return this.$store.state.userId
     },
