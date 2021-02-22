@@ -25,15 +25,7 @@
         </v-list-item-group>
         <v-divider></v-divider>
         <v-list-item-group :class="naviFont">
-          <v-list-item v-if="loginState" to="/" :ripple="false" active-class="font-weight-bold">
-            <v-list-item-icon>
-              <v-icon large>mdi-home</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>ホーム</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item to="/explore" :ripple="false" active-class="font-weight-bold">
+          <v-list-item to="/" :ripple="false" active-class="font-weight-bold">
             <v-list-item-icon>
               <v-icon large>mdi-magnify</v-icon>
             </v-list-item-icon>
@@ -57,15 +49,6 @@
               <v-list-item-title>メッセージ</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item v-if="loginState" to="/profile" @click="toProfile()" :ripple="false"
-                       active-class="font-weight-bold">
-            <v-list-item-icon>
-              <v-icon large>mdi-account</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>プロフィール</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
         </v-list-item-group>
         <v-list-item-group v-if="loginState">
           <v-list-item @click.stop="settingsDialog=true" :ripple="false">
@@ -76,7 +59,7 @@
               <v-list-item-title>設定</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item v-if="loginState" class="pt-4" :ripple="false">
+          <v-list-item v-if="loginState" class="pt-16" :ripple="false">
             <v-btn
                 :color=buttonColor
                 class="white--text"
@@ -302,11 +285,9 @@ export default {
       naviFont: 'green--text text--accent-4',
       defaultColor: 'gray--text text--darken-1',
       naviItmColor: {
-        home: 'grey darken-1',
         explore: 'grey darken-1',
         bpManagement: 'grey darken-1',
         messages: 'grey darken-1',
-        profile: 'grey darken-1'
       },
       // green accent-4
 

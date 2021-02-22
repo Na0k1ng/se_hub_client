@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Home from '../views/Home.vue'
 import Explore from '../views/Explore.vue'
 import BpManagement from '../views/BpManagement.vue'
 import Messages from '../views/Messages.vue'
@@ -15,12 +14,6 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '/',
-        name: 'Home',
-        component: Home,
-        meta: {requiresAuth: true}
-    },
-    {
-        path: '/explore',
         name: 'Explore',
         component: Explore
     },
