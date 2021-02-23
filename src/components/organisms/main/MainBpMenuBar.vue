@@ -1,5 +1,5 @@
 <template>
-  <div class="mainrecommendationtitle">
+  <div>
     <v-row no-gutters class="ma-0 pa-0">
       <v-col
           cols="12"
@@ -11,7 +11,15 @@
             <v-col class="pa-0 ma-0 text-center">
               <v-list-item @click="getBpList()" :ripple="false">
                 <v-list-item-content>
-                  <v-list-item-title>BP</v-list-item-title>
+                  <v-list-item-title>ユーザ</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-col>
+            <v-divider vertical></v-divider>
+            <v-col class="pa-0 ma-0 text-center">
+              <v-list-item @click="getApplicantBpList()" :ripple="false">
+                <v-list-item-content>
+                  <v-list-item-title>BPリクエスト</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -25,9 +33,9 @@
             </v-col>
             <v-divider vertical></v-divider>
             <v-col class="pa-0 ma-0 text-center">
-              <v-list-item @click="getApplicantBpList()" :ripple="false">
+              <v-list-item @click="getBpList()" :ripple="false">
                 <v-list-item-content>
-                  <v-list-item-title>BPリクエスト</v-list-item-title>
+                  <v-list-item-title>BP</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -104,7 +112,7 @@
         </v-list-item-group>
       </v-list>
     </v-row>
-    <v-row no-gutters class="ma-0 pa-0" v-else>
+    <v-row no-gutters class="ma-0 pa-0" v-else-if="choice === 'applicantBp'">
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
             v-for="(n,index) in applicantBpList"
@@ -162,21 +170,6 @@ export default {
   },
   methods: {
     getApplyingBpList() {
-      // let applyingBpList = [
-      //     {
-      //         icon: "",
-      //         name: "〇〇〇〇",
-      //     },
-      //     {
-      //         icon: "",
-      //         name: "〇〇〇〇",
-      //     },
-      //     {
-      //         icon: "",
-      //         name: "〇〇〇〇",
-      //     },
-      //
-      // ];
 
       const requestBody = {
         'bp_status': '1',
@@ -200,20 +193,6 @@ export default {
       this.choice = 'applyingBp'
     },
     getApplicantBpList() {
-      // let applicantBpList = [
-      //     {
-      //         icon: "",
-      //         name: "××××",
-      //     },
-      //     {
-      //         icon: "",
-      //         name: "××××",
-      //     },
-      //     {
-      //         icon: "",
-      //         name: "××××",
-      //     },
-      // ];
 
       const requestBody = {
         'bp_status': '2',
@@ -237,21 +216,6 @@ export default {
       this.choice = 'applicantBp'
     },
     getBpList() {
-      // let bpList = [
-      //     {
-      //         icon: "",
-      //         name: "△△△△",
-      //     },
-      //     {
-      //         icon: "",
-      //         name: "△△△△",
-      //     },
-      //     {
-      //         icon: "",
-      //         name: "△△△△",
-      //     },
-      // ];
-
       const requestBody = {
         'bp_status': '3',
       };
