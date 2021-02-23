@@ -110,6 +110,9 @@
                 @keypress="can_login=true; can_confirm=false;"
             />
           </v-form>
+          <v-card-text v-if="loginError" class="red--text" style="text-align: center;">
+            メールアドレスまたはパスワードが違います。
+          </v-card-text>
           <v-card-actions class="px-8">
             <v-col>
               <v-btn
@@ -221,7 +224,7 @@
           <v-card-subtitle>通知設定</v-card-subtitle>
           <v-card-subtitle>アカウント</v-card-subtitle>
           <v-card-actions>
-            <v-col class="pa-0" style="text-align: center;">
+            <v-col class="pb-10" style="text-align: center;">
               <v-btn
                   color=red
                   class="white--text"
@@ -231,6 +234,17 @@
               >
                 <b>ログアウト</b>
               </v-btn>
+            </v-col>
+          </v-card-actions>
+          <v-card-subtitle class="pb-0">その他</v-card-subtitle>
+          <v-card-actions>
+            <v-col class="pa-0" style="text-align: center;">
+              <v-card-text
+                  style="color: #cccccc; font-weight: normal; text-decoration: underline; cursor: pointer;"
+                  @click.stop="deleteAccountDialog=true"
+              >
+                <b>アカウントの退会について</b>
+              </v-card-text>
             </v-col>
           </v-card-actions>
         </v-card>
@@ -259,6 +273,39 @@
                   color="grey"
                   class="white--text"
                   @click="logoutDialog=false"
+              >
+                キャンセル
+              </v-btn>
+            </v-col>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog
+          v-model="deleteAccountDialog"
+          max-width="480"
+      >
+        <v-card class="px-10 py-6">
+          <v-card-text class="px-6 pt-10 pb-6" style="font-weight: bold; text-align: center;">
+            アカウントを退会しますか？<br>
+            <p class="pt-4 ma-0" style="text-align: left; font-size: 12px;">※法人ドメインのメールアドレスではない場合、<br>
+              過去に登録したことがあるメールアドレスでの再登録は、<br>
+              不可能となります。</p>
+          </v-card-text>
+          <v-card-actions style="text-align: center;">
+            <v-col>
+              <v-btn
+                  color="red"
+                  class="white--text"
+                  @click="deleteUser()"
+              >
+                退会する
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn
+                  color="grey"
+                  class="white--text"
+                  @click="deleteAccountDialog=false"
               >
                 キャンセル
               </v-btn>
@@ -298,12 +345,16 @@ export default {
       can_login: false,
       can_confirm: false,
 
+      // エラーメッセージ
+      loginError: false,
+
       // ダイアログ表示用のフラグ
       loginDialog: false,
       hashDialog: false,
       writeDisclosureDialog: false,
       settingsDialog: false,
       logoutDialog: false,
+      deleteAccountDialog: false,
 
       // User Info
       userInfo: {
@@ -351,6 +402,10 @@ export default {
       if (this.$refs.form.validate()) {
         // 認証処理を同期呼び出し、その後ユーザ情報取得
         await this.authenticate();
+        if (!this.userId) {
+          this.loginError = true;
+          return;
+        }
         this.getUserInfo();
         this.setLoginState(true);
         this.credentials.email = '';
@@ -492,6 +547,22 @@ export default {
         });
       }
       this.selectedProfile = true;
+    },
+    deleteUser: function() {
+      const reqHeader = {
+        headers: {
+          Authorization: 'JWT' + ' ' + this.token,
+        },
+      };
+      axios.delete('http://localhost:8000/api/user/' + this.userInfo.userId + '/', reqHeader).then(res => {
+        if (res.status.toString() === '200') {
+          this.logout();
+          this.deleteAccountDialog = false;
+        }
+      }).catch(e => {
+        console.log("error");
+        console.log(e.message);
+      });
     },
   },
   computed: {
