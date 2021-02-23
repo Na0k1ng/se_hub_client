@@ -469,7 +469,6 @@ export default {
         // 認証処理を同期呼び出し、その後ユーザ情報取得
         await this.authenticate();
         if (!this.userId) {
-          alert('auth');
           this.loginError = true;
           return;
         }
@@ -506,7 +505,6 @@ export default {
     getUserInfo: function () {
       axios.get('http://localhost:8000/api/user/' + this.userInfo.userId + '/').then(res => {
         if (!res.data.id) {
-          alert('');
           this.logout();
           return;
         }
