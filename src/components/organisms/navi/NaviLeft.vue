@@ -502,10 +502,10 @@ export default {
       });
     },
     // ユーザ情報取得処理
-    getUserInfo: function () {
-      axios.get('http://localhost:8000/api/user/' + this.userInfo.userId + '/').then(res => {
+    getUserInfo: async function () {
+      await axios.get('http://localhost:8000/api/user/' + this.userInfo.userId + '/').then(res => {
         if (!res.data.id) {
-          this.logout();
+          this.deleteToken();
           return;
         }
         this.userInfo.name = res.data.name;
@@ -556,16 +556,19 @@ export default {
       }
     },
     logout() {
-      this.setUserName("");
-      this.setUserId("");
-      this.setToken("");
+      this.deleteToken();
       this.setLoginState(false);
-      this.setProfileUserId("");
       this.settingsDialog = false;
       this.logoutDialog = false;
       this.$router.push('/').catch(err => {
         console.log(err)
       });
+    },
+    deleteToken: function() {
+      this.setUserName("");
+      this.setUserId("");
+      this.setToken("");
+      this.setProfileUserId("");
     },
     setLoginState: function (state) {
       this.$store.commit('setLoginState', state)
