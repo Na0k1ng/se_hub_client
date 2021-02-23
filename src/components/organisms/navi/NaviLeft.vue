@@ -285,6 +285,7 @@
           </v-card-title>
           <v-card-subtitle>通知設定</v-card-subtitle>
           <v-card-subtitle>アカウント</v-card-subtitle>
+          <vue-qrcode value="https://vuetifyjs.com/en/styles/colors/#material-colors" :color="{ dark: '#00C853', light: '#ffffff' }" />
           <v-card-actions>
             <v-col class="pb-10" style="text-align: center;">
               <v-btn
@@ -381,10 +382,13 @@
 
 <script>
 import axios from 'axios';
+import VueQrcode from 'vue-qrcode';
 
 export default {
   name: "NaviLeft",
-  components: {},
+  components: {
+    VueQrcode
+  },
   data() {
     return {
       // style
