@@ -14,10 +14,10 @@
               <!--              </v-icon>-->
             </v-list-item-avatar>
             <v-list-item-content @click="displayContent(content)">
-              <v-list-item-title>
-                {{ content.user__name }}<span v-if="content.user__group__name">@{{ content.user__group__name }}</span>
+              <v-list-item-title style="font-weight: bold; font-size: 14px; opacity: 0.75;">
+                {{ content.user__name }}<span v-if="content.user__group__name" style="color: darkslateblue;">:{{ content.user__group__name }}</span>
               </v-list-item-title>
-              <p class="mt-2">{{ content.title }}</p>
+              <p class="ma-0 py-2" style="font-weight: bold;">{{ content.title }}</p>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>

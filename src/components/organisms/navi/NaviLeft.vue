@@ -283,11 +283,36 @@
           <v-card-title class="headline pb-10">
             設定
           </v-card-title>
-          <v-card-subtitle>通知設定</v-card-subtitle>
-          <v-card-subtitle>アカウント</v-card-subtitle>
+          <v-card-subtitle class="my-0 py-0">通知設定</v-card-subtitle>
+          <v-card-actions class="ml-10 my-0 py-0">
+            <v-row class="my-0 py-0">
+              <v-col class="my-0 py-0">
+                <v-switch
+                    v-model="messageSendMail"
+                    color="green accent-4"
+                    inset
+                    :label="'メッセージの受信をメールで通知する'"
+                ></v-switch>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+          <v-card-actions class="ml-10 my-0 py-0">
+            <v-row class="my-0 py-0">
+              <v-col class="my-0 py-0">
+                <v-switch
+                    v-model="bpSendMail"
+                    color="green accent-4"
+                    class="my-1 py-0"
+                    inset
+                    :label="'BPリクエストをメールで通知する'"
+                ></v-switch>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+          <v-card-subtitle class="mt-4 mb-0 py-0">アカウント</v-card-subtitle>
           <vue-qrcode value="https://vuetifyjs.com/en/styles/colors/#material-colors" :color="{ dark: '#00C853', light: '#ffffff' }" />
           <v-card-actions>
-            <v-col class="pb-10" style="text-align: center;">
+            <v-col class="my-0 pb-4 py-0" style="text-align: center;">
               <v-btn
                   color=red
                   class="white--text"
@@ -299,10 +324,11 @@
               </v-btn>
             </v-col>
           </v-card-actions>
-          <v-card-subtitle class="pb-0">その他</v-card-subtitle>
+          <v-card-subtitle class="mb-0 pb-0">その他</v-card-subtitle>
           <v-card-actions>
-            <v-col class="pa-0" style="text-align: center;">
+            <v-col class="mb-2 pa-0" style="text-align: center;">
               <v-card-text
+                  class="mt-2 pa-0"
                   style="color: #cccccc; font-weight: normal; text-decoration: underline; cursor: pointer;"
                   @click.stop="deleteAccountDialog=true"
               >
@@ -426,6 +452,10 @@ export default {
       logoutDialog: false,
       deleteAccountDialog: false,
 
+      // 設定フラグ
+      messageSendMail: false,
+      bpSendMail: false,
+
       // User Info
       userInfo: {
         userId: '',
@@ -514,6 +544,8 @@ export default {
         }
         this.userInfo.name = res.data.name;
         this.userInfo.img = res.data.img;
+        this.messageSendMail = res.data.should_send_message;
+        this.bpSendMail = res.data.should_send_bp;
         this.setUserName(this.userInfo.name);
       }).catch(e => {
         console.log("error");
@@ -572,7 +604,7 @@ export default {
         console.log(err)
       });
     },
-    deleteToken: function() {
+    deleteToken: function () {
       this.setUserName("");
       this.setUserId("");
       this.setToken("");
@@ -634,7 +666,7 @@ export default {
       }
       this.selectedProfile = true;
     },
-    deleteUser: function() {
+    deleteUser: function () {
       const reqHeader = {
         headers: {
           Authorization: 'JWT' + ' ' + this.token,
