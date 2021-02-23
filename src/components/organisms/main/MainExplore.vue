@@ -23,16 +23,15 @@
       <v-col cols=4 style="text-align: right;">
         <v-btn
             v-if="!filterArea"
-            color="grey"
-            class="white--text mt-3"
+            color="grey lighten-2"
+            class="grey--text mt-3"
             depressed
             rounded
             :ripple="false"
             @click="filterArea = true"
         >
           <v-icon
-              color="white"
-              class="mr-1"
+              class="grey--text mr-1"
           >
             mdi-select-search
           </v-icon>

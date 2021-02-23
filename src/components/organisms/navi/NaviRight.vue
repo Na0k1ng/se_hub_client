@@ -20,7 +20,7 @@
           </v-list-item>
           <v-divider></v-divider>
           <v-list-item-group>
-            <v-list-item>
+            <v-list-item :ripple="false">
               <v-list-item-content class="py-0">
                 <v-list-item-subtitle class="ma-0 pa-0">
                   <v-row class="ma-0">
