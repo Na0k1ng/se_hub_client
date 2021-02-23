@@ -85,8 +85,8 @@
         </v-row>
         <v-row no-gutters>
           <v-col>
-            <h3>{{ userInfo.name }}<span v-if="userInfo.group__name">@{{ userInfo.group__name }}</span></h3>
-            <a :href="userInfo.group__url" target="_blank"> {{ userInfo.group__url }}</a>
+            <h3>{{ userInfo.name }}<span v-if="userInfo.group__name" style="color: darkslateblue;">:{{ userInfo.group__name }}</span></h3>
+            <a :href="userInfo.group__url" target="_blank" class="green--text"> {{ userInfo.group__url }}</a>
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-6">
