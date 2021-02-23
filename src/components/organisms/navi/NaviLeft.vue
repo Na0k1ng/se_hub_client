@@ -551,6 +551,10 @@ export default {
         this.loginDialog = false;
         this.registerDialog = false;
         this.hashDialog = false;
+        this.credentials.email = '';
+        this.credentials.password = '';
+        this.credentials.name = '';
+        this.credentials.hash_cd = '';
       } else {
         this.loginDialog = false;
       }
