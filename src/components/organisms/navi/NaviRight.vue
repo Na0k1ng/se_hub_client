@@ -8,7 +8,7 @@
   >
     <v-container>
       <v-card
-          color="grey lighten-4"
+          color="white"
       >
         <v-list>
           <v-list-item two-line>
@@ -20,6 +20,17 @@
           </v-list-item>
           <v-divider></v-divider>
           <v-list-item-group>
+            <v-list-item :ripple="false">
+              <v-list-item-content class="py-0">
+                <v-list-item-subtitle class="ma-0 pa-0">
+                  <v-row class="ma-0">
+                    <v-col cols="3">2021/12/31</v-col>
+                    <v-col cols="9">登録ユーザー数：250人突破（予定）</v-col>
+                  </v-row>
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider></v-divider>
             <v-list-item :ripple="false">
               <v-list-item-content class="py-0">
                 <v-list-item-subtitle class="ma-0 pa-0">
@@ -57,7 +68,7 @@
               <v-list-item-content class="py-0">
                 <v-list-item-subtitle class="ma-0 pa-0">
                   <v-row class="ma-0">
-                    <v-col cols="3">2021/5/1</v-col>
+                    <v-col cols="3">2021/5/10</v-col>
                     <v-col cols="9">正式サービス提供開始（予定）</v-col>
                   </v-row>
                 </v-list-item-subtitle>
