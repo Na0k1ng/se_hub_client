@@ -127,13 +127,75 @@
             </v-col>
             <v-col style="text-align: right;">
               <v-btn
-                  :disabled="!valid"
                   color="grey"
                   class="white--text"
                   width="120"
-                  @click="registerHash"
+                  @click="registerDialog=true"
               >
                 新規登録
+              </v-btn>
+            </v-col>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog
+          v-model="registerDialog"
+          max-width="512"
+      >
+        <v-card class="pa-10">
+          <v-card-title class="headline" style="text-align: center; display: inherit;">
+            登録情報入力
+          </v-card-title>
+          <v-form ref="form" v-model="valid" class="pl-6 pr-8 pt-4 pb-6">
+            <v-text-field
+                prepend-icon="mdi-account-circle"
+                label="ユーザー名"
+                :counter="12"
+                maxlength="12"
+                required
+                color="green accent-4"
+                v-model="credentials.name"
+                @keypress="can_login=false; can_confirm=false;"
+            />
+            <v-text-field
+                prepend-icon="mdi-email-outline"
+                label="メールアドレス"
+                :counter="50"
+                maxlength="50"
+                required
+                color="green accent-4"
+                :rules="rules.email"
+                v-model="credentials.email"
+                @keypress="can_login=false; can_confirm=false;"
+            />
+            <v-text-field
+                prepend-icon="mdi-lock"
+                label="パスワード"
+                :counter="20"
+                maxlength="20"
+                required
+                color="green accent-4"
+                :rules="rules.password"
+                v-model="credentials.password"
+                v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                v-bind:type="showPassword ? 'text' : 'password'"
+                @click:append="showPassword = !showPassword"
+                @keypress="can_login=false; can_confirm=false;"
+            />
+          </v-form>
+          <v-card-text v-if="registerError" class="red--text" style="text-align: center;">
+            {{ this.errorMessage }}
+          </v-card-text>
+          <v-card-actions class="px-8">
+            <v-col style="text-align: center;">
+              <v-btn
+                  :disabled="!valid"
+                  color="green accent-4"
+                  class="white--text"
+                  width="180"
+                  @click="registerHash"
+              >
+                入力情報確認
               </v-btn>
             </v-col>
           </v-card-actions>
@@ -345,11 +407,15 @@ export default {
       can_login: false,
       can_confirm: false,
 
-      // エラーメッセージ
+      // エラーメッセージ(フラグ)
       loginError: false,
+      registerError: false,
+      // エラーメッセージ
+      errorMessage: '',
 
       // ダイアログ表示用のフラグ
       loginDialog: false,
+      registerDialog: false,
       hashDialog: false,
       writeDisclosureDialog: false,
       settingsDialog: false,
@@ -403,10 +469,15 @@ export default {
         // 認証処理を同期呼び出し、その後ユーザ情報取得
         await this.authenticate();
         if (!this.userId) {
+          alert('auth');
           this.loginError = true;
           return;
         }
-        this.getUserInfo();
+        await this.getUserInfo();
+        if (!this.userId) {
+          this.loginError = true;
+          return;
+        }
         this.setLoginState(true);
         this.credentials.email = '';
         this.credentials.password = '';
@@ -434,6 +505,11 @@ export default {
     // ユーザ情報取得処理
     getUserInfo: function () {
       axios.get('http://localhost:8000/api/user/' + this.userInfo.userId + '/').then(res => {
+        if (!res.data.id) {
+          alert('');
+          this.logout();
+          return;
+        }
         this.userInfo.name = res.data.name;
         this.userInfo.img = res.data.img;
         this.setUserName(this.userInfo.name);
@@ -460,10 +536,10 @@ export default {
     // 確認コード入力画面(ダイアログ):「確認」ボタン押下時の処理
     registerUser() {
       const requestBody = {
+        'name': this.credentials.name,
         'email': this.credentials.email,
         'password': this.credentials.password,
         'hash_cd': this.credentials.hash_cd,
-        'invite_email': this.invite_email,
       };
       if (this.$refs.form.validate()) {
         axios.post('http://localhost:8000/api/user/', requestBody).then(res => {
@@ -475,6 +551,7 @@ export default {
           console.log(e.message);
         });
         this.loginDialog = false;
+        this.registerDialog = false;
         this.hashDialog = false;
       } else {
         this.loginDialog = false;
