@@ -3,17 +3,24 @@
     <v-sheet :color="baseColor" width="100%">
       <v-list class="pl-14" flat>
         <v-list-item-group v-if="loginState">
-          <v-list-item @click="toProfile()">
-            <v-list-item-avatar>
-              <v-img v-if="loginState" :src="'http://127.0.0.1:8000/media/' + this.userInfo.img"></v-img>
+          <v-list-item @click="toProfile()" class="py-2 px-3">
+            <v-list-item-avatar class="mr-8">
+              <v-img v-if="loginState" :src="'http://127.0.0.1:8000/media/' + userImg"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title>{{ userName }}</v-list-item-title>
+              <v-list-item-subtitle
+                  v-if="groupName"
+                  style="color: darkslateblue;">
+                {{ groupName }}
+              </v-list-item-subtitle>
+              <v-list-item-title>
+                {{ userName }}
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
         <v-list-item-group v-else>
-          <v-list-item @click.stop="loginDialog=true">
+          <v-list-item @click.stop="loginDialog=true" class="py-2">
             <v-list-item-avatar>
               <v-icon large :color="iconColor">mdi-account</v-icon>
             </v-list-item-avatar>
@@ -25,7 +32,7 @@
         </v-list-item-group>
         <v-divider></v-divider>
         <v-list-item-group :class="naviFont">
-          <v-list-item to="/" :ripple="false" active-class="font-weight-bold">
+          <v-list-item to="/" :ripple="false" active-class="font-weight-bold" class="pt-3 pb-1">
             <v-list-item-icon>
               <v-icon large>mdi-magnify</v-icon>
             </v-list-item-icon>
@@ -33,15 +40,16 @@
               <v-list-item-title>検索</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item v-if="loginState" to="/bpManagement" :ripple="false" active-class="font-weight-bold">
+          <v-list-item v-if="loginState" to="/bpManagement" :ripple="false" active-class="font-weight-bold"
+                       class="py-1">
             <v-list-item-icon>
-              <v-icon large>mdi-bell-outline</v-icon>
+              <v-icon large>mdi-handshake-outline</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>BP管理</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item v-if="loginState" to="/messages" :ripple="false" active-class="font-weight-bold">
+          <v-list-item v-if="loginState" to="/messages" :ripple="false" active-class="font-weight-bold" class="py-1">
             <v-list-item-icon>
               <v-icon large>mdi-email-outline</v-icon>
             </v-list-item-icon>
@@ -51,7 +59,7 @@
           </v-list-item>
         </v-list-item-group>
         <v-list-item-group v-if="loginState">
-          <v-list-item @click.stop="settingsDialog=true" :ripple="false">
+          <v-list-item @click.stop="settingsDialog=true" :ripple="false" class="py-1">
             <v-list-item-icon>
               <v-icon large :color="iconColor">mdi-cog-outline</v-icon>
             </v-list-item-icon>
@@ -458,6 +466,7 @@ export default {
         token: '',
         name: '',
         img: '',
+        groupName: '',
       },
       img: '',
       send_info: {
@@ -540,9 +549,12 @@ export default {
         }
         this.userInfo.name = res.data.name;
         this.userInfo.img = res.data.img;
+        this.userInfo.groupName = res.data.group__name;
         this.messageSendMail = res.data.should_send_message;
         this.bpSendMail = res.data.should_send_bp;
         this.setUserName(this.userInfo.name);
+        this.setUserImg(this.userInfo.img);
+        this.setGroupName(this.userInfo.groupName);
       }).catch(e => {
         console.log("error");
         console.log(e.message);
@@ -602,21 +614,29 @@ export default {
     },
     deleteToken: function () {
       this.setUserName("");
+      this.setGroupName('');
       this.setUserId("");
+      this.setUserImg('');
       this.setToken("");
       this.setProfileUserId("");
     },
     setLoginState: function (state) {
-      this.$store.commit('setLoginState', state)
+      this.$store.commit('setLoginState', state);
     },
     setUserName: function (user_name) {
-      this.$store.commit('setUserName', user_name)
+      this.$store.commit('setUserName', user_name);
+    },
+    setGroupName: function (groupName) {
+      this.$store.commit('setGroupName', groupName);
     },
     setUserId: function (userId) {
-      this.$store.commit('setUserId', userId)
+      this.$store.commit('setUserId', userId);
+    },
+    setUserImg: function (userImg) {
+      this.$store.commit('setUserImg', userImg);
     },
     setToken: function (token) {
-      this.$store.commit('setToken', token)
+      this.$store.commit('setToken', token);
     },
     setProfileUserId: function (profileUserId) {
       this.$store.commit('setProfileUserId', profileUserId)
@@ -681,16 +701,22 @@ export default {
   },
   computed: {
     loginState: function () {
-      return this.$store.state.loginState
+      return this.$store.state.loginState;
     },
     userName: function () {
-      return this.$store.state.userName
+      return this.$store.state.userName;
+    },
+    groupName: function () {
+      return this.$store.state.groupName;
     },
     userId: function () {
-      return this.$store.state.userId
+      return this.$store.state.userId;
+    },
+    userImg: function () {
+      return this.$store.state.userImg;
     },
     token: function () {
-      return this.$store.state.token
+      return this.$store.state.token;
     },
     profileUserId: function () {
       return this.$store.state.profileUserId

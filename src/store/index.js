@@ -7,7 +7,9 @@ Vue.use(Vuex)
 const initialState = {
         loginState: false,
         userName: "",
+        groupName: '',
         userId: "",
+        userImg: '',
         token: "",
         profileUserId: "",
         profileBp: "",
@@ -23,8 +25,14 @@ export default new Vuex.Store({
         setUserName: function (state, val) {
             state.userName = val
         },
+        setGroupName: function (state, val) {
+            state.groupName = val;
+        },
         setUserId: function (state, val) {
             state.userId = val
+        },
+        setUserImg: function (state, val) {
+            state.userImg = val;
         },
         setToken: function (state, val) {
             state.token = val
