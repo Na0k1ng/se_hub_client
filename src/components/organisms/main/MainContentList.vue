@@ -9,9 +9,6 @@
           <v-list-item>
             <v-list-item-avatar @click="toProfile(content)">
               <v-img :src="'http://127.0.0.1:8000/media/' + content.user__img"></v-img>
-              <!--              <v-icon class="grey lighten-1">-->
-              <!--                mdi-account-->
-              <!--              </v-icon>-->
             </v-list-item-avatar>
             <v-list-item-content @click="displayContent(content)">
               <v-list-item-title style="font-weight: bold; font-size: 14px; opacity: 0.75;">
@@ -28,7 +25,7 @@
     <v-divider/>
     <v-dialog
         v-model="dialog"
-        max-width="720"
+        max-width="700"
     >
       <v-card class="pa-10">
         <v-card-title class="headline ma-0 px-0" style="font-size: 22px !important;">
@@ -42,7 +39,7 @@
               v-if="this.proposition.user__group__name"
               style="color: darkslateblue;">:{{ this.proposition.user__group__name }}</span></p>
         </v-row>
-        <v-row class="px-8">
+        <v-row class="px-8 mb-2">
           <p class="mt-2" style="white-space: pre-line; word-wrap: break-word;">
             {{ this.proposition.description }}
           </p>
