@@ -14,6 +14,7 @@
     <v-row no-gutters class="mb-3 px-8 py-0">
       <v-col cols=8>
         <v-switch
+            v-if="userId"
             v-model="bpFilter"
             color="green accent-4"
             inset
