@@ -8,12 +8,38 @@
         >
           <v-list-item @click="getChatList(n)">
             <v-list-item-avatar>
-              <v-icon class="grey lighten-1">
+              <v-icon v-if="n.from_user__img === null" class="grey lighten-1">
                 mdi-account
               </v-icon>
+              <v-avatar>
+                <v-img v-if="userId!==n.from_user__id" :src="'http://127.0.0.1:8000/media/' + n.from_user__img"></v-img>
+                <v-img v-else :src="'http://127.0.0.1:8000/media/' + n.to_user__img"></v-img>
+              </v-avatar>
             </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title>{{ n.title }}</v-list-item-title>
+              <v-list-item-title
+                  v-if="userId !== n.from_user__id"
+                  style="font-weight: bold; font-size: 14px; opacity: 0.75;">
+                {{ n.from_user__name }}
+                <span v-if="n.from_user__group__name" style="color: darkslateblue;">
+                    :{{ n.from_user__group__name }}
+                </span>
+                <span style="position: absolute; right: 32px;">
+                  {{ parseTime(n.update_datetime) }}
+                </span>
+              </v-list-item-title>
+              <v-list-item-title
+                  v-else
+                  style="font-weight: bold; font-size: 14px; opacity: 0.75;">
+                {{ n.to_user__name }}
+                <span v-if="n.to_user__group__name" style="color: darkslateblue;">
+                    :{{ n.to_user__group__name }}
+                </span>
+                <span style="position: absolute; right: 32px;">
+                  {{ parseTime(n.update_datetime) }}
+                </span>
+              </v-list-item-title>
+              <v-list-item-title class="ma-0 py-2" style="font-weight: bold;">{{ n.title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
@@ -22,17 +48,36 @@
     </v-row>
     <v-dialog
         v-model="dialog"
-        max-width="600"
+        max-width="700"
     >
       <v-card class="pa-10">
         <v-card-title class="headline mx-0 mb-4 pa-0">
           <v-icon large color="grey darken-1 ma-0 pa-0" @click="dialog = false">
             mdi-arrow-left
           </v-icon>
-          <p v-if="selectedMessage.from_user__id != userId" class="ma-0 pa-0 pl-2">{{ selectedMessage.title }} ({{
-              selectedMessage.from_user__name
-            }})</p>
-          <p v-else class="ma-0 pa-0 pl-2">{{ selectedMessage.title }} ({{ selectedMessage.to_user__name }})</p>
+          <p v-if="selectedMessage.from_user__id !== userId"
+             class="ma-0 pa-0 pl-2">
+            {{ selectedMessage.title }}<br/>
+            <span class="ml-1" style="font-size: 16px;">
+              {{ selectedMessage.from_user__name }}
+              <span
+                  v-if="selectedMessage.from_user__group__name"
+                  style="color: darkslateblue;">
+                :{{ selectedMessage.from_user__group__name }}
+              </span>
+            </span>
+          </p>
+          <p v-else class="ma-0 pa-0 pl-2">
+            {{ selectedMessage.title }}<br/>
+            <span class="ml-1" style="font-size: 16px;">
+              {{ selectedMessage.to_user__name }}
+              <span
+                  v-if="selectedMessage.to_user__group__name"
+                  style="color: darkslateblue;">
+                :{{ selectedMessage.to_user__group__name }}
+              </span>
+            </span>
+          </p>
         </v-card-title>
         <v-divider></v-divider>
         <v-list class="ma-0 py-8" style="background-color: whitesmoke;">
@@ -41,9 +86,9 @@
               :key="index"
           >
             <v-list-item
-                v-if="n.from_user__id == userId"
-                class="mb-4 rounded-pill green accent-3"
-                style="width: 80%; margin: 0 0 16px auto;">
+                v-if="n.from_user__id === userId"
+                class="mb-4 rounded-lg green accent-3"
+                style="width: 70%; margin: 0 0 16px 25%;">
               <v-list-item-content>
                 <v-list-item-title
                     style="white-space: pre-line; word-wrap: break-word;">
@@ -55,8 +100,8 @@
             </v-list-item>
             <v-list-item
                 v-else
-                class="mb-4 rounded-pill white"
-                style="width: 80%;">
+                style="width: 80%;"
+            >
               <v-list-item-avatar>
                 <v-icon v-if="n.from_user__img === null" class="grey lighten-1">
                   mdi-account
@@ -65,15 +110,19 @@
                   <v-img :src="'http://127.0.0.1:8000/media/' + n.from_user__img"></v-img>
                 </v-avatar>
               </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title
-                    style="white-space: pre-line; word-wrap: break-word;">
-                  {{ n.description }}
-                </v-list-item-title>
-                <v-list-item-subtitle>{{ parseTime(n.insert_datetime) }}</v-list-item-subtitle>
-                <v-list-item-subtitle v-if="n.is_read">既読</v-list-item-subtitle>
-                <a v-if="n.file" :href="parseFile(n.file)">添付ファイルをダウンロード</a>
-              </v-list-item-content>
+              <v-list-item
+                  class="mb-4 rounded-lg white"
+              >
+                <v-list-item-content>
+                  <v-list-item-title
+                      style="white-space: pre-line; word-wrap: break-word;">
+                    {{ n.description }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>{{ parseTime(n.insert_datetime) }}</v-list-item-subtitle>
+                  <v-list-item-subtitle v-if="n.is_read">既読</v-list-item-subtitle>
+                  <a v-if="n.file" :href="parseFile(n.file)">添付ファイルをダウンロード</a>
+                </v-list-item-content>
+              </v-list-item>
             </v-list-item>
           </v-list-item-group>
         </v-list>
