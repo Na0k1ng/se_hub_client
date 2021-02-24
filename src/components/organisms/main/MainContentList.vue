@@ -14,6 +14,7 @@
               <v-list-item-title style="font-weight: bold; font-size: 14px; opacity: 0.75;">
                 {{ content.user__name }}<span v-if="content.user__group__name"
                                               style="color: darkslateblue;">:{{ content.user__group__name }}</span>
+                <span style="position: absolute; right: 32px;">{{ parseTime(content.insert_datetime) }}</span>
               </v-list-item-title>
               <p class="ma-0 py-2" style="font-weight: bold;">{{ content.title }}</p>
             </v-list-item-content>
@@ -31,15 +32,21 @@
         <v-card-title class="headline ma-0 px-0" style="font-size: 22px !important;">
           {{ this.proposition.title }}
         </v-card-title>
-        <v-row class="my-2 mx-0 pa-0">
+        <v-row class="my-4 mx-0 pa-0">
           <v-avatar>
             <v-img :src="'http://127.0.0.1:8000/media/' + this.proposition.user__img"></v-img>
           </v-avatar>
-          <p class="my-0 ml-2" style="font-weight: bold; opacity: 0.75; line-height: 48px;">{{ this.proposition.user__name }}<span
-              v-if="this.proposition.user__group__name"
-              style="color: darkslateblue;">:{{ this.proposition.user__group__name }}</span></p>
+          <p class="my-0 ml-2" style="font-weight: bold; opacity: 0.75; line-height: 48px;">
+            {{ this.proposition.user__name }}
+            <span v-if="this.proposition.user__group__name" style="color: darkslateblue;">
+              :{{ this.proposition.user__group__name }}
+            </span>
+            <span style="position: absolute; right: 64px;">
+              {{ parseTime(this.proposition.insert_datetime) }}
+            </span>
+          </p>
         </v-row>
-        <v-row class="px-8 mb-2">
+        <v-row class="px-8 mb-4">
           <p class="mt-2" style="white-space: pre-line; word-wrap: break-word;">
             {{ this.proposition.description }}
           </p>
@@ -126,26 +133,6 @@ export default {
   },
   methods: {
     getContentsList() {
-      // let contentsList = [
-      //     {
-      //         icon: "",
-      //         title: "タイトル1",
-      //         subtitle: "c1XXXXXXXXXXXXXX",
-      //         text: "ct1XXXXXXXXXXXXXX"
-      //     },
-      //     {
-      //         icon: "",
-      //         title: "タイトル2",
-      //         subtitle: "c2XXXXXXXXXXXXX",
-      //         text: "ct2XXXXXXXXXXXXX"
-      //     },
-      //     {
-      //         icon: "",
-      //         title: "タイトル3",
-      //         subtitle: "c3XXXXXXXXXXXXX",
-      //         text: "ct3XXXXXXXXXXXXX"
-      //     }
-      // ];
       const requestBody = {
         'user_id': this.userId,
         'kind': '0',
@@ -159,11 +146,18 @@ export default {
       }).catch(e => {
         console.log(e.message);
       });
-      //this.contentsList = contentsList;
     },
     displayContent(content) {
       this.proposition = content;
       this.dialog = true;
+    },
+    parseTime(insert_datetime) {
+      let ts = Date.parse(insert_datetime);
+      const dt = new Date(ts);
+      const year = dt.getFullYear();
+      const month = dt.getMonth() + 1;
+      const days = dt.getDate();
+      return year + "/" + month + "/" + days;
     },
     deleteContent() {
       const reqHeader = {
