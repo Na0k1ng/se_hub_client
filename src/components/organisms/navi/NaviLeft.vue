@@ -300,6 +300,7 @@
                     color="green accent-4"
                     inset
                     :label="'メッセージの受信をメールで通知する'"
+                    @click="toggleSettings(msmKind);"
                 ></v-switch>
               </v-col>
             </v-row>
@@ -313,11 +314,26 @@
                     class="my-1 py-0"
                     inset
                     :label="'BPリクエストをメールで通知する'"
+                    @click="toggleSettings(bsmKind);"
                 ></v-switch>
               </v-col>
             </v-row>
           </v-card-actions>
-          <v-card-subtitle class="mt-4 mb-0 py-0">アカウント</v-card-subtitle>
+          <v-card-subtitle class="my-3 py-0">アカウント</v-card-subtitle>
+          <v-card-actions class="ml-10 my-0 py-0">
+            <v-row class="my-0 py-0">
+              <v-col class="my-0 py-0">
+                <v-switch
+                    v-model="canFindName"
+                    color="green accent-4"
+                    class="my-1 py-0"
+                    inset
+                    :label="'アカウント検索を有効にする'"
+                    @click="toggleSettings(cfnKind);"
+                ></v-switch>
+              </v-col>
+            </v-row>
+          </v-card-actions>
           <vue-qrcode value="https://vuetifyjs.com/en/styles/colors/#material-colors" :color="{ dark: '#00C853', light: '#ffffff' }" />
           <v-card-actions>
             <v-col class="my-0 pb-4 py-0" style="text-align: center;">
@@ -463,6 +479,12 @@ export default {
       // 設定フラグ
       messageSendMail: false,
       bpSendMail: false,
+      canFindName: false,
+
+      // 設定種別（固定値）
+      msmKind: '1',
+      bsmKind: '2',
+      cfnKind: '5',
 
       // User Info
       userInfo: {
@@ -556,6 +578,7 @@ export default {
         this.userInfo.groupName = res.data.group__name;
         this.messageSendMail = res.data.should_send_message;
         this.bpSendMail = res.data.should_send_bp;
+        this.canFindName = res.data.can_find_name;
         this.setUserName(this.userInfo.name);
         this.setUserImg(this.userInfo.img);
         this.setGroupName(this.userInfo.groupName);
@@ -673,6 +696,36 @@ export default {
       this.send_info.title = '';
       this.send_info.body = '';
       this.writeDisclosureDialog = false;
+    },
+    toggleSettings: function(kind) {
+      let isEnable = false;
+      if (kind === this.msmKind) {
+        this.messageSendMail = !this.messageSendMail;
+        isEnable = this.messageSendMail;
+      } else if (kind === this.bsmKind) {
+        this.bpSendMail = !this.bpSendMail;
+        isEnable = this.bpSendMail;
+      } else if (kind === this.cfnKind) {
+        this.canFindName = !this.canFindName;
+        isEnable = this.canFindName;
+      }
+      const reqHeader = {
+        headers: {
+          Authorization: 'JWT' + ' ' + this.token,
+        },
+      };
+      const reqBody = {
+        'kind': kind,
+        'is_enable': isEnable,
+      };
+      axios.put('http://localhost:8000/api/user/settings/' + this.userId + '/', reqBody, reqHeader).then(res => {
+        if (res.status.toString() === '200') {
+          console.log('ok');
+        }
+      }).catch(e => {
+        console.log("error");
+        console.log(e.message);
+      });
     },
     toProfile() {
       this.setProfileUserId(this.userId);
