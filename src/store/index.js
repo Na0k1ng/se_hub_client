@@ -9,6 +9,7 @@ const initialState = {
         userName: "",
         groupName: '',
         userId: "",
+        userKey: '',
         userImg: '',
         token: "",
         profileUserId: "",
@@ -30,6 +31,9 @@ export default new Vuex.Store({
         },
         setUserId: function (state, val) {
             state.userId = val
+        },
+        setUserKey: function (state, val) {
+            state.userKey = val;
         },
         setUserImg: function (state, val) {
             state.userImg = val;

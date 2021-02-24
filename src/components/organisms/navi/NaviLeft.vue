@@ -334,9 +334,13 @@
               </v-col>
             </v-row>
           </v-card-actions>
-          <vue-qrcode value="https://vuetifyjs.com/en/styles/colors/#material-colors" :color="{ dark: '#00C853', light: '#ffffff' }" />
+          <v-card-subtitle class="mt-1 py-0" style="text-align: center;">あなたのアカウントのQRコード</v-card-subtitle>
+          <div class="ma-0 pa-0" style="text-align: center;">
+            <vue-qrcode :value="'https://localhost:8080/user_key=' + userKey"
+                      :color="{ dark: '#666666', light: '#ffffff' }"/>
+          </div>
           <v-card-actions>
-            <v-col class="my-0 pb-4 py-0" style="text-align: center;">
+            <v-col class="mt-4 mb-0 pb-4 py-0" style="text-align: center;">
               <v-btn
                   color=red
                   class="white--text"
@@ -493,6 +497,7 @@ export default {
         name: '',
         img: '',
         groupName: '',
+        Key: '',
       },
       img: '',
       send_info: {
@@ -573,12 +578,14 @@ export default {
           this.deleteToken();
           return;
         }
+        this.userInfo.key = res.data.key;
         this.userInfo.name = res.data.name;
         this.userInfo.img = res.data.img;
         this.userInfo.groupName = res.data.group__name;
         this.messageSendMail = res.data.should_send_message;
         this.bpSendMail = res.data.should_send_bp;
         this.canFindName = res.data.can_find_name;
+        this.setUserKey(this.userInfo.key);
         this.setUserName(this.userInfo.name);
         this.setUserImg(this.userInfo.img);
         this.setGroupName(this.userInfo.groupName);
@@ -643,6 +650,7 @@ export default {
       this.setUserName("");
       this.setGroupName('');
       this.setUserId("");
+      this.setUserKey('');
       this.setUserImg('');
       this.setToken("");
       this.setProfileUserId("");
@@ -658,6 +666,9 @@ export default {
     },
     setUserId: function (userId) {
       this.$store.commit('setUserId', userId);
+    },
+    setUserKey: function (userKey) {
+      this.$store.commit('setUserKey', userKey);
     },
     setUserImg: function (userImg) {
       this.$store.commit('setUserImg', userImg);
@@ -697,7 +708,7 @@ export default {
       this.send_info.body = '';
       this.writeDisclosureDialog = false;
     },
-    toggleSettings: function(kind) {
+    toggleSettings: function (kind) {
       let isEnable = false;
       if (kind === this.msmKind) {
         this.messageSendMail = !this.messageSendMail;
@@ -768,6 +779,9 @@ export default {
     },
     userId: function () {
       return this.$store.state.userId;
+    },
+    userKey: function () {
+      return this.$store.state.userKey;
     },
     userImg: function () {
       return this.$store.state.userImg;
