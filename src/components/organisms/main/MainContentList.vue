@@ -17,6 +17,12 @@
                 <span style="position: absolute; right: 32px;">{{ parseTime(content.insert_datetime) }}</span>
               </v-list-item-title>
               <p class="ma-0 py-2" style="font-weight: bold;">{{ content.title }}</p>
+              <span v-if="(content.user__id!==userId)&(loginState)">
+                <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
+                    @click.stop="blockConfirmDialog=true; otherId=content.user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
+                <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
+                    style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
+                </span>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
@@ -111,6 +117,36 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog
+        v-model="blockConfirmDialog"
+        max-width="420"
+    >
+      <v-card class="px-10 py-6">
+        <v-card-text class="px-6 pt-10 pb-6" style="font-weight: bold; text-align: center;">
+          このユーザーをブロックしますか？
+        </v-card-text>
+        <v-card-actions style="text-align: center;">
+          <v-col>
+            <v-btn
+                color="red"
+                class="white--text"
+                @click="blockUser(otherId); blockConfirmDialog=false;"
+            >
+              ブロックする
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+                color="grey"
+                class="white--text"
+                @click="blockConfirmDialog=false"
+            >
+              キャンセル
+            </v-btn>
+          </v-col>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -125,6 +161,9 @@ export default {
       proposition: {},
       dialog: false,
       deleteConfirmDialog: false,
+      blockConfirmDialog: false,
+      // ブロック用変数
+      otherId: '',
     }
   },
   mounted: function () {
@@ -195,7 +234,24 @@ export default {
     },
     setContentsList: function (contentsList) {
       this.$store.commit('setContentsList', contentsList)
-    }
+    },
+    // ブロック処理
+    blockUser: function (otherId) {
+      const reqHeader = {
+        headers: {
+          Authorization: 'JWT' + ' ' + this.token,
+        },
+      };
+      axios.put('http://localhost:8000/api/user/block/' + this.userId + '/' + otherId + '/', reqHeader).then(res => {
+        // JWTログイン後にユーザー情報を取得する
+        if (res.status.toString() === '200') {
+          console.log(res)
+        }
+        this.otherId = '';
+      }).catch(e => {
+        console.log(e.message);
+      });
+    },
   },
   computed: {
     loginState: function () {
