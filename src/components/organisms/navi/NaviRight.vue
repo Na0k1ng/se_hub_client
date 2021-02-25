@@ -7,6 +7,10 @@
       color="grey lighten-3"
   >
     <v-container>
+      <v-img src="@/assets/default_ad.png"
+        class="mb-4"
+      >
+      </v-img>
       <v-card
           color="white"
       >
@@ -20,61 +24,6 @@
           </v-list-item>
           <v-divider></v-divider>
           <v-list-item-group>
-            <v-list-item :ripple="false">
-              <v-list-item-content class="py-0">
-                <v-list-item-subtitle class="ma-0 pa-0">
-                  <v-row class="ma-0">
-                    <v-col cols="3">2021/12/31</v-col>
-                    <v-col cols="9">登録ユーザー数：3000人突破（予定）</v-col>
-                  </v-row>
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item :ripple="false">
-              <v-list-item-content class="py-0">
-                <v-list-item-subtitle class="ma-0 pa-0">
-                  <v-row class="ma-0">
-                    <v-col cols="3">2021/9/30</v-col>
-                    <v-col cols="9">登録ユーザー数：500人突破（予定）</v-col>
-                  </v-row>
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item :ripple="false">
-              <v-list-item-content class="py-0">
-                <v-list-item-subtitle class="ma-0 pa-0">
-                  <v-row class="ma-0">
-                    <v-col cols="3">2021/8/1</v-col>
-                    <v-col cols="9">100人突破（予定）[広告出す]</v-col>
-                  </v-row>
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item>
-              <v-list-item-content class="py-0">
-                <v-list-item-subtitle class="ma-0 pa-0">
-                  <v-row class="ma-0">
-                    <v-col cols="3">2021/7/1</v-col>
-                    <v-col cols="9">登録ユーザー数：40人突破（予定）</v-col>
-                  </v-row>
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item>
-              <v-list-item-content class="py-0">
-                <v-list-item-subtitle class="ma-0 pa-0">
-                  <v-row class="ma-0">
-                    <v-col cols="3">2021/6/1</v-col>
-                    <v-col cols="9">登録ユーザー数：10人突破（予定）</v-col>
-                  </v-row>
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider></v-divider>
             <v-list-item>
               <v-list-item-content class="py-0">
                 <v-list-item-subtitle class="ma-0 pa-0">
