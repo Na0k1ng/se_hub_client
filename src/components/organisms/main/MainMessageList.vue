@@ -40,6 +40,21 @@
                 </span>
               </v-list-item-title>
               <v-list-item-title class="ma-0 py-2" style="font-weight: bold;">{{ n.title }}</v-list-item-title>
+              <span v-if="userId !== n.from_user__id">
+                <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
+                    @click.stop="blockConfirmDialog=true; otherId=n.from_user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
+                <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
+                    @click.stop="alarmConfirmDialog=true; messageId=n.id;"
+                    style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
+              </span>
+              <span v-else>
+                <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
+                    @click.stop="blockConfirmDialog=true; otherId=n.to_user__id;"
+                    style="opacity: 0.4;">mdi-account-off</v-icon></span>
+                <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
+                    @click.stop="alarmConfirmDialog=true; messageId=n.id;"
+                    style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
+              </span>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
@@ -158,7 +173,66 @@
         </v-row>
       </v-card>
     </v-dialog>
-
+    <v-dialog
+        v-model="blockConfirmDialog"
+        max-width="420"
+    >
+      <v-card class="px-10 py-6">
+        <v-card-text class="px-6 pt-10 pb-6" style="font-weight: bold; text-align: center;">
+          このユーザーをブロックしますか？
+        </v-card-text>
+        <v-card-actions style="text-align: center;">
+          <v-col>
+            <v-btn
+                color="red"
+                class="white--text"
+                @click="blockUser(otherId); blockConfirmDialog=false;"
+            >
+              ブロックする
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+                color="grey"
+                class="white--text"
+                @click="blockConfirmDialog=false"
+            >
+              キャンセル
+            </v-btn>
+          </v-col>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog
+        v-model="alarmConfirmDialog"
+        max-width="420"
+    >
+      <v-card class="px-10 py-6">
+        <v-card-text class="px-6 pt-10 pb-6" style="font-weight: bold; text-align: center;">
+          このメッセージを通報しますか？
+        </v-card-text>
+        <v-card-actions style="text-align: center;">
+          <v-col>
+            <v-btn
+                color="red"
+                class="white--text"
+                @click="alarmMessage(messageId); alarmConfirmDialog=false;"
+            >
+              通報する
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+                color="grey"
+                class="white--text"
+                @click="alarmConfirmDialog=false"
+            >
+              キャンセル
+            </v-btn>
+          </v-col>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-divider/>
   </div>
 </template>
@@ -177,7 +251,13 @@ export default {
       form: [],
       selectedMessage: "",
       chatMessage: "",
-      file: ""
+      file: "",
+      // ダイアログ表示用フラグ
+      blockConfirmDialog: false,
+      alarmConfirmDialog: false,
+      // ブロック&アラーム用変数
+      otherId: '',
+      messageId: '',
     }
   },
   mounted: function () {
@@ -295,7 +375,31 @@ export default {
         ret = 'http://127.0.0.1:8000/media/' + file
       }
       return ret
-    }
+    },
+    // ブロック処理
+    blockUser: function (otherId) {
+      axios.put('http://localhost:8000/api/user/block/' + this.userId + '/' + otherId + '/').then(res => {
+        // JWTログイン後にユーザー情報を取得する
+        if (res.status.toString() === '200') {
+          console.log(res)
+        }
+        this.otherId = '';
+      }).catch(e => {
+        console.log(e.message);
+      });
+    },
+    // 通報処理
+    alarmMessage: function (messageId) {
+      axios.put('http://localhost:8000/api/message/alarm/' + messageId + '/').then(res => {
+        // JWTログイン後にユーザー情報を取得する
+        if (res.status.toString() === '200') {
+          console.log(res);
+        }
+        this.messageId = '';
+      }).catch(e => {
+        console.log(e.message);
+      });
+    },
   },
   computed: {
     userName: function () {

@@ -21,7 +21,7 @@
                 <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
                     @click.stop="blockConfirmDialog=true; otherId=content.user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
                 <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
-                    style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
+                    @click.stop="alarmConfirmDialog=true; disclosureId=content.id;" style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
                 </span>
             </v-list-item-content>
           </v-list-item>
@@ -87,7 +87,6 @@
       </v-card>
     </v-dialog>
     <v-dialog
-
         v-model="deleteConfirmDialog"
         max-width="420"
     >
@@ -147,6 +146,36 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog
+        v-model="alarmConfirmDialog"
+        max-width="420"
+    >
+      <v-card class="px-10 py-6">
+        <v-card-text class="px-6 pt-10 pb-6" style="font-weight: bold; text-align: center;">
+          この投稿を通報しますか？
+        </v-card-text>
+        <v-card-actions style="text-align: center;">
+          <v-col>
+            <v-btn
+                color="red"
+                class="white--text"
+                @click="alarmDisclosure(disclosureId); alarmConfirmDialog=false;"
+            >
+              通報する
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+                color="grey"
+                class="white--text"
+                @click="alarmConfirmDialog=false"
+            >
+              キャンセル
+            </v-btn>
+          </v-col>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -162,8 +191,10 @@ export default {
       dialog: false,
       deleteConfirmDialog: false,
       blockConfirmDialog: false,
-      // ブロック用変数
+      alarmConfirmDialog: false,
+      // ブロック&アラーム用変数
       otherId: '',
+      disclosureId: '',
     }
   },
   mounted: function () {
@@ -237,17 +268,24 @@ export default {
     },
     // ブロック処理
     blockUser: function (otherId) {
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
-        },
-      };
-      axios.put('http://localhost:8000/api/user/block/' + this.userId + '/' + otherId + '/', reqHeader).then(res => {
+      axios.put('http://localhost:8000/api/user/block/' + this.userId + '/' + otherId + '/').then(res => {
         // JWTログイン後にユーザー情報を取得する
         if (res.status.toString() === '200') {
           console.log(res)
         }
         this.otherId = '';
+      }).catch(e => {
+        console.log(e.message);
+      });
+    },
+    // 通報処理
+    alarmDisclosure: function (disclosureId) {
+      axios.put('http://localhost:8000/api/disclosure/alarm/' + disclosureId + '/').then(res => {
+        // JWTログイン後にユーザー情報を取得する
+        if (res.status.toString() === '200') {
+          console.log(res);
+        }
+        this.disclosureId = '';
       }).catch(e => {
         console.log(e.message);
       });
