@@ -34,7 +34,7 @@ const routes = [
         path: '/profile',
         name: 'Profile',
         component: Profile,
-        meta: {title: 'SE-Hub', desc: 'プロフィールのdescriptionを表示する。', requiresAuth: true}
+        meta: {title: 'SE-Hub', desc: 'プロフィールのdescriptionを表示する。'}
     }
 ];
 

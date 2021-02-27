@@ -3,7 +3,7 @@
     <v-sheet :color="baseColor" width="100%">
       <v-list class="pl-14" flat>
         <v-list-item-group v-if="loginState">
-          <v-list-item @click="toProfile()" class="py-2 px-3">
+          <v-list-item @click="toProfile()" class="py-2 px-3 font-weight-bold">
             <v-list-item-avatar class="mr-8">
               <v-img v-if="loginState" :src="'http://127.0.0.1:8000/media/' + userImg"></v-img>
             </v-list-item-avatar>
