@@ -220,32 +220,6 @@
                     this.dialog = false;
                 }
             },
-            // 情報を発信する画面(ダイアログ):「発信」ボタン押下時の処理
-            /*
-            createDisclosure() {
-                const requestBody = {
-                    'email': this.credentials.email,
-                    'password': this.credentials.password,
-                    'hash_cd': this.credentials.hash_cd,
-                    'invite_email': this.invite_email,
-                }
-                if (this.$refs.form.validate()) {
-                    axios.post('http://localhost:8000/api/disclosure/', requestBody).then(res => {
-                        // JWTログイン後にユーザー情報を取得する
-                        if(res.status.toString() === '200') {
-                            this.login();
-                        }
-                    }).catch(e => {
-                        alert("エラーが発生しました。\nお手数をお掛け致しますが、最初からやり直してください。");
-                        console.log(e.message);
-                    });
-                    this.dialog = false;
-                    this.dialog_hash = false;
-                } else {
-                    this.dialog = false;
-                }
-            }
-            */
         },
     }
 </script>

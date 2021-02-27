@@ -40,8 +40,18 @@
                 </span>
               </v-list-item-title>
               <v-list-item-title class="ma-0 py-2" style="font-weight: bold;">{{ n.title }}</v-list-item-title>
+              <span v-if="userId !== n.update_user">
+                <span style="position: absolute; bottom: 22px; right: 76px;">
+                  <v-tab>
+                    <v-badge
+                        color="red"
+                        :content="n.no_read_count"
+                    ></v-badge>
+                  </v-tab>
+                </span>
+              </span>
               <span v-if="userId !== n.from_user__id">
-                <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
+                <span style="position: absolute; bottom: 16px; right: 64px;"><v-icon
                     @click.stop="blockConfirmDialog=true; otherId=n.from_user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
                 <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
                     @click.stop="alarmConfirmDialog=true; messageId=n.id;"
