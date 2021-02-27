@@ -40,7 +40,7 @@
                 </span>
               </v-list-item-title>
               <v-list-item-title class="ma-0 py-2" style="font-weight: bold;">{{ n.title }}</v-list-item-title>
-              <span v-if="userId !== n.update_user">
+              <span v-if="(userId !== n.update_user)&(n.no_read_count>0)">
                 <span style="position: absolute; bottom: 22px; right: 76px;">
                   <v-tab>
                     <v-badge
@@ -119,7 +119,9 @@
                     style="white-space: pre-line; word-wrap: break-word;">
                   {{ n.description }}
                 </v-list-item-title>
-                <v-list-item-subtitle>{{ parseTime(n.insert_datetime) }}</v-list-item-subtitle>
+                <v-list-item-subtitle>
+                  {{ parseTime(n.insert_datetime) }}<span v-if="n.is_read" class="ml-2">既読</span>
+                </v-list-item-subtitle>
                 <a v-if="n.file" :href="parseFile(n.file)">添付ファイルをダウンロード</a>
               </v-list-item-content>
             </v-list-item>
@@ -144,7 +146,6 @@
                     {{ n.description }}
                   </v-list-item-title>
                   <v-list-item-subtitle>{{ parseTime(n.insert_datetime) }}</v-list-item-subtitle>
-                  <v-list-item-subtitle v-if="n.is_read">既読</v-list-item-subtitle>
                   <a v-if="n.file" :href="parseFile(n.file)">添付ファイルをダウンロード</a>
                 </v-list-item-content>
               </v-list-item>
@@ -294,8 +295,6 @@ export default {
       }).catch(e => {
         console.log(e.message);
       });
-
-      // this.messageList = messageList;
     },
     getChatList(message) {
       this.message = message;
@@ -318,6 +317,29 @@ export default {
 
       this.selectedMessage = message;
       this.dialog = true;
+      if (this.userId === this.selectedMessage.from_user__id) {
+        this.otherId = this.selectedMessage.to_user__id;
+      } else {
+        this.otherId = this.selectedMessage.from_user__id;
+      }
+      this.readMessage(message.id);
+    },
+    readMessage(messageId) {
+      const requestBody = {
+        'user_id': this.userId,
+      };
+      const reqHeader = {
+        headers: {
+          Authorization: 'JWT' + ' ' + this.token,
+        },
+      };
+      axios.put('http://localhost:8000/api/message/' + messageId + '/', requestBody, reqHeader).then(res => {
+        if (res.status.toString() !== '200') {
+          console.log('API(既読)通信に失敗しました！');
+        }
+      }).catch(e => {
+        console.log(e.message);
+      });
     },
     sendMessage() {
       const requestBody = {
@@ -326,14 +348,13 @@ export default {
         'message_id': this.selectedMessage.id,
         'disclosure_id': '',
         'user_id': this.userId,
-        'other_id': this.selectedMessage.to_user__id,
+        'other_id': this.otherId,
       };
       const reqHeader = {
         headers: {
           Authorization: 'JWT' + ' ' + this.token,
         },
       };
-
       axios.post('http://localhost:8000/api/message/', requestBody, reqHeader).then(res => {
         if (res.status.toString() === '200') {
           console.log(this.file);
@@ -360,22 +381,18 @@ export default {
     sendFile(message_id) {
       let form = new FormData();
       let file = this.file;
-
       form.append('file', file);
       console.log(file);
-
       const reqHeader = {
         headers: {
           Authorization: 'JWT' + ' ' + this.token,
         },
       };
-
       axios.put('http://localhost:8000/api/message/file/' + message_id + '/', form, reqHeader).then(res => {
         console.log(res)
       }).catch(e => {
         console.log(e.message);
       });
-
       this.file = "";
     },
     parseFile(file) {
