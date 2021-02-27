@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Explore from '../views/Explore.vue'
-import BpManagement from '../views/BpManagement.vue'
+import Bp from '../views/Bp.vue'
 import Messages from '../views/Messages.vue'
 import Profile from '../views/Profile.vue'
 
@@ -15,25 +15,26 @@ const routes = [
     {
         path: '/',
         name: 'Explore',
-        component: Explore
+        component: Explore,
+        meta: {title: 'SE-Hub', desc: 'エンジニア・案件が集まる完全無料のプラットフォーム。今よりもっと効率よく「案件を探す」「エンジニアを集める」を実現しませんか？'}
     },
     {
-        path: '/bpManagement',
-        name: 'BpManagement',
-        component: BpManagement,
-        meta: {requiresAuth: true}
+        path: '/bp',
+        name: 'Bp',
+        component: Bp,
+        meta: {title: 'SE-Hub', requiresAuth: true}
     },
     {
         path: '/messages',
         name: 'Messages',
         component: Messages,
-        meta: {requiresAuth: true}
+        meta: {title: 'SE-Hub', requiresAuth: true}
     },
     {
         path: '/profile',
         name: 'Profile',
         component: Profile,
-        meta: {requiresAuth: true}
+        meta: {title: 'SE-Hub', desc: 'プロフィールのdescriptionを表示する。', requiresAuth: true}
     }
 ];
 

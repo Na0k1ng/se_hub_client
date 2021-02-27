@@ -1,5 +1,5 @@
 <template>
-  <div class="bpManagementPage">
+  <div class="bpPage">
     <NaviLeft/>
     <NaviRight/>
     <v-main>
@@ -21,7 +21,7 @@
     import MainBpMenuBar from '@/components/organisms/main/MainBpMenuBar.vue'
 
     export default {
-        name: "BpManagementPage",
+        name: "BpPage",
         components: {
             NaviLeft,
             NaviRight,

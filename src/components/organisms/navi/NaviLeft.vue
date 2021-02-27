@@ -40,7 +40,7 @@
               <v-list-item-title>検索</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item v-if="loginState" to="/bpManagement" :ripple="false" active-class="font-weight-bold"
+          <v-list-item v-if="loginState" to="/bp" :ripple="false" active-class="font-weight-bold"
                        class="py-1">
             <v-list-item-icon>
               <v-icon large>mdi-handshake-outline</v-icon>
@@ -453,7 +453,7 @@ export default {
       defaultColor: 'gray--text text--darken-1',
       naviItmColor: {
         explore: 'grey darken-1',
-        bpManagement: 'grey darken-1',
+        bp: 'grey darken-1',
         messages: 'grey darken-1',
       },
       // green accent-4
