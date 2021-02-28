@@ -3,7 +3,7 @@
     <v-row no-gutters class="ma-2 mb-0 pa-1 px-4 pb-0">
       <v-col>
         <v-text-field
-            label="キーワード検索"
+            label="キーワード検索（＠ユーザー名で該当するユーザーの投稿を検索）"
             color="green accent-4"
             prepend-inner-icon="mdi-magnify"
             v-model="searchString"
