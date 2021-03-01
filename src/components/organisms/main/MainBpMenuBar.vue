@@ -9,9 +9,9 @@
         <v-sheet class="pa-0 ma-0" tile>
           <v-row class="pa-0 ma-0">
             <v-col class="pa-0 ma-0 text-center">
-              <v-list-item @click="getBpList()" :ripple="false">
+              <v-list-item @click="getUserList()" :ripple="false">
                 <v-list-item-content>
-                  <v-list-item-title>ユーザ</v-list-item-title>
+                  <v-list-item-title>ユーザー</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -44,7 +44,42 @@
       </v-col>
     </v-row>
     <v-divider/>
-    <v-row no-gutters class="ma-0 pa-0" v-if="choice === 'bp'">
+    <v-row no-gutters class="ma-0 pa-0" v-if="choice === 'user'">
+      <v-list width="100%" class="ma-0 pa-0">
+        <v-list-item-group
+            v-for="(n,index) in userList"
+            :key="index"
+        >
+          <v-list-item>
+            <v-list-item-avatar>
+              <v-icon class="grey lighten-1">
+                mdi-account
+              </v-icon>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>{{ n.user__name }}</v-list-item-title>
+            </v-list-item-content>
+            <v-spacer></v-spacer>
+            <v-list-item-content>
+              <v-btn
+                  style="position: absolute; right: 32px;"
+                  color="green accent-4"
+                  class="white--text"
+                  rounded
+                  height="40"
+                  width="180"
+                  max-width="180"
+                  @click="setBpInfo(n.user__id);"
+              >
+                BP申請をする
+              </v-btn>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider></v-divider>
+        </v-list-item-group>
+      </v-list>
+    </v-row>
+    <v-row no-gutters class="ma-0 pa-0" v-else-if="choice === 'bp'">
       <v-list width="100%" class="ma-0 pa-0">
         <v-list-item-group
             v-for="(n,index) in bpList"
@@ -103,6 +138,7 @@
                   height="40"
                   width="180"
                   max-width="180"
+                  @click="deleteBpInfo(n.user__id);"
               >
                 BP申請を取り消す
               </v-btn>
@@ -137,6 +173,7 @@
                   height="40"
                   width="180"
                   max-width="180"
+                  @click="setBpInfo(n.user__id);"
               >
                 BP申請を承諾する
               </v-btn>
@@ -159,6 +196,7 @@ export default {
   data() {
     return {
       choice: "bp",
+      userList: [],
       applyingBpList: [],
       applicantBpList: [],
       bpList: [],
@@ -169,12 +207,30 @@ export default {
     this.getBpList();
   },
   methods: {
-    getApplyingBpList() {
+    getUserList: function () {
+      const requestBody = {
+        'bp_status': '0',
+      };
+      const reqHeader = {
+        headers: {
+          Authorization: 'JWT' + ' ' + this.token,
+        },
+      };
 
+      axios.post('http://localhost:8000/api/bp/list/' + this.userId + '/', requestBody, reqHeader).then(res => {
+        if (res.status.toString() === '200') {
+          console.log(res.data);
+          this.userList = res.data;
+        }
+      }).catch(e => {
+        console.log(e.message);
+      });
+      this.choice = 'user'
+    },
+    getApplyingBpList() {
       const requestBody = {
         'bp_status': '1',
       };
-
       const reqHeader = {
         headers: {
           Authorization: 'JWT' + ' ' + this.token,
@@ -189,15 +245,12 @@ export default {
       }).catch(e => {
         console.log(e.message);
       });
-      // this.applyingBpList = applyingBpList;
       this.choice = 'applyingBp'
     },
     getApplicantBpList() {
-
       const requestBody = {
         'bp_status': '2',
       };
-
       const reqHeader = {
         headers: {
           Authorization: 'JWT' + ' ' + this.token,
@@ -212,7 +265,6 @@ export default {
       }).catch(e => {
         console.log(e.message);
       });
-      // this.applicantBpList = applicantBpList;
       this.choice = 'applicantBp'
     },
     getBpList() {
@@ -234,9 +286,42 @@ export default {
       }).catch(e => {
         console.log(e.message);
       });
-      // this.bpList = bpList;
       this.choice = 'bp'
-    }
+    },
+    setBpInfo: function (otherId) {
+      const reqBody = {
+        'user_id': this.userId,
+        'other_id': otherId,
+      };
+      const reqHeader = {
+        headers: {
+          Authorization: 'JWT' + ' ' + this.token,
+        },
+      };
+
+      axios.post('http://localhost:8000/api/bp/', reqBody, reqHeader).then(res => {
+        if (res.status.toString() === '200') {
+          console.log('');
+        }
+      }).catch(e => {
+        console.log(e.message);
+      });
+    },
+    deleteBpInfo: function (otherId) {
+      const reqHeader = {
+        headers: {
+          Authorization: 'JWT' + ' ' + this.token,
+        },
+      };
+
+      axios.delete('http://localhost:8000/api/bp/' + this.userId + '/' + otherId + '/', reqHeader).then(res => {
+        if (res.status.toString() === '200') {
+          console.log('');
+        }
+      }).catch(e => {
+        console.log(e.message);
+      });
+    },
   },
   computed: {
     userId: function () {

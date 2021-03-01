@@ -670,14 +670,6 @@ export default {
       this.dialog = false
     },
     sendFile(message_id) {
-      // const requestBody = {
-      //     'title': this.sendInfo.title,
-      //     'description': this.sendInfo.description,
-      //     'message_id': '',
-      //     'disclosure_id': '',
-      //     'user_id': this.userId,
-      //     'other_id': this.profileUserId,
-      // };
 
       let form = new FormData();
       let file = this.sendInfo.file;
@@ -685,10 +677,6 @@ export default {
       form.append('file', file);
       console.log(file);
 
-
-      // const requestBody ={
-      //     'file' : this.sendInfo.file
-      // };
       const reqHeader = {
         headers: {
           Authorization: 'JWT' + ' ' + this.token,
