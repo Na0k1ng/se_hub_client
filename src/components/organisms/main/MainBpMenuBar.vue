@@ -50,7 +50,7 @@
             v-for="(n,index) in userList"
             :key="index"
         >
-          <v-list-item>
+          <v-list-item class="py-2">
             <v-list-item-avatar @click="toProfile(n)">
               <v-img :src="'http://127.0.0.1:8000/media/' + n.user__img"></v-img>
             </v-list-item-avatar>
@@ -91,7 +91,7 @@
             v-for="(n,index) in bpList"
             :key="index"
         >
-          <v-list-item>
+          <v-list-item class="py-2">
             <v-list-item-avatar @click="toProfile(n)">
               <v-img :src="'http://127.0.0.1:8000/media/' + n.user__img"></v-img>
             </v-list-item-avatar>
@@ -132,7 +132,7 @@
             v-for="(n,index) in applyingBpList"
             :key="index"
         >
-          <v-list-item>
+          <v-list-item class="py-2">
             <v-list-item-avatar @click="toProfile(n)">
               <v-img :src="'http://127.0.0.1:8000/media/' + n.user__img"></v-img>
             </v-list-item-avatar>
@@ -173,7 +173,7 @@
             v-for="(n,index) in applicantBpList"
             :key="index"
         >
-          <v-list-item>
+          <v-list-item class="py-2">
             <v-list-item-avatar @click="toProfile(n)">
               <v-img :src="'http://127.0.0.1:8000/media/' + n.user__img"></v-img>
             </v-list-item-avatar>
