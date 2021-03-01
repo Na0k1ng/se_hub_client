@@ -51,13 +51,19 @@
             :key="index"
         >
           <v-list-item>
-            <v-list-item-avatar>
-              <v-icon class="grey lighten-1">
-                mdi-account
-              </v-icon>
+            <v-list-item-avatar @click="toProfile(n)">
+              <v-img :src="'http://127.0.0.1:8000/media/' + n.user__img"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title>{{ n.user__name }}</v-list-item-title>
+              <v-list-item-title style="font-weight: bold; font-size: 14px; opacity: 0.75;">
+                {{ n.user__name }}<span v-if="n.user__group__name"
+                                        style="color: darkslateblue;">:{{ n.user__group__name }}</span>
+              </v-list-item-title>
+              <v-list-item-subtitle
+                  style="text-overflow: ellipsis; white-space: nowrap;"
+              >
+                {{ n.user__description }}
+              </v-list-item-subtitle>
             </v-list-item-content>
             <v-spacer></v-spacer>
             <v-list-item-content>
@@ -92,16 +98,13 @@
             <v-list-item-content>
               <v-list-item-title style="font-weight: bold; font-size: 14px; opacity: 0.75;">
                 {{ n.user__name }}<span v-if="n.user__group__name"
-                                              style="color: darkslateblue;">:{{ n.user__group__name }}</span>
+                                        style="color: darkslateblue;">:{{ n.user__group__name }}</span>
               </v-list-item-title>
-              <!--
-              <span v-if="(content.user__id!==userId)&(loginState)">
-                <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
-                    @click.stop="blockConfirmDialog=true; otherId=content.user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
-                <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
-                    @click.stop="alarmConfirmDialog=true; disclosureId=content.id;" style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
-                </span>
-              -->
+              <v-list-item-subtitle
+                  style="text-overflow: ellipsis; white-space: nowrap;"
+              >
+                {{ n.user__description }}
+              </v-list-item-subtitle>
             </v-list-item-content>
             <v-spacer></v-spacer>
             <v-list-item-content>
@@ -113,6 +116,7 @@
                   height="40"
                   width="180"
                   max-width="180"
+                  @click="deleteBpDialog=true; deleteOtherId=n.user__id"
               >
                 BP関係を解消する
               </v-btn>
@@ -135,16 +139,13 @@
             <v-list-item-content>
               <v-list-item-title style="font-weight: bold; font-size: 14px; opacity: 0.75;">
                 {{ n.user__name }}<span v-if="n.user__group__name"
-                                              style="color: darkslateblue;">:{{ n.user__group__name }}</span>
+                                        style="color: darkslateblue;">:{{ n.user__group__name }}</span>
               </v-list-item-title>
-              <!--
-              <span v-if="(content.user__id!==userId)&(loginState)">
-                <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
-                    @click.stop="blockConfirmDialog=true; otherId=content.user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
-                <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
-                    @click.stop="alarmConfirmDialog=true; disclosureId=content.id;" style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
-                </span>
-              -->
+              <v-list-item-subtitle
+                  style="text-overflow: ellipsis; white-space: nowrap;"
+              >
+                {{ n.user__description }}
+              </v-list-item-subtitle>
             </v-list-item-content>
             <v-spacer></v-spacer>
             <v-list-item-content>
@@ -179,16 +180,13 @@
             <v-list-item-content>
               <v-list-item-title style="font-weight: bold; font-size: 14px; opacity: 0.75;">
                 {{ n.user__name }}<span v-if="n.user__group__name"
-                                              style="color: darkslateblue;">:{{ n.user__group__name }}</span>
+                                        style="color: darkslateblue;">:{{ n.user__group__name }}</span>
               </v-list-item-title>
-              <!--
-              <span v-if="(content.user__id!==userId)&(loginState)">
-                <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
-                    @click.stop="blockConfirmDialog=true; otherId=content.user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
-                <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
-                    @click.stop="alarmConfirmDialog=true; disclosureId=content.id;" style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
-                </span>
-              -->
+              <v-list-item-subtitle
+                  style="text-overflow: ellipsis; white-space: nowrap;"
+              >
+                {{ n.user__description }}
+              </v-list-item-subtitle>
             </v-list-item-content>
             <v-spacer></v-spacer>
             <v-list-item-content>
@@ -212,6 +210,41 @@
       </v-list>
     </v-row>
     <v-divider/>
+    <v-dialog
+        v-model="deleteBpDialog"
+        max-width="400"
+    >
+      <v-card>
+        <v-card-text class="px-6 pt-10 pb-6" style="font-weight: bold; text-align: center;">
+          ＢＰ関係を解消しますか？
+        </v-card-text>
+        <v-card-actions style="text-align: center;">
+          <v-col>
+            <v-btn
+                color="red"
+                class="white--text"
+                @click="deleteBpInfo(deleteOtherId); deleteBpDialog=false;"
+            >
+              <v-icon
+                  style="font-size: 18px;"
+                  class="pr-1"
+              >mdi-hand-right
+              </v-icon>
+              解消する
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+                color="grey"
+                class="white--text"
+                @click="deleteBpDialog=false"
+            >
+              キャンセル
+            </v-btn>
+          </v-col>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -227,6 +260,8 @@ export default {
       applyingBpList: [],
       applicantBpList: [],
       bpList: [],
+      deleteBpDialog: false,
+      deleteOtherId: '',
     }
   },
   mounted: function () {
