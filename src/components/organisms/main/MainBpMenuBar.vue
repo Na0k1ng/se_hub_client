@@ -86,13 +86,22 @@
             :key="index"
         >
           <v-list-item>
-            <v-list-item-avatar>
-              <v-icon class="grey lighten-1">
-                mdi-account
-              </v-icon>
+            <v-list-item-avatar @click="toProfile(n)">
+              <v-img :src="'http://127.0.0.1:8000/media/' + n.user__img"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title>{{ n.user__name }}</v-list-item-title>
+              <v-list-item-title style="font-weight: bold; font-size: 14px; opacity: 0.75;">
+                {{ n.user__name }}<span v-if="n.user__group__name"
+                                              style="color: darkslateblue;">:{{ n.user__group__name }}</span>
+              </v-list-item-title>
+              <!--
+              <span v-if="(content.user__id!==userId)&(loginState)">
+                <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
+                    @click.stop="blockConfirmDialog=true; otherId=content.user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
+                <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
+                    @click.stop="alarmConfirmDialog=true; disclosureId=content.id;" style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
+                </span>
+              -->
             </v-list-item-content>
             <v-spacer></v-spacer>
             <v-list-item-content>
@@ -120,13 +129,22 @@
             :key="index"
         >
           <v-list-item>
-            <v-list-item-avatar>
-              <v-icon class="grey lighten-1">
-                mdi-account
-              </v-icon>
+            <v-list-item-avatar @click="toProfile(n)">
+              <v-img :src="'http://127.0.0.1:8000/media/' + n.user__img"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title>{{ n.user__name }}</v-list-item-title>
+              <v-list-item-title style="font-weight: bold; font-size: 14px; opacity: 0.75;">
+                {{ n.user__name }}<span v-if="n.user__group__name"
+                                              style="color: darkslateblue;">:{{ n.user__group__name }}</span>
+              </v-list-item-title>
+              <!--
+              <span v-if="(content.user__id!==userId)&(loginState)">
+                <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
+                    @click.stop="blockConfirmDialog=true; otherId=content.user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
+                <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
+                    @click.stop="alarmConfirmDialog=true; disclosureId=content.id;" style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
+                </span>
+              -->
             </v-list-item-content>
             <v-spacer></v-spacer>
             <v-list-item-content>
@@ -155,13 +173,22 @@
             :key="index"
         >
           <v-list-item>
-            <v-list-item-avatar>
-              <v-icon class="grey lighten-1">
-                mdi-account
-              </v-icon>
+            <v-list-item-avatar @click="toProfile(n)">
+              <v-img :src="'http://127.0.0.1:8000/media/' + n.user__img"></v-img>
             </v-list-item-avatar>
             <v-list-item-content>
-              <v-list-item-title>{{ n.user__name }}</v-list-item-title>
+              <v-list-item-title style="font-weight: bold; font-size: 14px; opacity: 0.75;">
+                {{ n.user__name }}<span v-if="n.user__group__name"
+                                              style="color: darkslateblue;">:{{ n.user__group__name }}</span>
+              </v-list-item-title>
+              <!--
+              <span v-if="(content.user__id!==userId)&(loginState)">
+                <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
+                    @click.stop="blockConfirmDialog=true; otherId=content.user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
+                <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
+                    @click.stop="alarmConfirmDialog=true; disclosureId=content.id;" style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
+                </span>
+              -->
             </v-list-item-content>
             <v-spacer></v-spacer>
             <v-list-item-content>
@@ -321,6 +348,21 @@ export default {
       }).catch(e => {
         console.log(e.message);
       });
+    },
+    toProfile(targetUser) {
+      this.setProfileUserId(targetUser.user__id);
+      console.log(targetUser.user__id);
+      console.log(this.profileUserId);
+      if (this.$router.currentRoute.path === "/profile") {
+        this.$router.go({path: this.$router.currentRoute.path, force: true});
+      } else {
+        this.$router.push('/profile').catch(err => {
+          console.log(err)
+        });
+      }
+    },
+    setProfileUserId: function (profileUserId) {
+      this.$store.commit('setProfileUserId', profileUserId)
     },
   },
   computed: {

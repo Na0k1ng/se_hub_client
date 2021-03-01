@@ -22,7 +22,7 @@
                     @click.stop="blockConfirmDialog=true; otherId=content.user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
                 <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
                     @click.stop="alarmConfirmDialog=true; disclosureId=content.id;" style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
-                </span>
+              </span>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>

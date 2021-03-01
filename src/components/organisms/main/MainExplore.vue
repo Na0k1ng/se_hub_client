@@ -99,7 +99,6 @@
     <v-divider/>
   </div>
 </template>
-<!--                  @click="getSelectedTag(tag.id)"-->
 <script>
 import axios from 'axios';
 
