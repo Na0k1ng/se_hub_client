@@ -7,10 +7,10 @@
             :key="index"
         >
           <v-list-item>
-            <v-list-item-avatar @click="toProfile(content)">
+            <v-list-item-avatar @click="toProfile(content);">
               <v-img :src="'http://127.0.0.1:8000/media/' + content.user__img"></v-img>
             </v-list-item-avatar>
-            <v-list-item-content @click="displayContent(content)">
+            <v-list-item-content @click="displayContent(content); disclosureId=content.id; otherId=content.user__id;">
               <v-list-item-title style="font-weight: bold; font-size: 14px; opacity: 0.75;">
                 {{ content.user__name }}<span v-if="content.user__group__name"
                                               style="color: darkslateblue;">:{{ content.user__group__name }}</span>
@@ -71,7 +71,7 @@
                 v-if="(this.loginState & this.proposition.user__id !== this.userId)"
                 color="green accent-4"
                 class="white--text"
-                @click="dialog"
+                @click="messageDialog=true;"
             >
               この投稿にメッセージを送信する
             </v-btn>
@@ -176,6 +176,57 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog
+        v-model="messageDialog"
+        max-width="600"
+    >
+      <v-card class="pa-10">
+        <v-card-title class="headline ma-0 pa-0">
+          <v-icon large color="grey darken-1 ma-0 pa-0" @click="messageDialog=false">
+            mdi-window-close
+          </v-icon>
+          <p class="ma-0 pa-0 pl-2">メッセージ</p>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-row class="ma-0 pa-0">
+          <v-text-field
+              label="タイトルを入力"
+              color="green accent-4"
+              :counter="30"
+              :maxlength="30"
+              v-model="sendInfo.title"
+          ></v-text-field>
+        </v-row>
+        <v-row class="ma-0 pa-0">
+          <v-textarea
+              label="本文を入力"
+              name="input-7-4"
+              :counter="300"
+              :maxlength="300"
+              color="green accent-4"
+              required
+              v-model="sendInfo.description"
+          ></v-textarea>
+        </v-row>
+        <v-divider></v-divider>
+        <v-row class="ma-0 pa-0">
+          <v-file-input
+              truncate-length="0"
+              hide-input
+              v-model="sendInfo.file"
+          ></v-file-input>
+          <v-spacer></v-spacer>
+          <v-btn
+              @click="sendMessage()"
+              width=120
+              color="green accent-4"
+              class="white--text mt-4"
+          >
+            送信
+          </v-btn>
+        </v-row>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -192,9 +243,15 @@ export default {
       deleteConfirmDialog: false,
       blockConfirmDialog: false,
       alarmConfirmDialog: false,
+      messageDialog: false,
       // ブロック&アラーム用変数
       otherId: '',
       disclosureId: '',
+      sendInfo: {
+        title: '',
+        description: '',
+        file: ''
+      },
     }
   },
   mounted: function () {
@@ -289,6 +346,37 @@ export default {
       }).catch(e => {
         console.log(e.message);
       });
+    },
+    sendMessage() {
+      const requestBody = {
+        'title': this.sendInfo.title,
+        'description': this.sendInfo.description,
+        'message_id': '',
+        'disclosure_id': this.disclosureId,
+        'user_id': this.userId,
+        'other_id': this.otherId,
+      };
+      const reqHeader = {
+        headers: {
+          Authorization: 'JWT' + ' ' + this.token,
+        },
+      };
+
+      axios.post('http://localhost:8000/api/message/', requestBody, reqHeader).then(res => {
+        if (res.status.toString() === '200') {
+          console.log(this.sendInfo.file);
+          if (this.sendInfo.file) {
+            console.log('sendFile');
+            this.sendFile(res.data.message_id)
+          }
+        }
+      }).catch(e => {
+        console.log(e.message);
+      });
+
+      this.sendInfo.title = '';
+      this.sendInfo.description = '';
+      this.messageDialog = false
     },
   },
   computed: {

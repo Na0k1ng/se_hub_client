@@ -173,9 +173,6 @@
               hide-input
               v-model="sendInfo.file"
           ></v-file-input>
-          <!--          <v-icon large color="grey darken-1 ma-0 pa-0 rounded-circle">-->
-          <!--            mdi-paperclip-->
-          <!--          </v-icon>-->
           <v-spacer></v-spacer>
           <v-btn
               @click="sendMessage()"
