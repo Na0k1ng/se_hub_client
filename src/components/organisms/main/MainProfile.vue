@@ -85,7 +85,8 @@
         </v-row>
         <v-row no-gutters>
           <v-col>
-            <h3>{{ userInfo.name }}<span v-if="userInfo.group__name" style="color: darkslateblue;">:{{ userInfo.group__name }}</span></h3>
+            <h3>{{ userInfo.name }}<span v-if="userInfo.group__name"
+                                         style="color: darkslateblue;">:{{ userInfo.group__name }}</span></h3>
             <a :href="userInfo.group__url" target="_blank" class="green--text"> {{ userInfo.group__url }}</a>
           </v-col>
         </v-row>
@@ -116,7 +117,9 @@
               <v-icon
                   style="font-size: 18px;"
                   class="pr-1"
-              >mdi-hand-right</v-icon>解消する
+              >mdi-hand-right
+              </v-icon>
+              解消する
             </v-btn>
           </v-col>
           <v-col>
@@ -395,19 +398,6 @@ export default {
       this.isEnter = true;
     },
     dropFile: function () {
-      // let file = evt.target.files;
-      // let reader = new window.FileReader();
-      // let self = this;
-      //
-      // console.log('ファイルがおかれた');
-      //
-      // //dataURL形式でファイルを読み込む
-      // reader.readAsDataURL(file[0]);
-      //
-      // //ファイルの読込が終了した時の処理
-      // reader.onload = function () {
-      //     self.form = reader.result;
-      // };
 
       let files = [...event.dataTransfer.files];
       let form = new FormData();
@@ -432,19 +422,6 @@ export default {
       this.isEnter = false;
     },
     dropBackFile: function () {
-      // let file = evt.target.files;
-      // let reader = new window.FileReader();
-      // let self = this;
-      //
-      // console.log('ファイルがおかれた');
-      //
-      // //dataURL形式でファイルを読み込む
-      // reader.readAsDataURL(file[0]);
-      //
-      // //ファイルの読込が終了した時の処理
-      // reader.onload = function () {
-      //     self.form = reader.result;
-      // };
 
       let files = [...event.dataTransfer.files];
       let form = new FormData();
