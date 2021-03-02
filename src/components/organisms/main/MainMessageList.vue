@@ -39,7 +39,10 @@
                   {{ parseTime(n.update_datetime) }}
                 </span>
               </v-list-item-title>
-              <v-list-item-title class="ma-0 py-2" style="font-weight: bold;">{{ n.title }}</v-list-item-title>
+              <v-list-item-title class="ma-0 py-2" style="font-weight: bold;">
+                <span v-if="n.disclosure__id" class="deep-purple--text">RE: {{ n.title }}</span>
+                <span v-else>{{ n.title }}</span>
+              </v-list-item-title>
               <span v-if="(userId !== n.update_user)&(n.no_read_count>0)">
                 <span style="position: absolute; bottom: 22px; right: 76px;">
                   <v-tab>

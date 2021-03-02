@@ -31,7 +31,7 @@
     </v-row>
     <v-divider/>
     <v-dialog
-        v-model="dialog"
+        v-model="disclosureDialog"
         max-width="700"
     >
       <v-card class="pa-10">
@@ -71,7 +71,7 @@
                 v-if="(this.loginState & this.proposition.user__id !== this.userId)"
                 color="green accent-4"
                 class="white--text"
-                @click="messageDialog=true;"
+                @click="messageDialog=true; sendInfo.title=proposition.title"
             >
               この投稿にメッセージを送信する
             </v-btn>
@@ -189,15 +189,6 @@
         </v-card-title>
         <v-divider></v-divider>
         <v-row class="ma-0 pa-0">
-          <v-text-field
-              label="タイトルを入力"
-              color="green accent-4"
-              :counter="30"
-              :maxlength="30"
-              v-model="sendInfo.title"
-          ></v-text-field>
-        </v-row>
-        <v-row class="ma-0 pa-0">
           <v-textarea
               label="本文を入力"
               name="input-7-4"
@@ -217,7 +208,7 @@
           ></v-file-input>
           <v-spacer></v-spacer>
           <v-btn
-              @click="sendMessage()"
+              @click="sendMessage(); disclosureDialog=false;"
               width=120
               color="green accent-4"
               class="white--text mt-4"
@@ -239,7 +230,7 @@ export default {
     return {
       contentsList_: [],
       proposition: {},
-      dialog: false,
+      disclosureDialog: false,
       deleteConfirmDialog: false,
       blockConfirmDialog: false,
       alarmConfirmDialog: false,
@@ -276,7 +267,7 @@ export default {
     },
     displayContent(content) {
       this.proposition = content;
-      this.dialog = true;
+      this.disclosureDialog = true;
     },
     parseTime(insert_datetime) {
       let ts = Date.parse(insert_datetime);
@@ -301,7 +292,7 @@ export default {
         console.log(e.message);
       });
 
-      this.dialog = false;
+      this.disclosureDialog = false;
 
     },
     toProfile(content) {
