@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "qrcode": "^1.4.4",
     "vue": "^2.6.11",
+    "vue-cropperjs": "^4.2.0",
     "vue-fake-input": "^1.1.0",
     "vue-qrcode": "^0.3.5",
     "vue-router": "^3.2.0",

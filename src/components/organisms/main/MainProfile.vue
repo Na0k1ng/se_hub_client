@@ -25,7 +25,7 @@
                 class="white--text ml-10"
                 height=40
                 depressed
-                @click="editDialog = true"
+                @click="profileEdit()"
             >
               <b>プロフィールを編集</b>
             </v-btn>
@@ -205,6 +205,24 @@
           </v-btn>
         </v-card-title>
         <v-divider></v-divider>
+        <!--        <v-row class="ma-0 pa-8" justify="center">-->
+        <!--          <v-avatar-->
+        <!--              class="profile ma-0 pa-0"-->
+        <!--              color="grey"-->
+        <!--              size=180-->
+        <!--              max-height="100%"-->
+        <!--              style="margin-left: -185px"-->
+        <!--          >-->
+        <!--            <v-img-->
+        <!--                :src="userInfo.icon"-->
+        <!--                @dragenter="dragEnter"-->
+        <!--                @dragleave="dragLeave"-->
+        <!--                @dragover.prevent="dragOver"-->
+        <!--                @drop.prevent="dropFile"-->
+
+        <!--            ></v-img>-->
+        <!--          </v-avatar>-->
+        <!--        </v-row>-->
         <v-row class="ma-0 pa-8" justify="center">
           <v-avatar
               class="profile ma-0 pa-0"
@@ -214,13 +232,25 @@
               style="margin-left: -185px"
           >
             <v-img
-                :src="userInfo.icon"
-                @dragenter="dragEnter"
-                @dragleave="dragLeave"
-                @dragover.prevent="dragOver"
-                @drop.prevent="dropFile"
-
-            ></v-img>
+                gradient="rgba(0,0,0,0.6), rgba(0,0,0,0.1)"
+                :src="editIcon"
+            >
+              <v-btn
+                  icon
+                  color="white"
+                  style="position:relative; top:72px; left:72px"
+                  @click="onClickIconUpBtn"
+              >
+                <v-icon large>mdi-plus-circle-outline</v-icon>
+              </v-btn>
+              <input
+                  ref="uploader"
+                  class="d-none"
+                  type="file"
+                  accept="image/*"
+                  @change="onIconChanged"
+              >
+            </v-img>
           </v-avatar>
         </v-row>
         <v-row class="ma-0 pa-0">
@@ -247,6 +277,38 @@
                 @click="sendProfileInfo()"
             >
               保存
+            </v-btn>
+          </v-col>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog
+        v-model="cropIconDialog"
+        max-width="600"
+    >
+      <v-card class="pa-10">
+        <v-card-title class="headline ma-0 pa-0">
+          <v-icon large color="grey darken-1 ma-0 pa-0" @click="cropIconDialog = false">
+            mdi-window-close
+          </v-icon>
+          <p class="ma-0 pa-0 pl-2">画像編集</p>
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-row class="ma-0 pa-0 mt-4" justify="center">
+          <vue-cropper
+              ref="cropper"
+              :aspect-ratio="1"
+              :src="iconImgSrc"
+          />
+        </v-row>
+        <v-card-actions>
+          <v-col class="pa-0" style="text-align: center;">
+            <v-btn
+                color="green accent-4"
+                class="mt-6 px-16 py-4 white--text"
+                @click="cropIconImg"
+            >
+              確定
             </v-btn>
           </v-col>
         </v-card-actions>
@@ -325,364 +387,396 @@
 </template>
 
 <script>
-import axios from 'axios';
+  import axios from 'axios';
+  import VueCropper from 'vue-cropperjs';
+  import 'cropperjs/dist/cropper.css';
 
-export default {
-  name: "MainProfile",
-  data() {
-    return {
-      dialog: false,
-      editDialog: false,
-      editGroupDialog: false,
-      deleteBpDialog: false,
-      isEnter: false,
-      files: [],
-      form: {},
-      backImgform: [],
-      userInfo: {
-        id: "",
-        name: "",
-        email: "",
-        description: "",
-        icon: "",
-        group__id: "",
-        group__name: "",
-        group__description: "",
-        group__url: "",
-        group__img: "",
+  export default {
+    name: "MainProfile",
+    data() {
+      return {
+        dialog: false,
+        editDialog: false,
+        cropIconDialog: false,
+        editGroupDialog: false,
+        deleteBpDialog: false,
+        isEnter: false,
+        files: [],
+        form: {},
+        backImgform: [],
+        userInfo: {
+          id: "",
+          name: "",
+          email: "",
+          description: "",
+          icon: "",
+          group__id: "",
+          group__name: "",
+          group__description: "",
+          group__url: "",
+          group__img: "",
 
-        banner: "https://automaton-media.com/wp-content/uploads/2020/02/20200206-112749-header-696x392.jpg",
-        company: "",
-        url: "",
+          banner: "https://automaton-media.com/wp-content/uploads/2020/02/20200206-112749-header-696x392.jpg",
+          company: "",
+          url: "",
+        },
+        sendInfo: {
+          title: '',
+          description: '',
+          file: ''
+        },
+        credentials: {},
+        rules: {
+          icon: [],
+          banne: [],
+          company: [],
+          url: [],
+          name: [],
+          description: [],
+        },
+        debug: "",
+        // cropper data
+        editIcon: '',
+        iconImgSrc: null,
+        sendIconSrc: null
+
+      }
+    },
+    components: {
+      VueCropper
+    },
+    mounted: function () {
+      this.getUserInfo();
+      this.getBpInfo();
+    },
+    methods: {
+      setLoginState: function () {
+        this.$store.commit('setLoginState', true)
       },
-      sendInfo: {
-        title: '',
-        description: '',
-        file: ''
+      setProfileBp: function (val) {
+        this.$store.commit('setProfileBp', val)
       },
-      credentials: {},
-      rules: {
-        icon: [],
-        banne: [],
-        company: [],
-        url: [],
-        name: [],
-        description: [],
+      dragEnter() {
+        console.log('ファイルが入った');
       },
-      debug: "",
-    }
-  },
-  mounted: function () {
-    this.getUserInfo();
-    this.getBpInfo();
-  },
-  methods: {
-    setLoginState: function () {
-      this.$store.commit('setLoginState', true)
-    },
-    setProfileBp: function (val) {
-      this.$store.commit('setProfileBp', val)
-    },
-    dragEnter() {
-      console.log('ファイルが入った');
-    },
-    dragLeave() {
-      console.log('ファイルが出た');
-      this.isEnter = false;
-    },
-    dragOver() {
-      console.log('ファイルが上にある')
-      this.isEnter = true;
-    },
-    dropFile: function () {
+      dragLeave() {
+        console.log('ファイルが出た');
+        this.isEnter = false;
+      },
+      dragOver() {
+        console.log('ファイルが上にある')
+        this.isEnter = true;
+      },
+      dropFile: function () {
 
-      let files = [...event.dataTransfer.files];
-      let form = new FormData();
-      const userId = this.profileUserId;
-      let fileData = '';
+        let files = [...event.dataTransfer.files];
+        let form = new FormData();
+        const userId = this.profileUserId;
+        let fileData = '';
 
-      files.forEach(file => {
-        console.log(file);
-        form.append('user_img', file, userId + '.jpg');
+        files.forEach(file => {
+          console.log(file);
+          form.append('user_img', file, userId + '.jpg');
+          console.log(form);
+          fileData = file;
+        });
+
+        this.form = form;
         console.log(form);
-        fileData = file;
-      });
+        console.log(this.form);
+        for (let [key, value] of form.entries()) {
+          console.log(key, value);
+        }
 
-      this.form = form;
-      console.log(form);
-      console.log(this.form);
-      for (let [key, value] of form.entries()) {
-        console.log(key, value);
-      }
+        this.userInfo.icon = URL.createObjectURL(fileData)
+        this.isEnter = false;
+      },
+      dropBackFile: function () {
 
-      this.userInfo.icon = URL.createObjectURL(fileData)
-      this.isEnter = false;
-    },
-    dropBackFile: function () {
+        let files = [...event.dataTransfer.files];
+        let form = new FormData();
+        const group_id = this.userInfo.group__id;
+        let fileData = '';
 
-      let files = [...event.dataTransfer.files];
-      let form = new FormData();
-      const group_id = this.userInfo.group__id;
-      let fileData = '';
+        files.forEach(file => {
+          console.log(file);
+          form.append('group_img', file, group_id + '.jpg');
+          console.log(form);
+          fileData = file;
+        });
 
-      files.forEach(file => {
-        console.log(file);
-        form.append('group_img', file, group_id + '.jpg');
+        this.backImgform = form;
         console.log(form);
-        fileData = file;
-      });
-
-      this.backImgform = form;
-      console.log(form);
-      console.log(this.backImgform);
-      for (let [key, value] of form.entries()) {
-        console.log(key, value);
-      }
-
-      this.userInfo.group__img = URL.createObjectURL(fileData)
-
-      this.isEnter = false;
-    },
-
-    sendProfileInfo() {
-      this.sendUserInfo();
-      this.sendUserImg();
-      this.editDialog = false;
-    },
-    sendUserInfo() {
-      const requestBody = {
-        'name': this.userInfo.name,
-        'description': this.userInfo.description,
-      };
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
-        },
-      };
-
-      axios.put('http://localhost:8000/api/user/' + this.profileUserId + '/', requestBody, reqHeader).then(res => {
-        // JWTログイン後にユーザー情報を取得する
-        if (res.status.toString() === '200') {
-          this.getUserInfo();
+        console.log(this.backImgform);
+        for (let [key, value] of form.entries()) {
+          console.log(key, value);
         }
-      }).catch(e => {
-        console.log(e.message);
-      });
-    },
-    sendUserImg() {
-      console.log(this.form);
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
-        },
-      };
 
-      let form = this.form;
+        this.userInfo.group__img = URL.createObjectURL(fileData)
 
-      axios.put('http://localhost:8000/api/user/img/' + this.profileUserId + '/', form, reqHeader).then(res => {
-        // JWTログイン後にユーザー情報を取得する
-        if (res.status.toString() === '200') {
-          this.getUserInfo();
-        }
-      }).catch(e => {
-        console.log(e.message);
-      });
+        this.isEnter = false;
+      },
 
-    },
-    getUserInfo() {
-      axios.get('http://localhost:8000/api/user/' + this.profileUserId + '/').then(res => {
-        this.userInfo.id = res.data.id;
-        this.userInfo.name = res.data.name;
-        this.userInfo.email = res.data.email;
-        this.userInfo.description = res.data.description;
-        if (res.data.img !== null) {
-          this.userInfo.icon = 'http://127.0.0.1:8000/media/' + res.data.img;
-        } else {
-          this.userInfo.icon = ""
-        }
-        this.userInfo.group__id = res.data.group__id;
-        this.userInfo.group__name = res.data.group__name;
-        this.userInfo.group__description = res.data.group__description;
-        this.userInfo.group__url = res.data.group__url;
-        if (res.data.group__img !== null) {
-          this.userInfo.group__img = 'http://127.0.0.1:8000/media/' + res.data.group__img;
-        } else {
-          this.userInfo.group__img = ""
-        }
-      }).catch(e => {
-        console.log(e.message);
-      });
-      console.log("アイコン画像");
-      console.log(this.userInfo.icon);
-    },
-    sendGroupProfileInfo() {
-      this.sendGroupInfo();
-      this.sendGroupImg();
-      this.editGroupDialog = false;
-    },
-    sendGroupInfo() {
-      const requestBody = {
-        'name': this.userInfo.group__name,
-        'description': this.userInfo.group__description,
-        'url': this.userInfo.group__url,
-      };
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
-        },
-      };
+      sendProfileInfo: async function () {
+        await this.sendUserInfo();
+        await this.sendUserImg();
+        this.getUserInfo();
+        this.editDialog = false;
+      },
+      sendUserInfo: async function () {
+        const requestBody = {
+          'name': this.userInfo.name,
+          'description': this.userInfo.description,
+        };
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
 
-      axios.put('http://localhost:8000/api/group/' + this.userInfo.group__id + '/', requestBody, reqHeader).then(res => {
-        // JWTログイン後にユーザー情報を取得する
-        if (res.status.toString() === '200') {
-          this.getUserInfo();
-        }
-      }).catch(e => {
-        console.log(e.message);
-      });
-    },
-    sendGroupImg() {
-      console.log(this.backImgform);
-      if (this.backImgform === "") {
-        return
-      }
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
-        },
-      };
-
-      let form = this.backImgform;
-
-      axios.put('http://localhost:8000/api/group/img/' + this.userInfo.group__id + '/', form, reqHeader).then(res => {
-        // JWTログイン後にユーザー情報を取得する
-        if (res.status.toString() === '200') {
-          this.getUserInfo();
-        }
-      }).catch(e => {
-        console.log(e.message);
-      });
-    },
-    getBpInfo() {
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
-        },
-      };
-
-      axios.get('http://localhost:8000/api/bp/' + this.userId + '/' + this.profileUserId + '/', reqHeader).then(res => {
-        if (res.status.toString() === '200') {
-          this.setProfileBp(res.data);
-        }
-      }).catch(e => {
-        console.log(e.message);
-      });
-    },
-    setBpInfo() {
-      const requestBody = {
-        'user_id': this.userId,
-        'other_id': this.profileUserId,
-      };
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
-        },
-      };
-
-      axios.post('http://localhost:8000/api/bp/', requestBody, reqHeader).then(res => {
-        if (res.status.toString() === '200') {
-          this.getBpInfo()
-        }
-      }).catch(e => {
-        console.log(e.message);
-      });
-    },
-    deleteBpInfo() {
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
-        },
-      };
-
-      axios.delete('http://localhost:8000/api/bp/' + this.userId + '/' + this.profileUserId + '/', reqHeader).then(res => {
-        if (res.status.toString() === '200') {
-          this.getBpInfo()
-        }
-      }).catch(e => {
-        console.log(e.message);
-      });
-    },
-    sendMessage() {
-      const requestBody = {
-        'title': this.sendInfo.title,
-        'description': this.sendInfo.description,
-        'message_id': '',
-        'disclosure_id': '',
-        'user_id': this.userId,
-        'other_id': this.profileUserId,
-      };
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
-        },
-      };
-
-      axios.post('http://localhost:8000/api/message/', requestBody, reqHeader).then(res => {
-        if (res.status.toString() === '200') {
-          console.log(this.sendInfo.file);
-          if (this.sendInfo.file) {
-            console.log('sendFile');
-            this.sendFile(res.data.message_id)
+        await axios.put('http://localhost:8000/api/user/' + this.profileUserId + '/', requestBody, reqHeader).then(res => {
+          // JWTログイン後にユーザー情報を取得する
+          if (res.status.toString() === '200') {
+            console.log(res);
           }
+        }).catch(e => {
+          console.log(e.message);
+        });
+      },
+      sendUserImg: async function () {
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
+
+        await axios.put('http://localhost:8000/api/user/img/' + this.profileUserId + '/', this.sendIconSrc, reqHeader).then(res => {
+          // JWTログイン後にユーザー情報を取得する
+          if (res.status.toString() === '200') {
+            console.log(res);
+          }
+        }).catch(e => {
+          console.log(e.message);
+        });
+
+      },
+      getUserInfo() {
+        axios.get('http://localhost:8000/api/user/' + this.profileUserId + '/').then(res => {
+          this.userInfo.id = res.data.id;
+          this.userInfo.name = res.data.name;
+          this.userInfo.email = res.data.email;
+          this.userInfo.description = res.data.description;
+          if (res.data.img !== null) {
+            this.userInfo.icon = 'http://127.0.0.1:8000/media/' + res.data.img;
+          } else {
+            this.userInfo.icon = ""
+          }
+          this.userInfo.group__id = res.data.group__id;
+          this.userInfo.group__name = res.data.group__name;
+          this.userInfo.group__description = res.data.group__description;
+          this.userInfo.group__url = res.data.group__url;
+          if (res.data.group__img !== null) {
+            this.userInfo.group__img = 'http://127.0.0.1:8000/media/' + res.data.group__img;
+          } else {
+            this.userInfo.group__img = ""
+          }
+        }).catch(e => {
+          console.log(e.message);
+        });
+      },
+      sendGroupProfileInfo() {
+        this.sendGroupInfo();
+        this.sendGroupImg();
+        this.editGroupDialog = false;
+      },
+      sendGroupInfo() {
+        const requestBody = {
+          'name': this.userInfo.group__name,
+          'description': this.userInfo.group__description,
+          'url': this.userInfo.group__url,
+        };
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
+
+        axios.put('http://localhost:8000/api/group/' + this.userInfo.group__id + '/', requestBody, reqHeader).then(res => {
+          // JWTログイン後にユーザー情報を取得する
+          if (res.status.toString() === '200') {
+            this.getUserInfo();
+          }
+        }).catch(e => {
+          console.log(e.message);
+        });
+      },
+      sendGroupImg() {
+        console.log(this.backImgform);
+        if (this.backImgform === "") {
+          return
         }
-      }).catch(e => {
-        console.log(e.message);
-      });
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
 
-      this.sendInfo.title = '';
-      this.sendInfo.description = '';
-      this.dialog = false
-    },
-    sendFile(message_id) {
+        let form = this.backImgform;
 
-      let form = new FormData();
-      let file = this.sendInfo.file;
-      console.log(file);
-      form.append('file', file);
-      console.log(file);
+        axios.put('http://localhost:8000/api/group/img/' + this.userInfo.group__id + '/', form, reqHeader).then(res => {
+          // JWTログイン後にユーザー情報を取得する
+          if (res.status.toString() === '200') {
+            this.getUserInfo();
+          }
+        }).catch(e => {
+          console.log(e.message);
+        });
+      },
+      getBpInfo() {
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
 
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
-        },
-      };
+        axios.get('http://localhost:8000/api/bp/' + this.userId + '/' + this.profileUserId + '/', reqHeader).then(res => {
+          if (res.status.toString() === '200') {
+            this.setProfileBp(res.data);
+          }
+        }).catch(e => {
+          console.log(e.message);
+        });
+      },
+      setBpInfo() {
+        const requestBody = {
+          'user_id': this.userId,
+          'other_id': this.profileUserId,
+        };
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
 
-      axios.put('http://localhost:8000/api/message/file/' + message_id + '/', form, reqHeader).then(res => {
-        console.log(res)
-      }).catch(e => {
-        console.log(e.message);
-      });
-    },
+        axios.post('http://localhost:8000/api/bp/', requestBody, reqHeader).then(res => {
+          if (res.status.toString() === '200') {
+            this.getBpInfo()
+          }
+        }).catch(e => {
+          console.log(e.message);
+        });
+      },
+      deleteBpInfo() {
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
 
-  },
-  computed: {
-    loginState: function () {
-      return this.$store.state.loginState
+        axios.delete('http://localhost:8000/api/bp/' + this.userId + '/' + this.profileUserId + '/', reqHeader).then(res => {
+          if (res.status.toString() === '200') {
+            this.getBpInfo()
+          }
+        }).catch(e => {
+          console.log(e.message);
+        });
+      },
+      sendMessage() {
+        const requestBody = {
+          'title': this.sendInfo.title,
+          'description': this.sendInfo.description,
+          'message_id': '',
+          'disclosure_id': '',
+          'user_id': this.userId,
+          'other_id': this.profileUserId,
+        };
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
+
+        axios.post('http://localhost:8000/api/message/', requestBody, reqHeader).then(res => {
+          if (res.status.toString() === '200') {
+            console.log(this.sendInfo.file);
+            if (this.sendInfo.file) {
+              console.log('sendFile');
+              this.sendFile(res.data.message_id)
+            }
+          }
+        }).catch(e => {
+          console.log(e.message);
+        });
+
+        this.sendInfo.title = '';
+        this.sendInfo.description = '';
+        this.dialog = false
+      },
+      sendFile(message_id) {
+
+        let form = new FormData();
+        let file = this.sendInfo.file;
+        console.log(file);
+        form.append('file', file);
+        console.log(file);
+
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
+
+        axios.put('http://localhost:8000/api/message/file/' + message_id + '/', form, reqHeader).then(res => {
+          console.log(res)
+        }).catch(e => {
+          console.log(e.message);
+        });
+      },
+      // プロフィール編集ボタン押下時の初期化
+      profileEdit() {
+        this.editIcon = this.userInfo.icon;
+        this.editDialog = true;
+      },
+      // アップロードアイコン押下時にファイルinput発火
+      onClickIconUpBtn() {
+        this.$refs.uploader.click();
+      },
+      // アイコン画像アップロード
+      onIconChanged(e) {
+        let uploadFile = e.target.files[0];
+        this.iconImgSrc = URL.createObjectURL(uploadFile);
+        this.cropIconDialog = true;
+      },
+      // crop結果を格納
+      cropIconImg() {
+        let form = new FormData();
+        const user_id = this.profileUserId;
+        this.editIcon = this.$refs.cropper.getCroppedCanvas().toBlob((blob) => {
+          form.append('user_img', blob, user_id + '.jpg');
+        });
+        this.sendIconSrc = form;
+        this.editIcon = this.$refs.cropper.getCroppedCanvas().toDataURL();
+        this.cropIconDialog = false;
+      }
     },
-    token: function () {
-      return this.$store.state.token
-    },
-    userId: function () {
-      return this.$store.state.userId
-    },
-    profileUserId: function () {
-      return this.$store.state.profileUserId
-    },
-    profileBp: function () {
-      return this.$store.state.profileBp
-    },
+    computed: {
+      loginState: function () {
+        return this.$store.state.loginState
+      },
+      token: function () {
+        return this.$store.state.token
+      },
+      userId: function () {
+        return this.$store.state.userId
+      },
+      profileUserId: function () {
+        return this.$store.state.profileUserId
+      },
+      profileBp: function () {
+        return this.$store.state.profileBp
+      },
+    }
   }
-}
 </script>
 
 <style scoped>
