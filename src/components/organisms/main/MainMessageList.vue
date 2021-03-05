@@ -85,7 +85,11 @@
           </v-icon>
           <p v-if="selectedMessage.from_user__id !== userId"
              class="ma-0 pa-0 pl-2">
-            {{ selectedMessage.title }}<br/>
+            <span v-if="selectedMessage.disclosure__id" class="deep-purple--text">
+              RE: {{ selectedMessage.title }}
+            </span>
+            <span v-else>{{ selectedMessage.title }}</span>
+            <br/>
             <span class="ml-1" style="font-size: 16px;">
               {{ selectedMessage.from_user__name }}
               <span
@@ -93,16 +97,32 @@
                   style="color: darkslateblue;">
                 :{{ selectedMessage.from_user__group__name }}
               </span>
+              <span
+                  style="position: absolute; right: 64px;"
+                  @click="showDisclosure(selectedMessage);"
+              >
+                <v-icon>mdi-note-text-outline</v-icon>
+              </span>
             </span>
           </p>
           <p v-else class="ma-0 pa-0 pl-2">
-            {{ selectedMessage.title }}<br/>
+            <span v-if="selectedMessage.disclosure__id" class="deep-purple--text">
+              RE: {{ selectedMessage.title }}
+            </span>
+            <span v-else>{{ selectedMessage.title }}</span>
+            <br/>
             <span class="ml-1" style="font-size: 16px;">
               {{ selectedMessage.to_user__name }}
               <span
                   v-if="selectedMessage.to_user__group__name"
                   style="color: darkslateblue;">
                 :{{ selectedMessage.to_user__group__name }}
+              </span>
+              <span
+                  style="position: absolute; right: 64px;"
+                  @click="showDisclosure(selectedMessage);"
+              >
+                <v-icon>mdi-note-text-outline</v-icon>
               </span>
             </span>
           </p>
@@ -188,6 +208,21 @@
       </v-card>
     </v-dialog>
     <v-dialog
+        v-model="disclosureDialog"
+        max-width="700"
+    >
+      <v-card class="pa-10">
+        <v-card-title class="headline ma-0 px-0" style="font-size: 22px !important;">
+          {{ this.disclosure.title }}
+        </v-card-title>
+        <v-row class="px-8 mb-4">
+          <p class="mt-2" style="white-space: pre-line; word-wrap: break-word;">
+            {{ this.disclosure.description }}
+          </p>
+        </v-row>
+      </v-card>
+    </v-dialog>
+    <v-dialog
         v-model="blockConfirmDialog"
         max-width="420"
     >
@@ -261,12 +296,14 @@ export default {
       dialog: false,
       messageList: [],
       chatList: [],
+      disclosure: {},
       message: "",
       form: [],
       selectedMessage: "",
       chatMessage: "",
       file: "",
       // ダイアログ表示用フラグ
+      disclosureDialog: false,
       blockConfirmDialog: false,
       alarmConfirmDialog: false,
       // ブロック&アラーム用変数
@@ -430,6 +467,13 @@ export default {
         console.log(e.message);
       });
     },
+    showDisclosure: function (selectedMessage) {
+      this.disclosure = {
+        'title': selectedMessage.disclosure__title,
+        'description': selectedMessage.disclosure__description,
+      };
+      this.disclosureDialog=true;
+    }
   },
   computed: {
     userName: function () {
