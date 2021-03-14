@@ -621,6 +621,7 @@ export default {
         axios.post('http://localhost:8000/api/user/', requestBody).then(res => {
           // JWTログイン後にユーザー情報を取得する
           if (res.status.toString() === '200') {
+            this.can_login = true;
             this.login();
           }
         }).catch(e => {
@@ -629,12 +630,8 @@ export default {
         this.loginDialog = false;
         this.registerDialog = false;
         this.hashDialog = false;
-        this.credentials.email = '';
-        this.credentials.password = '';
         this.credentials.name = '';
         this.credentials.hash_cd = '';
-      } else {
-        this.loginDialog = false;
       }
     },
     logout() {
