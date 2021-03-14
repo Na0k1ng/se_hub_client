@@ -8,21 +8,21 @@
         >
           <v-list-item @click="getChatList(n)">
             <v-list-item-avatar>
-              <v-icon v-if="n.from_user__img === null" class="grey lighten-1">
+              <v-icon v-if="n.user1__img === null" class="grey lighten-1">
                 mdi-account
               </v-icon>
               <v-avatar>
-                <v-img v-if="userId!==n.from_user__id" :src="'http://127.0.0.1:8000/media/' + n.from_user__img"></v-img>
-                <v-img v-else :src="'http://127.0.0.1:8000/media/' + n.to_user__img"></v-img>
+                <v-img v-if="userId!==n.user1__id" :src="'http://127.0.0.1:8000/media/' + n.user1__img"></v-img>
+                <v-img v-else :src="'http://127.0.0.1:8000/media/' + n.user2__img"></v-img>
               </v-avatar>
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title
-                  v-if="userId !== n.from_user__id"
+                  v-if="userId !== n.user1__id"
                   style="font-weight: bold; font-size: 14px; opacity: 0.75;">
-                {{ n.from_user__name }}
-                <span v-if="n.from_user__group__name" style="color: darkslateblue;">
-                    :{{ n.from_user__group__name }}
+                {{ n.user1__name }}
+                <span v-if="n.user1__group__name" style="color: darkslateblue;">
+                    :{{ n.user1__group__name }}
                 </span>
                 <span style="position: absolute; right: 32px;">
                   {{ parseTime(n.update_datetime) }}
@@ -31,9 +31,9 @@
               <v-list-item-title
                   v-else
                   style="font-weight: bold; font-size: 14px; opacity: 0.75;">
-                {{ n.to_user__name }}
-                <span v-if="n.to_user__group__name" style="color: darkslateblue;">
-                    :{{ n.to_user__group__name }}
+                {{ n.user2__name }}
+                <span v-if="n.user2__group__name" style="color: darkslateblue;">
+                    :{{ n.user2__group__name }}
                 </span>
                 <span style="position: absolute; right: 32px;">
                   {{ parseTime(n.update_datetime) }}
@@ -53,16 +53,16 @@
                   </v-tab>
                 </span>
               </span>
-              <span v-if="userId !== n.from_user__id">
+              <span v-if="userId !== n.user1__id">
                 <span style="position: absolute; bottom: 16px; right: 64px;"><v-icon
-                    @click.stop="blockConfirmDialog=true; otherId=n.from_user__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
+                    @click.stop="blockConfirmDialog=true; otherId=n.user1__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
                 <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
                     @click.stop="alarmConfirmDialog=true; messageId=n.id;"
                     style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
               </span>
               <span v-else>
                 <span style="position: absolute; bottom: 15px; right: 64px;"><v-icon
-                    @click.stop="blockConfirmDialog=true; otherId=n.to_user__id;"
+                    @click.stop="blockConfirmDialog=true; otherId=n.user2__id;"
                     style="opacity: 0.4;">mdi-account-off</v-icon></span>
                 <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
                     @click.stop="alarmConfirmDialog=true; messageId=n.id;"
@@ -357,10 +357,10 @@ export default {
 
       this.selectedMessage = message;
       this.dialog = true;
-      if (this.userId === this.selectedMessage.from_user__id) {
-        this.otherId = this.selectedMessage.to_user__id;
+      if (this.userId === this.selectedMessage.user1__id) {
+        this.otherId = this.selectedMessage.user2__id;
       } else {
-        this.otherId = this.selectedMessage.from_user__id;
+        this.otherId = this.selectedMessage.user1__id;
       }
       this.readMessage(message.id);
     },
@@ -383,10 +383,8 @@ export default {
     },
     sendMessage() {
       const requestBody = {
-        'title': "",
         'description': this.chatMessage,
-        'message_id': this.selectedMessage.id,
-        'disclosure_id': '',
+        'room_id': this.selectedMessage.id,
         'user_id': this.userId,
         'other_id': this.otherId,
       };
