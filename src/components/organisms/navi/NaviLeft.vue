@@ -55,6 +55,16 @@
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>メッセージ</v-list-item-title>
+              <span v-if="noReadCount > 0">
+                <span style="position: absolute; bottom: 34px; right: 48px;">
+                  <v-tab>
+                    <v-badge
+                        color="red"
+                        :content="noReadCount"
+                    ></v-badge>
+                  </v-tab>
+                </span>
+              </span>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -337,7 +347,7 @@
           <v-card-subtitle class="mt-1 py-0" style="text-align: center;">あなたのアカウントのQRコード</v-card-subtitle>
           <div class="ma-0 pa-0" style="text-align: center;">
             <vue-qrcode :value="'https://localhost:8080/user_key=' + userKey"
-                      :color="{ dark: '#666666', light: '#ffffff' }"/>
+                        :color="{ dark: '#666666', light: '#ffffff' }"/>
           </div>
           <v-card-actions>
             <v-col class="mt-4 mb-0 pb-4 py-0" style="text-align: center;">
@@ -443,6 +453,12 @@ export default {
   components: {
     VueQrcode
   },
+  mounted() {
+    this.getNoReadCount();
+    window.setInterval(() => {
+      this.getNoReadCount();
+    }, 60000);
+  },
   data() {
     return {
       // style
@@ -457,6 +473,9 @@ export default {
         messages: 'grey darken-1',
       },
       // green accent-4
+
+      // メッセージ未読数
+      noReadCount: '',
 
       selectedProfile: false,
       activeNaviItm: 'test',
@@ -530,6 +549,24 @@ export default {
   },
 
   methods: {
+    // メッセージ未読数取得
+    getNoReadCount: function () {
+      if (!this.loginState) {
+        return;
+      }
+      const reqHeader = {
+        headers: {
+          Authorization: 'JWT' + ' ' + this.token,
+        },
+      };
+      axios.get('http://localhost:8000/api/message/notice/' + this.userId + '/', reqHeader).then(res => {
+        if (res.status.toString() === '200') {
+          this.noReadCount = res.data.message_count;
+        }
+      }).catch(e => {
+        console.log(e.message);
+      });
+    },
     // ログイン処理
     login: async function () {
       if (!this.can_login) {
