@@ -55,7 +55,8 @@
               </span>
               <span v-if="userId !== n.user1__id">
                 <span style="position: absolute; bottom: 16px; right: 64px;"><v-icon
-                    @click.stop="blockConfirmDialog=true; otherId=n.user1__id;" style="opacity: 0.4;">mdi-account-off</v-icon></span>
+                    @click.stop="blockConfirmDialog=true; otherId=n.user1__id;"
+                    style="opacity: 0.4;">mdi-account-off</v-icon></span>
                 <span style="position: absolute; bottom: 16px; right: 32px;"><v-icon
                     @click.stop="alarmConfirmDialog=true; messageId=n.id;"
                     style="opacity: 0.4;">mdi-alarm-light-off</v-icon></span>
@@ -75,12 +76,12 @@
       </v-list>
     </v-row>
     <v-dialog
-        v-model="dialog"
+        v-model="messageDialog"
         max-width="700"
     >
       <v-card class="pa-10">
         <v-card-title class="headline mx-0 mb-4 pa-0">
-          <v-icon large color="grey darken-1 ma-0 pa-0" @click="dialog = false">
+          <v-icon large color="grey darken-1 ma-0 pa-0" @click="messageDialog = false">
             mdi-arrow-left
           </v-icon>
           <p v-if="selectedMessage.from_user__id !== userId"
@@ -293,7 +294,6 @@ export default {
   name: "MainMessageList",
   data() {
     return {
-      dialog: false,
       messageList: [],
       chatList: [],
       disclosure: {},
@@ -303,6 +303,7 @@ export default {
       chatMessage: "",
       file: "",
       // ダイアログ表示用フラグ
+      messageDialog: false,
       disclosureDialog: false,
       blockConfirmDialog: false,
       alarmConfirmDialog: false,
@@ -314,6 +315,9 @@ export default {
   mounted: function () {
     console.log('mounted')
     this.getMessageList();
+    window.setInterval(() => {
+      this.getMessageList();
+    }, 60000);
   },
   methods: {
     getMessageList() {
@@ -356,7 +360,7 @@ export default {
       });
 
       this.selectedMessage = message;
-      this.dialog = true;
+      this.messageDialog = true;
       if (this.userId === this.selectedMessage.user1__id) {
         this.otherId = this.selectedMessage.user2__id;
       } else {
@@ -470,7 +474,7 @@ export default {
         'title': selectedMessage.disclosure__title,
         'description': selectedMessage.disclosure__description,
       };
-      this.disclosureDialog=true;
+      this.disclosureDialog = true;
     }
   },
   computed: {
