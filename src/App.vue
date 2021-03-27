@@ -5,6 +5,10 @@
 </template>
 
 <style>
+#app {
+  width: 100%;
+  overflow-x: hidden !important;
+}
 </style>
 
 <script>

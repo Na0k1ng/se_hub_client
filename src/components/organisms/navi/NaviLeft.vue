@@ -1,5 +1,11 @@
 <template>
-  <v-navigation-drawer app :color="baseColor" permanent width="350">
+  <v-navigation-drawer
+      app
+      left
+      :permanent="$vuetify.breakpoint.smAndUp"
+      width="350"
+      :color="baseColor"
+    >
     <v-sheet :color="baseColor" width="100%">
       <v-list class="pl-14" flat>
         <v-list-item-group v-if="loginState">
