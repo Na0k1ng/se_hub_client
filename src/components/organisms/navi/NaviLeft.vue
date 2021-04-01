@@ -352,7 +352,7 @@
           </v-card-actions>
           <v-card-subtitle class="mt-1 py-0" style="text-align: center;">あなたのアカウントのQRコード</v-card-subtitle>
           <div class="ma-0 pa-0" style="text-align: center;">
-            <vue-qrcode :value="'https://localhost:8080/user_key=' + userKey"
+            <vue-qrcode :value="'http://localhost:8080/profile/' + userId"
                         :color="{ dark: '#666666', light: '#ffffff' }"/>
           </div>
           <v-card-actions>
@@ -781,13 +781,17 @@ export default {
     toProfile() {
       this.setProfileUserId(this.userId);
       console.log("toProfile()");
-      if (this.$router.currentRoute.path === "/profile") {
-        this.$router.go({path: this.$router.currentRoute.path, force: true});
-      } else {
-        this.$router.push('/profile').catch(err => {
-          console.log(err)
-        });
-      }
+      // if (this.$router.currentRoute.path === "/profile") {
+      //   this.$router.go({path: this.$router.currentRoute.path, force: true});
+      // } else {
+      //   // let path = '/profile/' + this.userId;
+      //   this.$router.push('/profile/' + this.userId).catch(err => {
+      //     console.log(err)
+      //   });
+      // }
+      this.$router.push('/profile/' + this.userId).catch(err => {
+        console.log(err)
+      });
       this.selectedProfile = true;
     },
     deleteUser: function () {

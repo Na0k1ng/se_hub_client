@@ -19,7 +19,7 @@
             </v-avatar>
           </v-col>
           <v-spacer/>
-          <v-col v-show="this.userId === this.profileUserId" cols="4" style="margin-top: 100px">
+          <v-col v-show="this.userId === this.profileUserId && loginState" cols="4" style="margin-top: 100px">
             <v-btn
                 color="grey"
                 class="white--text ml-10"
@@ -30,7 +30,7 @@
               <b>プロフィールを編集</b>
             </v-btn>
           </v-col>
-          <v-col v-show="this.userId !== this.profileUserId" cols="2" style="margin-top: 100px; text-align: center">
+          <v-col v-show="this.userId !== this.profileUserId && loginState" cols="2" style="margin-top: 100px; text-align: center">
             <v-btn
                 @click="dialog = true"
                 color="grey lighten-3"
@@ -43,7 +43,7 @@
               </v-icon>
             </v-btn>
           </v-col>
-          <v-col v-show="this.userId !== this.profileUserId" cols="2" style="margin-top: 100px; text-align: center">
+          <v-col v-show="this.userId !== this.profileUserId && loginState" cols="2" style="margin-top: 100px; text-align: center">
             <v-btn
                 v-if="(profileBp.bp_status === '0') || (profileBp.bp_status === '2')"
                 color="green accent-4"
@@ -442,7 +442,13 @@
 
       }
     },
-    components: {
+  watch: {
+    '$route' : function() {
+      this.getUserInfo();
+      this.getBpInfo();
+    }
+  },
+  components: {
       VueCropper
     },
     mounted: function () {
@@ -561,7 +567,8 @@
 
       },
       getUserInfo() {
-        axios.get('http://localhost:8000/api/user/' + this.profileUserId + '/').then(res => {
+        // axios.get('http://localhost:8000/api/user/' + this.profileUserId + '/').then(res => {
+        axios.get('http://localhost:8000/api/user/' + this.$route.params.id + '/').then(res => {
           this.userInfo.id = res.data.id;
           this.userInfo.name = res.data.name;
           this.userInfo.email = res.data.email;

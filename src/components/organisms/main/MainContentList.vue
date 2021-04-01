@@ -303,7 +303,7 @@ export default {
       if (this.$router.currentRoute.path === "/profile") {
         this.$router.go({path: this.$router.currentRoute.path, force: true});
       } else {
-        this.$router.push('/profile').catch(err => {
+        this.$router.push('/profile/' + this.proposition.user__id).catch(err => {
           console.log(err)
         });
       }

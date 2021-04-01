@@ -31,9 +31,10 @@ const routes = [
         meta: {title: 'SE-Hub', requiresAuth: true}
     },
     {
-        path: '/profile',
+        path: '/profile/:id',
         name: 'Profile',
         component: Profile,
+        // props: route => ({ id: String(route.params.id) }),
         meta: {title: 'SE-Hub', desc: 'プロフィールのdescriptionを表示する。'}
     }
 ];
