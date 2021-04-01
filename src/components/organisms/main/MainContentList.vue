@@ -222,173 +222,182 @@
 </template>
 
 <script>
-import axios from 'axios';
+  import axios from 'axios';
 
-export default {
-  name: "MainContentList",
-  data() {
-    return {
-      contentsList_: [],
-      proposition: {},
-      disclosureDialog: false,
-      deleteConfirmDialog: false,
-      blockConfirmDialog: false,
-      alarmConfirmDialog: false,
-      messageDialog: false,
-      // ブロック&アラーム用変数
-      otherId: '',
-      disclosureId: '',
-      sendInfo: {
-        title: '',
-        description: '',
-        file: ''
-      },
-    }
-  },
-  mounted: function () {
-    console.log('mounted')
-    this.getContentsList();
-  },
-  methods: {
-    getContentsList() {
-      const requestBody = {
-        'user_id': this.userId,
-        'kind': '0',
-        'count': '1',
-      };
-
-      axios.post('http://localhost:8000/api/disclosure/list/', requestBody).then(res => {
-        if (res.status.toString() === '200') {
-          this.setContentsList(res.data);
-        }
-      }).catch(e => {
-        console.log(e.message);
-      });
-    },
-    displayContent(content) {
-      this.proposition = content;
-      this.disclosureDialog = true;
-    },
-    parseTime(insert_datetime) {
-      let ts = Date.parse(insert_datetime);
-      const dt = new Date(ts);
-      const year = dt.getFullYear();
-      const month = dt.getMonth() + 1;
-      const days = dt.getDate();
-      return year + "/" + month + "/" + days;
-    },
-    deleteContent() {
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
+  export default {
+    name: "MainContentList",
+    data() {
+      return {
+        contentsList_: [],
+        proposition: {},
+        disclosureDialog: false,
+        deleteConfirmDialog: false,
+        blockConfirmDialog: false,
+        alarmConfirmDialog: false,
+        messageDialog: false,
+        // ブロック&アラーム用変数
+        otherId: '',
+        disclosureId: '',
+        sendInfo: {
+          title: '',
+          description: '',
+          file: ''
         },
-      };
-      axios.delete('http://localhost:8000/api/disclosure/' + this.proposition.id + '/', reqHeader).then(res => {
-        // JWTログイン後にユーザー情報を取得する
-        if (res.status.toString() === '200') {
-          console.log(res)
-        }
-      }).catch(e => {
-        console.log(e.message);
-      });
-
-      this.disclosureDialog = false;
-
-    },
-    toProfile(content) {
-      this.proposition = content;
-      this.setProfileUserId(this.proposition.user__id);
-      console.log(this.proposition.user__id);
-      console.log(this.profileUserId);
-      if (this.$router.currentRoute.path === "/profile") {
-        this.$router.go({path: this.$router.currentRoute.path, force: true});
-      } else {
-        this.$router.push('/profile/' + this.proposition.user__id).catch(err => {
-          console.log(err)
-        });
       }
     },
-    setProfileUserId: function (profileUserId) {
-      this.$store.commit('setProfileUserId', profileUserId)
+    watch: {
+      '$route': function () {
+        this.getContentsList();
+      }
     },
-    setContentsList: function (contentsList) {
-      this.$store.commit('setContentsList', contentsList)
+    mounted: function () {
+      console.log('mounted')
+      this.getContentsList();
     },
-    // ブロック処理
-    blockUser: function (otherId) {
-      axios.put('http://localhost:8000/api/user/block/' + this.userId + '/' + otherId + '/').then(res => {
-        // JWTログイン後にユーザー情報を取得する
-        if (res.status.toString() === '200') {
-          console.log(res)
+    methods: {
+      getContentsList() {
+        let otherId = "";
+        if (this.$route.path !== "/") {
+          otherId = this.$route.params.id + '/'
         }
-        this.otherId = '';
-      }).catch(e => {
-        console.log(e.message);
-      });
-    },
-    // 通報処理
-    alarmDisclosure: function (disclosureId) {
-      axios.put('http://localhost:8000/api/disclosure/alarm/' + disclosureId + '/').then(res => {
-        // JWTログイン後にユーザー情報を取得する
-        if (res.status.toString() === '200') {
-          console.log(res);
-        }
-        this.disclosureId = '';
-      }).catch(e => {
-        console.log(e.message);
-      });
-    },
-    sendMessage() {
-      const requestBody = {
-        'title': this.sendInfo.title,
-        'description': this.sendInfo.description,
-        'message_id': '',
-        'disclosure_id': this.disclosureId,
-        'user_id': this.userId,
-        'other_id': this.otherId,
-      };
-      const reqHeader = {
-        headers: {
-          Authorization: 'JWT' + ' ' + this.token,
-        },
-      };
+        const requestBody = {
+          'user_id': this.userId,
+          'kind': '0',
+          'count': '1',
+        };
 
-      axios.post('http://localhost:8000/api/message/', requestBody, reqHeader).then(res => {
-        if (res.status.toString() === '200') {
-          console.log(this.sendInfo.file);
-          if (this.sendInfo.file) {
-            console.log('sendFile');
-            this.sendFile(res.data.message_id)
+        axios.post('http://localhost:8000/api/disclosure/list/' + otherId, requestBody,).then(res => {
+          if (res.status.toString() === '200') {
+            this.setContentsList(res.data);
           }
+        }).catch(e => {
+          console.log(e.message);
+        });
+      },
+      displayContent(content) {
+        this.proposition = content;
+        this.disclosureDialog = true;
+      },
+      parseTime(insert_datetime) {
+        let ts = Date.parse(insert_datetime);
+        const dt = new Date(ts);
+        const year = dt.getFullYear();
+        const month = dt.getMonth() + 1;
+        const days = dt.getDate();
+        return year + "/" + month + "/" + days;
+      },
+      deleteContent() {
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
+        axios.delete('http://localhost:8000/api/disclosure/' + this.proposition.id + '/', reqHeader).then(res => {
+          // JWTログイン後にユーザー情報を取得する
+          if (res.status.toString() === '200') {
+            console.log(res)
+          }
+        }).catch(e => {
+          console.log(e.message);
+        });
+
+        this.disclosureDialog = false;
+
+      },
+      toProfile(content) {
+        this.proposition = content;
+        this.setProfileUserId(this.proposition.user__id);
+        console.log(this.proposition.user__id);
+        console.log(this.profileUserId);
+        if (this.$router.currentRoute.path === "/profile") {
+          this.$router.go({path: this.$router.currentRoute.path, force: true});
+        } else {
+          this.$router.push('/profile/' + this.proposition.user__id).catch(err => {
+            console.log(err)
+          });
         }
-      }).catch(e => {
-        console.log(e.message);
-      });
+      },
+      setProfileUserId: function (profileUserId) {
+        this.$store.commit('setProfileUserId', profileUserId)
+      },
+      setContentsList: function (contentsList) {
+        this.$store.commit('setContentsList', contentsList)
+      },
+      // ブロック処理
+      blockUser: function (otherId) {
+        axios.put('http://localhost:8000/api/user/block/' + this.userId + '/' + otherId + '/').then(res => {
+          // JWTログイン後にユーザー情報を取得する
+          if (res.status.toString() === '200') {
+            console.log(res)
+          }
+          this.otherId = '';
+        }).catch(e => {
+          console.log(e.message);
+        });
+      },
+      // 通報処理
+      alarmDisclosure: function (disclosureId) {
+        axios.put('http://localhost:8000/api/disclosure/alarm/' + disclosureId + '/').then(res => {
+          // JWTログイン後にユーザー情報を取得する
+          if (res.status.toString() === '200') {
+            console.log(res);
+          }
+          this.disclosureId = '';
+        }).catch(e => {
+          console.log(e.message);
+        });
+      },
+      sendMessage() {
+        const requestBody = {
+          'title': this.sendInfo.title,
+          'description': this.sendInfo.description,
+          'message_id': '',
+          'disclosure_id': this.disclosureId,
+          'user_id': this.userId,
+          'other_id': this.otherId,
+        };
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
 
-      this.sendInfo.title = '';
-      this.sendInfo.description = '';
-      this.messageDialog = false
-    },
-  },
-  computed: {
-    loginState: function () {
-      return this.$store.state.loginState;
-    },
-    userId: function () {
-      return this.$store.state.userId
-    },
-    token: function () {
-      return this.$store.state.token
-    },
-    profileUserId: function () {
-      return this.$store.state.profileUserId
-    },
-    contentsList: function () {
-      return this.$store.state.contentsList
-    },
+        axios.post('http://localhost:8000/api/message/', requestBody, reqHeader).then(res => {
+          if (res.status.toString() === '200') {
+            console.log(this.sendInfo.file);
+            if (this.sendInfo.file) {
+              console.log('sendFile');
+              this.sendFile(res.data.message_id)
+            }
+          }
+        }).catch(e => {
+          console.log(e.message);
+        });
 
-  },
-}
+        this.sendInfo.title = '';
+        this.sendInfo.description = '';
+        this.messageDialog = false
+      },
+    },
+    computed: {
+      loginState: function () {
+        return this.$store.state.loginState;
+      },
+      userId: function () {
+        return this.$store.state.userId
+      },
+      token: function () {
+        return this.$store.state.token
+      },
+      profileUserId: function () {
+        return this.$store.state.profileUserId
+      },
+      contentsList: function () {
+        return this.$store.state.contentsList
+      },
+
+    },
+  }
 </script>
 
 <style scoped>

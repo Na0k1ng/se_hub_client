@@ -442,13 +442,13 @@
 
       }
     },
-  watch: {
-    '$route' : function() {
-      this.getUserInfo();
-      this.getBpInfo();
-    }
-  },
-  components: {
+    watch: {
+      '$route' : function() {
+        this.getUserInfo();
+        this.getBpInfo();
+      }
+    },
+    components: {
       VueCropper
     },
     mounted: function () {
