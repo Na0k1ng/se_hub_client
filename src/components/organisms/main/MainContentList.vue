@@ -57,6 +57,9 @@
             {{ this.proposition.description }}
           </p>
         </v-row>
+        <v-row class="px-8 mb-4">
+           <a v-if="proposition.file" :href="parseFile(proposition.file)">添付ファイルをダウンロード</a>
+        </v-row>
         <v-card-actions>
           <v-col style="text-align: center;">
             <v-btn
@@ -268,6 +271,7 @@
 
         axios.post('http://localhost:8000/api/disclosure/list/' + otherId, requestBody,).then(res => {
           if (res.status.toString() === '200') {
+            console.log(res.data);
             this.setContentsList(res.data);
           }
         }).catch(e => {
@@ -377,6 +381,31 @@
         this.sendInfo.title = '';
         this.sendInfo.description = '';
         this.messageDialog = false
+      },
+      sendFile(message_id) {
+        let form = new FormData();
+        let file = this.sendInfo.file;
+        form.append('file', file);
+        console.log(file);
+        const reqHeader = {
+          headers: {
+            Authorization: 'JWT' + ' ' + this.token,
+          },
+        };
+        axios.put('http://localhost:8000/api/message/file/' + message_id + '/', form, reqHeader).then(res => {
+          console.log(res)
+        }).catch(e => {
+          console.log(e.message);
+        });
+        this.file = "";
+      },
+      parseFile(file) {
+        console.log(file)
+        let ret = null;
+        if (file) {
+          ret = 'http://127.0.0.1:8000/media/' + file
+        }
+        return ret
       },
     },
     computed: {

@@ -596,7 +596,6 @@ export default {
   },
   methods: {
     initOutline () {
-      console.log("画面切り替わり");
       if (this.$route.path === '/profile/' + this.userId) {
         this.outlined = 'outlined';
       } else {
@@ -787,9 +786,9 @@ export default {
       axios.post('http://localhost:8000/api/disclosure/', requestBody, reqHeader).then(res => {
         // JWTログイン後にユーザー情報を取得する
         if (res.status.toString() === '200') {
-          console.log(res)
-          if (this.sendInfo.file) {
-            this.sendFile()
+          console.log(res);
+          if (this.send_info.file) {
+            this.sendFile(res.data.disclosure_id)
           }
         }
       }).catch(e => {
@@ -799,6 +798,23 @@ export default {
       this.send_info.title = '';
       this.send_info.body = '';
       this.writeDisclosureDialog = false;
+    },
+    sendFile(disclosureId) {
+      let form = new FormData();
+      let file = this.send_info.file;
+      form.append('file', file);
+      console.log(file);
+      const reqHeader = {
+        headers: {
+          Authorization: 'JWT' + ' ' + this.token,
+        },
+      };
+      axios.put('http://localhost:8000/api/disclosure/file/' + disclosureId + '/', form, reqHeader).then(res => {
+        console.log(res)
+      }).catch(e => {
+        console.log(e.message);
+      });
+      this.send_info.file = "";
     },
     toggleSettings: function (kind) {
       let isEnable = false;
