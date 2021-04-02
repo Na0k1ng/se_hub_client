@@ -6,95 +6,110 @@
       width="350"
       :color="baseColor"
     >
-    <v-sheet :color="baseColor" width="100%">
-      <v-list class="pl-14" flat>
-        <v-list-item-group v-if="loginState">
-          <v-list-item @click="toProfile()" class="py-2 px-3 font-weight-bold">
-            <v-list-item-avatar class="mr-8">
-              <v-img v-if="loginState" :src="'http://127.0.0.1:8000/media/' + userImg"></v-img>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-subtitle
-                  v-if="groupName"
-                  style="color: darkslateblue;">
-                {{ groupName }}
-              </v-list-item-subtitle>
-              <v-list-item-title>
-                {{ userName }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-        <v-list-item-group v-else>
-          <v-list-item @click.stop="loginDialog=true" class="py-2">
-            <v-list-item-avatar>
-              <v-icon large :color="iconColor">mdi-account</v-icon>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title>ゲスト</v-list-item-title>
-              <v-list-item-subtitle>ログインするにはクリック</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-        <v-divider></v-divider>
-        <v-list-item-group :class="naviFont">
-          <v-list-item to="/" :ripple="false" active-class="font-weight-bold" class="pt-3 pb-1">
-            <v-list-item-icon>
-              <v-icon large>mdi-magnify</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>検索</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item v-if="loginState" to="/bp" :ripple="false" active-class="font-weight-bold"
-                       class="py-1">
-            <v-list-item-icon>
-              <v-icon large>mdi-handshake-outline</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>BP管理</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item v-if="loginState" to="/messages" :ripple="false" active-class="font-weight-bold" class="py-1">
-            <v-list-item-icon>
-              <v-icon large>mdi-email-outline</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>メッセージ</v-list-item-title>
-              <span v-if="noReadCount > 0">
-                <span style="position: absolute; bottom: 34px; right: 48px;">
-                  <v-tab>
-                    <v-badge
-                        color="red"
-                        :content="noReadCount"
-                    ></v-badge>
-                  </v-tab>
+    <v-sheet :color="baseColor" width="100%" class="pl-14">
+      <v-list flat>
+        <template v-if="loginState">
+          <v-list-item-group :class="naviFont">
+            <v-list-item :to="'/profile/' + userId" :ripple="false" class="py-2 px-3 font-weight-bold">
+              <v-list-item-avatar class="mr-8" :class="outlined">
+                <v-img :src="'http://127.0.0.1:8000/media/' + userImg"></v-img>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-subtitle
+                    v-if="groupName"
+                    style="color: darkslateblue;">
+                  {{ groupName }}
+                </v-list-item-subtitle>
+                <v-list-item-title>
+                  {{ userName }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider></v-divider>
+            <v-list-item to="/" :ripple="false" active-class="font-weight-bold" class="pt-3 pb-1">
+              <v-list-item-icon>
+                <v-icon large>mdi-magnify</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>検索</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/bp" :ripple="false" active-class="font-weight-bold"
+                         class="py-1">
+              <v-list-item-icon>
+                <v-icon large>mdi-handshake-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>BP管理</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item to="/messages" :ripple="false" active-class="font-weight-bold" class="py-1">
+              <v-list-item-icon>
+                <v-icon large>mdi-email-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>メッセージ</v-list-item-title>
+                <span v-if="noReadCount > 0">
+                  <span style="position: absolute; bottom: 34px; right: 48px;">
+                    <v-tab>
+                      <v-badge
+                          color="red"
+                          :content="noReadCount"
+                      ></v-badge>
+                    </v-tab>
+                  </span>
                 </span>
-              </span>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-        <v-list-item-group v-if="loginState">
-          <v-list-item @click.stop="settingsDialog=true" :ripple="false" class="py-1">
-            <v-list-item-icon>
-              <v-icon large :color="iconColor">mdi-cog-outline</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>設定</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item v-if="loginState" class="pt-16" :ripple="false">
-            <v-btn
-                :color=buttonColor
-                class="white--text"
-                height="60"
-                width="250"
-                @click.stop="writeDisclosureDialog = true"
-            >
-              <b>情報を発信する</b>
-            </v-btn>
-          </v-list-item>
-        </v-list-item-group>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+          <v-list-item-group>
+            <v-list-item @click.stop="settingsDialog=true" :ripple="false" class="py-1">
+              <v-list-item-icon>
+                <v-icon large :color="iconColor">mdi-cog-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>設定</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+          <v-list-item-group>
+            <v-list-item  class="pt-16" :ripple="false">
+              <v-btn
+                  :color=buttonColor
+                  class="white--text"
+                  height="60"
+                  width="250"
+                  @click.stop="writeDisclosureDialog = true"
+              >
+                <b>情報を発信する</b>
+              </v-btn>
+            </v-list-item>
+          </v-list-item-group>
+        </template>
+        <template v-else>
+          <v-list-item-group>
+            <v-list-item @click.stop="loginDialog=true" class="py-2">
+              <v-list-item-avatar>
+                <v-icon large :color="iconColor">mdi-account</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>ゲスト</v-list-item-title>
+                <v-list-item-subtitle>ログインするにはクリック</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider></v-divider>
+          </v-list-item-group>
+          <v-list-item-group :class="naviFont">
+            <v-list-item to="/" :ripple="false" active-class="font-weight-bold" class="pt-3 pb-1">
+              <v-list-item-icon>
+                <v-icon large>mdi-magnify</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>検索</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </template>
       </v-list>
       <v-dialog
           v-model="loginDialog"
@@ -287,16 +302,32 @@
                 required
             ></v-textarea>
           </v-row>
-          <v-card-actions class="pt-8">
+          <v-row class="ma-0 pa-0">
+            <v-file-input
+                truncate-length="0"
+                hide-input
+                v-model="send_info.file"
+            ></v-file-input>
             <v-spacer></v-spacer>
             <v-btn
-                class="white--text px-8"
+                @click="sendJobInfo(); disclosureDialog=false;"
+                width=120
                 color="green accent-4"
-                @click="sendJobInfo()"
+                class="white&#45;&#45;text px-8"
             >
               送信
             </v-btn>
-          </v-card-actions>
+          </v-row>
+<!--          <v-card-actions class="pt-8">-->
+<!--            <v-spacer></v-spacer>-->
+<!--            <v-btn-->
+<!--                class="white&#45;&#45;text px-8"-->
+<!--                color="green accent-4"-->
+<!--                @click="sendJobInfo()"-->
+<!--            >-->
+<!--              送信-->
+<!--            </v-btn>-->
+<!--          </v-card-actions>-->
         </v-card>
       </v-dialog>
       <v-dialog
@@ -460,6 +491,7 @@ export default {
     VueQrcode
   },
   mounted() {
+    this.initOutline();
     this.getNoReadCount();
     window.setInterval(() => {
       this.getNoReadCount();
@@ -528,6 +560,7 @@ export default {
       send_info: {
         title: "",
         body: "",
+        file: ""
       },
       valid: true,
       credentials: {},
@@ -551,10 +584,26 @@ export default {
       invite_email: '',
       axios_res: '',
       axios_get_res: '',
+
+      // CSS
+      outlined: ''
     }
   },
-
+  watch: {
+    '$route': function () {
+      this.initOutline();
+    }
+  },
   methods: {
+    initOutline () {
+      console.log("画面切り替わり");
+      if (this.$route.path === '/profile/' + this.userId) {
+        this.outlined = 'outlined';
+      } else {
+        this.outlined = '';
+      }
+    },
+
     // メッセージ未読数取得
     getNoReadCount: function () {
       if (!this.loginState) {
@@ -739,6 +788,9 @@ export default {
         // JWTログイン後にユーザー情報を取得する
         if (res.status.toString() === '200') {
           console.log(res)
+          if (this.sendInfo.file) {
+            this.sendFile()
+          }
         }
       }).catch(e => {
         console.log(e.message);
@@ -841,4 +893,10 @@ export default {
 </script>
 
 <style scoped>
+  .outlined {
+    border: 2px solid #00C853;
+    border-radius:50%;
+    height: 56px;
+    width: 56px;
+  }
 </style>
