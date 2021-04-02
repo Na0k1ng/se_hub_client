@@ -283,6 +283,35 @@
             情報発信
           </v-card-title>
           <v-row class="ma-0 pa-0">
+            <v-checkbox
+                v-model="selected"
+                label="案件情報"
+                value="1"
+                :color="checkBoxColor"
+            ></v-checkbox>
+            <v-checkbox
+                v-model="selected"
+                label="人材情報"
+                value="2"
+                :color="checkBoxColor"
+                class="pl-2"
+            ></v-checkbox>
+            <v-checkbox
+                v-model="selected"
+                label="交流会"
+                value="3"
+                :color="checkBoxColor"
+                class="pl-2"
+            ></v-checkbox>
+            <v-checkbox
+                v-model="selected"
+                label="その他"
+                value="5"
+                :color="checkBoxColor"
+                class="pl-2"
+            ></v-checkbox>
+          </v-row>
+          <v-row class="ma-0 pa-0">
             <v-text-field
                 label="タイトル"
                 color="green accent-4"
@@ -318,16 +347,6 @@
               送信
             </v-btn>
           </v-row>
-<!--          <v-card-actions class="pt-8">-->
-<!--            <v-spacer></v-spacer>-->
-<!--            <v-btn-->
-<!--                class="white&#45;&#45;text px-8"-->
-<!--                color="green accent-4"-->
-<!--                @click="sendJobInfo()"-->
-<!--            >-->
-<!--              送信-->
-<!--            </v-btn>-->
-<!--          </v-card-actions>-->
         </v-card>
       </v-dialog>
       <v-dialog
@@ -510,6 +529,7 @@ export default {
         bp: 'grey darken-1',
         messages: 'grey darken-1',
       },
+      checkBoxColor: 'green accent-4',
       // green accent-4
 
       // メッセージ未読数
@@ -586,7 +606,10 @@ export default {
       axios_get_res: '',
 
       // CSS
-      outlined: ''
+      outlined: '',
+
+      //案件情報投稿 チェックボックス
+      selected: ''
     }
   },
   watch: {
@@ -771,7 +794,7 @@ export default {
       const requestBody = {
         'title': this.send_info.title,
         'description': this.send_info.body,
-        'kind': '0',
+        'kind': this.selected,
         'limit': '0',
         'data': '',
         'user_id': this.userId,
